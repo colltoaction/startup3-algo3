@@ -171,6 +171,9 @@ void game_main() {
             cout << player.minimax(placedPieces,1).second;
         }
         else {
+        	if(input == "el"){
+        		cin >> input;
+        	}
             game.addPiece(stoi(input),-1);
             cout << player.minimax(placedPieces,1).second;
         }
@@ -185,8 +188,8 @@ int main() {
         // line tiene los colores, por ahora lo ignoramos
 
         // además hay dos valores que no sabemos para qué son
-        int dummy;
-        cin >> dummy >> dummy;
+        /*int dummy;
+        cin >> dummy >> dummy;*/
         game_main();
     }
 
