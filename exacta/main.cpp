@@ -1,22 +1,27 @@
-#include <iostream>
-#include <cmath>
-#include <vector>
 #include <cassert>
+#include <iostream>
+#include <limits>
+#include <vector>
 
 using namespace std;
 
 typedef int column;
 
-typedef int move;
-
 typedef int score;
+
+enum Winner {
+    DRAW,
+    PLAYER1,
+    PLAYER2,
+};
 
 class Game {
 public:
-    Game Game(int rows, int columns, int p, int c);
+    Game(int rows, int columns, int p, int c);
     vector<column> possibleMoves();
     void addPiece(column col, int player);
     void removePiece(column col);
+    Winner checkGame();
 
 private:
     int rows;
@@ -41,12 +46,11 @@ Game::Game(int rows, int columns, int p, int c):
 
 class Player {
 public:
-    pair<score, move> minimax(int placedPieces, int maximizingPlayer);
-    int bestMove();
-    Player Player(Game game);
+    pair<score, column> minimax(int placedPieces, int maximizingPlayer);
+    Player(Game game);
 private:
-    column bestMove;
     Game game;
+    column bestMove;
 };
 
 void Game::addPiece(column col, int player) {
@@ -77,29 +81,31 @@ vector<column> Game::possibleMoves() {
     return possible;
 }
 
-int Player::bestMove() {
-    return bestMove;
+Winner Game::checkGame() {
+    // TODO
+    return DRAW;
 }
 
 
 
-pair <score, move> Player::minimax(int placedPieces, int maximizingPlayer) {
+pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
     if (placedPieces == game.p) {
-        return;
+        // TODO
+        return make_pair(0, 0);
     }
 
-    int winner = game.checkGame();
-    if (winner != 0){
-        return make_pair(winner,0);
+    Winner winner = game.checkGame();
+    if (winner != DRAW) {
+        return make_pair(winner, 0);
     }
 
 
     if (maximizingPlayer == 1){
-        int bestValue = -INFINITY;
+        int bestValue = std::numeric_limits<int>::min();
         int bestMove = 0;
         for (column col : game.possibleMoves()) {
             game.addPiece(col,1);
-            pair <score, move> value= minimax(placedPieces +1, -1);
+            pair <score, column> value= minimax(placedPieces +1, -1);
             if (bestValue < value.first){
                 bestValue = value.first;
                 bestMove = col;
@@ -109,11 +115,11 @@ pair <score, move> Player::minimax(int placedPieces, int maximizingPlayer) {
         return make_pair(bestValue, bestMove);
     }
     else {
-        int bestValue = +INFINITY;
+        int bestValue = std::numeric_limits<int>::max();
         int bestMove = 0;
         for (int col = 0; col < game.columns; ++col) {
             game.addPiece(col,-1);
-            pair <score, move> value= minimax(placedPieces, 1);
+            pair <score, column> value= minimax(placedPieces, 1);
             if (bestValue > value.first){
                 bestValue = value.first;
                 bestMove = col;
@@ -142,8 +148,9 @@ pair <score, move> Player::minimax(int placedPieces, int maximizingPlayer) {
 //    15         return bestValue
 }
 
-Player::Player(Game game): game(game), bestMove(0){
-
+Player::Player(Game game):
+        game(game),
+        bestMove(0) {
 }
 
 int main() {
@@ -158,7 +165,7 @@ int main() {
 
     int placedPieces = 0;
 
-    while(input != "perdiste" ||input != "ganaste"){
+    while(input != "perdiste" || input != "ganaste"){
         if (input =="vos"){
             cout << player.minimax(placedPieces,1).second;
         }
