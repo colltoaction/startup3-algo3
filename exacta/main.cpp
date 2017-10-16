@@ -1,6 +1,7 @@
 #include <cassert>
 #include <iostream>
 #include <limits>
+#include <string>
 #include <vector>
 
 using namespace std;
@@ -153,7 +154,7 @@ Player::Player(Game game):
         bestMove(0) {
 }
 
-int main() {
+void game_main() {
     int rows, columns, p, c;
     cin >> rows >> columns >> p >> c;
 
@@ -176,5 +177,18 @@ int main() {
         placedPieces++;
         cin >> input;
     }
+}
+
+int main() {
+    string line;
+    while (getline(cin, line) && line != "salir") {
+        // line tiene los colores, por ahora lo ignoramos
+
+        // además hay dos valores que no sabemos para qué son
+        int dummy;
+        cin >> dummy >> dummy;
+        game_main();
+    }
+
     return 0;
 }
