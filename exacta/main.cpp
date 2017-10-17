@@ -11,9 +11,9 @@ typedef int column;
 typedef int score;
 
 enum Winner {
+    PLAYER2,
     DRAW,
     PLAYER1,
-    PLAYER2,
 };
 
 class Game {
@@ -102,7 +102,8 @@ pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
 
 
     if (maximizingPlayer == 1){
-        int bestValue = std::numeric_limits<int>::min();
+        // int bestValue = std::numeric_limits<int>::min();
+        int bestValue = PLAYER2;
         int bestMove = 0;
         for (column col : game.possibleMoves()) {
             game.addPiece(col,1);
@@ -116,7 +117,8 @@ pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
         return make_pair(bestValue, bestMove);
     }
     else {
-        int bestValue = std::numeric_limits<int>::max();
+        // int bestValue = std::numeric_limits<int>::max();
+        int bestValue = PLAYER1;
         int bestMove = 0;
         for (int col = 0; col < game.columns; ++col) {
             game.addPiece(col,-1);
@@ -166,7 +168,7 @@ void game_main() {
 
     int placedPieces = 0;
 
-    while(input != "perdiste" || input != "ganaste"){
+    while(input != "perdiste" || input != "ganaste" || input != "empataron"){
         if (input =="vos"){
             cout << player.minimax(placedPieces,1).second;
         }
