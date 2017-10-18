@@ -25,20 +25,9 @@ public:
     Winner checkGame();
     bool connectC(int i, int j, int player);
     void printBoard();
-    void printLow(){
-		cout << "[ ";
-		int size = lowestFreeCell.size();
-		for ( int i = 0; i < size; ++i){
-			cout << lowestFreeCell[i] << " ";
-		}
-		cout << "]";
-	}
-	bool isFree(column col){
-		return lowestFreeCell[col] > -1;
-	}
-	int getColumns(){
-		return columns;
-	}
+    void printLow();
+	bool isFree(column col);
+	int getColumns();
 private:
     int rows;
     int columns;
@@ -58,6 +47,38 @@ Game::Game(int rows, int columns, int p, int c):
         board(rows, vector<int>(columns, 0)),
         lowestFreeCell(columns, rows-1) {
 
+}
+
+void Game::printLow(){
+	cout << "[ ";
+	int size = lowestFreeCell.size();
+	for ( int i = 0; i < size; ++i){
+		cout << lowestFreeCell[i] << " ";
+	}
+	cout << "]";
+}
+int Game::getColumns(){
+	return columns;
+}
+
+bool Game::isFree(column col){
+	return lowestFreeCell[col] > -1;
+}
+
+void Game::printBoard(){
+	printLow();
+	cout << endl;
+	for(int i = 0; i < rows; ++i){
+		cout << '|';
+		for (int j = 0; j < columns; ++j){
+			char c;
+			if(board.at(i).at(j) == 1) c='O';
+			if(board.at(i).at(j) == -1) c='*';
+			if(board.at(i).at(j) == 0) c=' ';
+			cerr << c <<"|";
+		}
+		cout << endl;
+	}
 }
 
 class Player {
@@ -209,57 +230,6 @@ bool Game::connectC(int i, int j, int player) {
     return false; // No contó C en línea en ninguna dirección.
 }
 
-/*pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
-
-    Winner winner = game.checkGame();
-    if (winner != DRAW) {
-        return make_pair(winner, 0);
-    }
-
-    if (placedPieces == game.p) {
-        // TODO
-        return make_pair(winner, 0);
-    }
-    vector<column> possible = game.possibleMoves();
-        cout << "[ ";
-		for ( int i = 0; i < possible.size(); ++i){
-			cout << possible[i] << " ";
-		}
-		cout << "]";
-    if (maximizingPlayer == 1){
-        // int bestValue = std::numeric_limits<int>::min();
-        int bestValue = PLAYER2-1;
-        int bestMove = -1;
-
-        for ( int i = 0; i < possible.size(); ++i) {
-            game.addPiece(possible[i],1);
-            pair <score, column> value = minimax(placedPieces + 1, -1);
-            if (bestValue < value.first){
-                bestValue = value.first;
-                bestMove = possible[i];
-            }
-
-            game.removePiece(possible[i]);
-        }
-        return make_pair(bestValue, bestMove);
-    }
-    else {
-        // int bestValue = std::numeric_limits<int>::max();
-        int bestValue = PLAYER1+1;
-        int bestMove = -1;
-         for ( int i = 0; i < possible.size(); ++i) {
-            game.addPiece(possible[i],-1);
-            pair <score, column> value= minimax(placedPieces, 1);
-            if (bestValue > value.first){
-                bestValue = value.first;
-                bestMove = possible[i];
-            }
-            game.removePiece(possible[i]);
-        }
-        return make_pair(bestValue, bestMove);
-    }
-}*/
-
 pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
 
     Winner winner = game.checkGame();
@@ -293,7 +263,7 @@ pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
     }
     else {
         // int bestValue = std::numeric_limits<int>::max();
-        int bestValue = PLAYER1+1;
+        int bestValue = PLAYER1;
         int bestMove = -1;
         for ( column col = 0; col < columns; ++col) {
          	if(game.isFree(col)){
@@ -331,21 +301,7 @@ pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
 //    13             v := minimax(child, depth − 1, TRUE)
 //    14             bestValue := min(bestValue, v)
 //    15         return bestValue
-void Game::printBoard(){
-	printLow();
-	cout << endl;
-	for(int i = 0; i < rows; ++i){
-		cout << '|';
-		for (int j = 0; j < columns; ++j){
-			char c;
-			if(board.at(i).at(j) == 1) c='O';
-			if(board.at(i).at(j) == -1) c='*';
-			if(board.at(i).at(j) == 0) c=' ';
-			cerr << c <<"|";
-		}
-		cout << endl;
-	}
-}
+
 
 Player::Player(Game game):
         game(game),
@@ -366,28 +322,41 @@ void game_main() {
 
     while(input != "perdiste" || input != "ganaste" || input != "empataron"){
 	    column jugada;
+
         if (input =="vos"){
+        	//calculo la jugada
             jugada = player.minimax(placedPieces,1).second;
             cout << jugada;
+            //agrego la ficha en la columna que elegi
             game.addPiece(jugada,1);
         }
         else {
         	if(input == "el"){
+        		//si empieza el otro jugador, tengo que leer su jugada
 	        	cin >> jugada;
         	}
         	else{
+        		//paso el input a int
         		jugada = stoi(input);
         	}
+        	//agrego la ficha que puso mi rival al tablero
             game.addPiece(jugada,-1);
+	        
 	        // game.printBoard();
+
+	        //calculo la jugada
             jugada = player.minimax(placedPieces,1).second;
             cout << jugada;
+            //agrego la ficha en la columna elegida
             game.addPiece(jugada,1);
         }
+
+        //incremento las fichas usadas
         placedPieces++;
+
         // game.printBoard();
 
-       
+       	//espero a que juegue mi rival y leo su jugada
         cin >> input;
         
     }
@@ -399,8 +368,10 @@ int main() {
         // line tiene los colores, por ahora lo ignoramos
 
         // además hay dos valores que no sabemos para qué son
-        /*int dummy;
-        cin >> dummy >> dummy;*/
+
+        //descomento esto para poder correr el test
+        int dummy;
+        cin >> dummy >> dummy;
         game_main();
         line = "salir";
     }
