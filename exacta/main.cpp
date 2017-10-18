@@ -24,7 +24,21 @@ public:
     void removePiece(column col);
     Winner checkGame();
     bool connectC(int i, int j, int player);
-
+    void printBoard();
+    void printLow(){
+		cout << "[ ";
+		int size = lowestFreeCell.size();
+		for ( int i = 0; i < size; ++i){
+			cout << lowestFreeCell[i] << " ";
+		}
+		cout << "]";
+	}
+	bool isFree(column col){
+		return lowestFreeCell[col] > -1;
+	}
+	int getColumns(){
+		return columns;
+	}
 private:
     int rows;
     int columns;
@@ -195,48 +209,110 @@ bool Game::connectC(int i, int j, int player) {
     return false; // No contó C en línea en ninguna dirección.
 }
 
-pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
-    if (placedPieces == game.p) {
-        // TODO
-        return make_pair(0, 0);
-    }
+/*pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
 
     Winner winner = game.checkGame();
     if (winner != DRAW) {
         return make_pair(winner, 0);
     }
 
-
+    if (placedPieces == game.p) {
+        // TODO
+        return make_pair(winner, 0);
+    }
+    vector<column> possible = game.possibleMoves();
+        cout << "[ ";
+		for ( int i = 0; i < possible.size(); ++i){
+			cout << possible[i] << " ";
+		}
+		cout << "]";
     if (maximizingPlayer == 1){
         // int bestValue = std::numeric_limits<int>::min();
-        int bestValue = PLAYER2;
-        int bestMove = 0;
-        for (column col : game.possibleMoves()) {
-            game.addPiece(col,1);
-            pair <score, column> value= minimax(placedPieces + 1, -1);
+        int bestValue = PLAYER2-1;
+        int bestMove = -1;
+
+        for ( int i = 0; i < possible.size(); ++i) {
+            game.addPiece(possible[i],1);
+            pair <score, column> value = minimax(placedPieces + 1, -1);
             if (bestValue < value.first){
                 bestValue = value.first;
-                bestMove = col;
+                bestMove = possible[i];
             }
-            game.removePiece(col);
+
+            game.removePiece(possible[i]);
         }
         return make_pair(bestValue, bestMove);
     }
     else {
         // int bestValue = std::numeric_limits<int>::max();
-        int bestValue = PLAYER1;
-        int bestMove = 0;
-        for (int col = 0; col < game.columns; ++col) {
-            game.addPiece(col,-1);
+        int bestValue = PLAYER1+1;
+        int bestMove = -1;
+         for ( int i = 0; i < possible.size(); ++i) {
+            game.addPiece(possible[i],-1);
             pair <score, column> value= minimax(placedPieces, 1);
             if (bestValue > value.first){
                 bestValue = value.first;
-                bestMove = col;
+                bestMove = possible[i];
             }
-            game.removePiece(col);
+            game.removePiece(possible[i]);
         }
         return make_pair(bestValue, bestMove);
     }
+}*/
+
+pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
+
+    Winner winner = game.checkGame();
+    if (winner != DRAW) {
+        return make_pair(winner, -1);
+    }
+
+    if (placedPieces == game.p) {
+        // TODO
+        return make_pair(winner, -1);
+    }
+    int columns = game.getColumns();
+    if (maximizingPlayer == 1){
+        // int bestValue = std::numeric_limits<int>::min();
+        int bestValue = PLAYER2;
+        int bestMove = -1;
+
+        for ( column col = 0; col < columns; ++col) {
+	        if(game.isFree(col)){
+	            game.addPiece(col,1);
+	            pair <score, column> value = minimax(placedPieces + 1, -1);
+	            if (bestValue < value.first){
+	                bestValue = value.first;
+	                bestMove = col;
+	            }
+
+	            game.removePiece(col);
+	        }
+        }
+        return make_pair(bestValue, bestMove);
+    }
+    else {
+        // int bestValue = std::numeric_limits<int>::max();
+        int bestValue = PLAYER1+1;
+        int bestMove = -1;
+        for ( column col = 0; col < columns; ++col) {
+         	if(game.isFree(col)){
+	            game.addPiece(col,-1);
+	            pair <score, column> value= minimax(placedPieces, 1);
+	            if (bestValue > value.first){
+	                bestValue = value.first;
+	                bestMove = col;
+	            }
+	            game.removePiece(col);
+			}
+        }
+        return make_pair(bestValue, bestMove);
+    }
+}
+
+
+
+
 //
 //    01 function minimax(node, depth, maximizingPlayer)
 //    02     if depth = 0 or node is a terminal node
@@ -255,6 +331,20 @@ pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
 //    13             v := minimax(child, depth − 1, TRUE)
 //    14             bestValue := min(bestValue, v)
 //    15         return bestValue
+void Game::printBoard(){
+	printLow();
+	cout << endl;
+	for(int i = 0; i < rows; ++i){
+		cout << '|';
+		for (int j = 0; j < columns; ++j){
+			char c;
+			if(board.at(i).at(j) == 1) c='O';
+			if(board.at(i).at(j) == -1) c='*';
+			if(board.at(i).at(j) == 0) c=' ';
+			cerr << c <<"|";
+		}
+		cout << endl;
+	}
 }
 
 Player::Player(Game game):
@@ -275,18 +365,31 @@ void game_main() {
     int placedPieces = 0;
 
     while(input != "perdiste" || input != "ganaste" || input != "empataron"){
+	    column jugada;
         if (input =="vos"){
-            cout << player.minimax(placedPieces,1).second;
+            jugada = player.minimax(placedPieces,1).second;
+            cout << jugada;
+            game.addPiece(jugada,1);
         }
         else {
         	if(input == "el"){
-        		cin >> input;
+	        	cin >> jugada;
         	}
-            game.addPiece(stoi(input),-1);
-            cout << player.minimax(placedPieces,1).second;
+        	else{
+        		jugada = stoi(input);
+        	}
+            game.addPiece(jugada,-1);
+	        // game.printBoard();
+            jugada = player.minimax(placedPieces,1).second;
+            cout << jugada;
+            game.addPiece(jugada,1);
         }
         placedPieces++;
+        // game.printBoard();
+
+       
         cin >> input;
+        
     }
 }
 
@@ -299,6 +402,7 @@ int main() {
         /*int dummy;
         cin >> dummy >> dummy;*/
         game_main();
+        line = "salir";
     }
 
     return 0;
