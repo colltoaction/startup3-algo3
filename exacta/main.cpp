@@ -15,13 +15,15 @@ void game_main() {
     Player player = Player(game);
 
     int placedPieces = 0;
+    bool termino = false;
 
-    while(input != "perdiste" || input != "ganaste" || input != "empataron"){
+    while(!termino){
 	    column jugada;
 
         if (input =="vos"){
         	//calculo la jugada
-            jugada = player.minimax(placedPieces,1).second;
+            // jugada = player.minimax(placedPieces,1).second;
+            jugada = player.minimaxAB(placedPieces).second;
             cout << jugada;
             //agrego la ficha en la columna que elegi
             // game.addPiece(jugada,1);
@@ -41,7 +43,8 @@ void game_main() {
         	player.addPiece(jugada,-1);
 	        player.printBoard();
 	        // game.printBoard();	        //calculo la jugada
-            jugada = player.minimax(placedPieces,1).second;
+	        jugada = player.minimaxAB(placedPieces).second;
+            // jugada = player.minimax(placedPieces,1).second;
             cout << jugada;
             //agrego la ficha en la columna elegida
             // game.addPiece(jugada,1);
@@ -56,7 +59,9 @@ void game_main() {
        	//espero a que juegue mi rival y leo su jugada
         cin >> input;
         
+        if(input == "perdiste" || input == "ganaste" || input == "empataron") termino=true;
     }
+    return;
 }
 
 int main() {
@@ -71,6 +76,7 @@ int main() {
         // cin >> dummy >> dummy;
         game_main();
         line = "salir";
+        break;
     }
 
     return 0;
