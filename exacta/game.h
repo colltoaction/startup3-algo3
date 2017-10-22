@@ -7,22 +7,22 @@ using namespace std;
 
 typedef int column;
 
-typedef int score;
-
-enum Winner {
+enum class Winner {
     PLAYER2,
     DRAW,
     PLAYER1,
 };
 
+typedef int score;
+
 class Game {
     public:
         Game(int rows, int columns, int p, int c);
         vector<column> possibleMoves();
-        void addPiece(column col, int player);
+        void addPiece(column col, Winner player);
         void removePiece(column col);
         Winner checkGame();
-        bool connectC(int i, int j, int player);
+        bool connectC(int i, int j, Winner player);
         void printBoard();
         void printLow();
         bool isFree(column col);
@@ -33,7 +33,7 @@ class Game {
         int columns;
         int p;
         int c;
-        vector<vector<int>> board;
+        vector<vector<Winner>> board;
         vector<int> lowestFreeCell;
 
         friend class Player;
@@ -44,7 +44,7 @@ Game::Game(int rows, int columns, int p, int c):
     columns(columns),
     p(p),
     c(c),
-    board(rows, vector<int>(columns, 0)),
+    board(rows, vector<Winner>(columns, Winner::DRAW)),
     lowestFreeCell(columns, rows-1) {
 
     }
@@ -72,16 +72,16 @@ void Game::printBoard(){
         cerr << '|';
         for (int j = 0; j < columns; ++j){
             char c;
-            if(board.at(i).at(j) == 1) c='O';
-            if(board.at(i).at(j) == -1) c='*';
-            if(board.at(i).at(j) == 0) c=' ';
+            if(board.at(i).at(j) == Winner::PLAYER1) c='O';
+            if(board.at(i).at(j) == Winner::PLAYER2) c='*';
+            if(board.at(i).at(j) == Winner::DRAW) c=' ';
             cerr << c <<"|";
         }
         cerr << endl;
     }
 }
 
-void Game::addPiece(column col, int player) {
+void Game::addPiece(column col, Winner player) {
     // Si la celda más baja desocupada es -1, quiere decir
     // que la columna está llena y no es válido poner fichas ahí.
     assert(lowestFreeCell.at(col) > -1);
@@ -97,7 +97,7 @@ void Game::removePiece(column col) {
     assert(lowestFreeCell.at(col) < rows - 1);
 
     int i = lowestFreeCell.at(col) + 1;
-    board.at(i)[col] = 0;
+    board.at(i)[col] = Winner::DRAW;
     lowestFreeCell[col]++;
 }
 column Game::firstFreeColumn(){
@@ -122,18 +122,18 @@ Winner Game::checkGame() {
     // TODO
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < columns; ++j) {
-            if (connectC(i, j, 1)) {
+            if (connectC(i, j, Winner::PLAYER1)) {
                 // PLAYER1 = nosotros. ¡Chequear que esté bien!
-                return PLAYER1;
-            } else if (connectC(i, j, -1)) {
-                return PLAYER2;
+                return Winner::PLAYER1;
+            } else if (connectC(i, j, Winner::PLAYER2)) {
+                return Winner::PLAYER2;
             }
         }
     }
-    return DRAW;
+    return Winner::DRAW;
 }
 
-bool Game::connectC(int i, int j, int player) {
+bool Game::connectC(int i, int j, Winner player) {
     // Dice si hay C piezas en línea del jugador dado que incluyan a la posición (i, j).
     // Quiero pedirles perdón a Dijkstra, a Turing, a John von Neumann
     // y al Prof. Francisco Soulignac por estos 7 whiles separados

@@ -10,7 +10,7 @@ test_juez: juez/random_player juez/c_linea.py exacta/main
 	        --blue_player ./juez/random_player\
 	        --red_player ./exacta/main\
 	        --iterations 10\
-	        --columns 3 --rows 4 --p 21 --c 2
+	        --columns 5 --rows 3 --p 21 --c 3
 
 juez/random_player:
 	@make -C juez random_player

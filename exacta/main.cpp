@@ -15,8 +15,8 @@ void game_main() {
     int placedPieces = 0;
 
     if (input == "vos") {
-        column move = player.calculateMove(ALFA_BETA, placedPieces);
-        player.addPiece(move, 1);
+        column move = player.calculateMove(SolutionType::ALFA_BETA, placedPieces);
+        player.addPiece(move, Winner::PLAYER1);
         cout << move << endl;
         placedPieces++;
     }
@@ -33,12 +33,12 @@ void game_main() {
 
         // leo jugada del otro
         column opponentMove = stoi(input);
-        player.addPiece(opponentMove, -1);
+        player.addPiece(opponentMove, Winner::PLAYER2);
         player.printBoard();
 
         // calculo la jugada
-        column move = player.calculateMove(ALFA_BETA, placedPieces);
-        player.addPiece(move, 1);
+        column move = player.calculateMove(SolutionType::ALFA_BETA, placedPieces);
+        player.addPiece(move, Winner::PLAYER1);
         placedPieces++;
         player.printBoard();
         cout << move << endl;

@@ -2,65 +2,72 @@
 
 using namespace std;
 
-enum solution{ MINIMAX, ALFA_BETA, GOLOSA};
+enum class SolutionType{ MINIMAX, ALFA_BETA, GOLOSA};
 
 class Player {
     public:
-        column calculateMove(solution h, int placedPieces);
-        pair<score, column> minimax(int placedPieces, int maximizingPlayer);
-        pair <score, column> minimaxABaux(int placedPieces, int maximizingPlayer, score alfa, score beta);
-        pair <score, column> minimaxAB(int placedPieces);
+        column calculateMove(SolutionType h, int placedPieces);
+        pair<score, column> minimax(int placedPieces, Winner maximizingPlayer);
+        pair<score, column> minimaxABaux(int placedPieces, Winner maximizingPlayer, score alfa, score beta);
+        pair<score, column> minimaxAB(int placedPieces);
         Player(Game game);
-        void addPiece(column col, int player);
+        void addPiece(column col, Winner player);
         void printBoard();
     private:
         Game game;
 };
 
-column Player::calculateMove(solution h, int placedPieces){
-
-    if(h == MINIMAX) {
-        return minimax(placedPieces, 1).second;
+column Player::calculateMove(SolutionType h, int placedPieces) {
+    if(h == SolutionType::MINIMAX) {
+        return minimax(placedPieces, Winner::PLAYER1).second;
     }
-    else if(h == ALFA_BETA){
+
+    if(h == SolutionType::ALFA_BETA){
         return minimaxAB(placedPieces).second;
     }
-    return 0;
 
+    // golosa no implementada todavía
+    return 0;
 }
 
 Player::Player(Game game):
     game(game) {
     }
 
-void Player::addPiece(column col, int player){
+void Player::addPiece(column col, Winner player){
     game.addPiece(col, player);
 }
 void Player::printBoard(){
     game.printBoard();
 }
 
-pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
+pair<score, column> Player::minimax(int placedPieces, Winner maximizingPlayer) {
     column free = game.firstFreeColumn();
     Winner winner = game.checkGame();
-    if (winner != DRAW) {
-        return make_pair(winner, free);
+    if (winner == Winner::PLAYER1) {
+        return make_pair(1, free);
+    }
+
+    if (winner == Winner::PLAYER2) {
+        return make_pair(-1, free);
     }
 
     if (placedPieces == game.p) {
         // TODO
-        return make_pair(winner, free);
+        return make_pair(0, free);
     }
+
     int columns = game.getColumns();
-    if (maximizingPlayer == 1){
-        // int bestValue = std::numeric_limits<int>::min();
-        int bestValue = PLAYER2;
+    if (maximizingPlayer == Winner::PLAYER1){
+        // score bestValue = std::numeric_limits<int>::min();
+        // Winner bestValue = Winner::PLAYER2;
+        score bestValue = -1;
         int bestMove = free;
 
         for ( column col = 0; col < columns; ++col) {
-            if(game.isFree(col)){
-                game.addPiece(col,1);
-                pair <score, column> value = minimax(placedPieces + 1, -1);
+            if(game.isFree(col)) {
+                game.addPiece(col, Winner::PLAYER1);
+                pair<score, column> value = minimax(placedPieces + 1, Winner::PLAYER2);
                 if (bestValue < value.first){
                     bestValue = value.first;
                     bestMove = col;
@@ -72,13 +79,14 @@ pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
         return make_pair(bestValue, bestMove);
     }
     else {
-        // int bestValue = std::numeric_limits<int>::max();
-        int bestValue = PLAYER1;
+        // score bestValue = std::numeric_limits<int>::max();
+        // Winner bestValue = Winner::PLAYER1;
+        score bestValue = 1;
         int bestMove = free;
         for ( column col = 0; col < columns; ++col) {
             if(game.isFree(col)){
-                game.addPiece(col,-1);
-                pair <score, column> value= minimax(placedPieces, 1);
+                game.addPiece(col, Winner::PLAYER2);
+                pair<score, column> value= minimax(placedPieces, Winner::PLAYER1);
                 if (bestValue > value.first){
                     bestValue = value.first;
                     bestMove = col;
@@ -90,37 +98,42 @@ pair <score, column> Player::minimax(int placedPieces, int maximizingPlayer) {
     }
 }
 
-pair <score, column> Player::minimaxABaux(int placedPieces, int maximizingPlayer, score alfa, score beta) {
+pair<score, column> Player::minimaxABaux(int placedPieces, Winner maximizingPlayer, score alfa, score beta) {
     column free = game.firstFreeColumn();
     Winner winner = game.checkGame();
+    if (winner == Winner::PLAYER1) {
+        return make_pair(1, free);
+    }
 
-    if (winner != DRAW) {
-        return make_pair(winner, free);
+    if (winner == Winner::PLAYER2) {
+        return make_pair(-1, free);
     }
 
     if (placedPieces == game.p) {
         // TODO
-        return make_pair(winner, free);
+        return make_pair(0, free);
     }
 
     int columns = game.getColumns();
     
-    if (maximizingPlayer == 1){
+    if (maximizingPlayer == Winner::PLAYER1) {
         // Busca la movida óptima para el jugador que maximiza, es decir nosotros.
-        int bestValue = PLAYER2; //Peor valor posible: que gane el oponente.
+        // score bestValue = std::numeric_limits<int>::min();
+        // Winner bestValue = Winner::PLAYER2;
+        score bestValue = -1;
         int bestMove = free;
 
-        for ( column col = 0; col < columns; ++col) {
-            if(game.isFree(col)){
-                game.addPiece(col,1);
-                pair <score, column> value = minimaxABaux(placedPieces + 1, -1, alfa, beta);
+        for (column col = 0; col < columns; ++col) {
+            if (game.isFree(col)) {
+                game.addPiece(col, Winner::PLAYER1);
+                pair<score, column> value = minimaxABaux(placedPieces + 1, Winner::PLAYER2, alfa, beta);
                 game.removePiece(col);
-                if (bestValue < value.first){
+                if (bestValue < value.first) {
                     bestValue = value.first;
                     bestMove = col;
                 }
-                if(alfa < value.first) alfa = value.first;
-                if(beta <= alfa) break;
+                if (alfa < value.first) alfa = value.first;
+                if (beta <= alfa) break;
             }
         }
         return make_pair(bestValue, bestMove);
@@ -128,14 +141,16 @@ pair <score, column> Player::minimaxABaux(int placedPieces, int maximizingPlayer
     else {
         // Buscamos la movida óptima para el jugador que minimiza, es decir el oponente. Es importante aclarar que el oponente va a intentar hacer la mejor movida para él; somos nosotros los que queremos que bestValue sea lo menor posible y por eso elegimos nuestra jugada en base a eso.
         // int bestValue = std::numeric_limits<int>::max();
-        int bestValue = PLAYER1;
+        // score bestValue = std::numeric_limits<int>::max();
+        // Winner bestValue = Winner::PLAYER1;
+        score bestValue = 1;
         int bestMove = free;
         for ( column col = 0; col < columns; ++col) {
             if(game.isFree(col)){
-                game.addPiece(col,-1);
-                pair <score, column> value= minimaxABaux(placedPieces, 1, alfa, beta);
+                game.addPiece(col, Winner::PLAYER2);
+                pair<score, column> value= minimaxABaux(placedPieces, Winner::PLAYER1, alfa, beta);
                 game.removePiece(col);
-                if (bestValue > value.first){
+                if (bestValue > value.first) {
                     bestValue = value.first;
                     bestMove = col;
                 }
@@ -147,8 +162,8 @@ pair <score, column> Player::minimaxABaux(int placedPieces, int maximizingPlayer
     }
 }
 
-pair <score, column> Player::minimaxAB(int placedPieces){
-    return minimaxABaux(placedPieces, 1, PLAYER2, PLAYER1);
+pair<score, column> Player::minimaxAB(int placedPieces){
+    return minimaxABaux(placedPieces, Winner::PLAYER1, -1, 1);
 }
 
 
