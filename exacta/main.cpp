@@ -15,9 +15,9 @@ void game_main() {
     int placedPieces = 0;
 
     if (input == "vos") {
-        column jugada = player.calcularJugada(ALFA_BETA, placedPieces);
-        player.addPiece(jugada, 1);
-        cout << jugada << endl;
+        column move = player.calculateMove(ALFA_BETA, placedPieces);
+        player.addPiece(move, 1);
+        cout << move << endl;
         placedPieces++;
     }
 
@@ -32,16 +32,16 @@ void game_main() {
         cerr << "input: " << input << endl << flush;
 
         // leo jugada del otro
-        column jugada_otro = stoi(input);
-        player.addPiece(jugada_otro, -1);
+        column opponentMove = stoi(input);
+        player.addPiece(opponentMove, -1);
         player.printBoard();
 
         // calculo la jugada
-        column jugada = player.calcularJugada(ALFA_BETA, placedPieces);
-        player.addPiece(jugada, 1);
+        column move = player.calculateMove(ALFA_BETA, placedPieces);
+        player.addPiece(move, 1);
         placedPieces++;
         player.printBoard();
-        cout << jugada << endl;
+        cout << move << endl;
     }
 }
 
@@ -49,7 +49,7 @@ int main() {
     while (true) {
         string color;
         cin >> color;
-    
+
         if (color == "salir") {
             cout << "listo" << endl;
             return 0;

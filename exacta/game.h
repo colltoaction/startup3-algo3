@@ -16,69 +16,69 @@ enum Winner {
 };
 
 class Game {
-public:
-    Game(int rows, int columns, int p, int c);
-    vector<column> possibleMoves();
-    void addPiece(column col, int player);
-    void removePiece(column col);
-    Winner checkGame();
-    bool connectC(int i, int j, int player);
-    void printBoard();
-    void printLow();
-	bool isFree(column col);
-	int getColumns();
-	column firstFreeColumn();
-private:
-    int rows;
-    int columns;
-    int p;
-    int c;
-    vector<vector<int>> board;
-    vector<int> lowestFreeCell;
+    public:
+        Game(int rows, int columns, int p, int c);
+        vector<column> possibleMoves();
+        void addPiece(column col, int player);
+        void removePiece(column col);
+        Winner checkGame();
+        bool connectC(int i, int j, int player);
+        void printBoard();
+        void printLow();
+        bool isFree(column col);
+        int getColumns();
+        column firstFreeColumn();
+    private:
+        int rows;
+        int columns;
+        int p;
+        int c;
+        vector<vector<int>> board;
+        vector<int> lowestFreeCell;
 
-    friend class Player;
+        friend class Player;
 };
 
 Game::Game(int rows, int columns, int p, int c):
-        rows(rows),
-        columns(columns),
-        p(p),
-        c(c),
-        board(rows, vector<int>(columns, 0)),
-        lowestFreeCell(columns, rows-1) {
+    rows(rows),
+    columns(columns),
+    p(p),
+    c(c),
+    board(rows, vector<int>(columns, 0)),
+    lowestFreeCell(columns, rows-1) {
 
-}
+    }
 
 void Game::printLow(){
-	cerr << "[ ";
-	int size = lowestFreeCell.size();
-	for ( int i = 0; i < size; ++i){
-		cerr << lowestFreeCell[i] << " ";
-	}
-	cerr << "]";
+    cerr << "[ ";
+    int size = lowestFreeCell.size();
+    for ( int i = 0; i < size; ++i){
+        cerr << lowestFreeCell[i] << " ";
+    }
+    cerr << "]";
 }
 int Game::getColumns(){
-	return columns;
+    return columns;
 }
 
 bool Game::isFree(column col){
-	return lowestFreeCell[col] > -1;
+    return lowestFreeCell[col] > -1;
 }
 
 void Game::printBoard(){
-	printLow();
-	cerr << endl;
-	for(int i = 0; i < rows; ++i){
-		cerr << '|';
-		for (int j = 0; j < columns; ++j){
-			char c;
-			if(board.at(i).at(j) == 1) c='O';
-			if(board.at(i).at(j) == -1) c='*';
-			if(board.at(i).at(j) == 0) c=' ';
-			cerr << c <<"|";
-		}
-		cerr << endl;
-	}
+    printLow();
+    cerr << endl;
+    for(int i = 0; i < rows; ++i){
+        cerr << '|';
+        for (int j = 0; j < columns; ++j){
+            char c;
+            if(board.at(i).at(j) == 1) c='O';
+            if(board.at(i).at(j) == -1) c='*';
+            if(board.at(i).at(j) == 0) c=' ';
+            cerr << c <<"|";
+        }
+        cerr << endl;
+    }
 }
 
 void Game::addPiece(column col, int player) {
@@ -101,10 +101,10 @@ void Game::removePiece(column col) {
     lowestFreeCell[col]++;
 }
 column Game::firstFreeColumn(){
-	for (int i = 0; i < columns; ++i){
-		if(lowestFreeCell.at(i) > -1) return i;
-	}
-	return -1;
+    for (int i = 0; i < columns; ++i){
+        if(lowestFreeCell.at(i) > -1) return i;
+    }
+    return -1;
 }
 
 vector<column> Game::possibleMoves() {
