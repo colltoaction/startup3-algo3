@@ -15,7 +15,7 @@ void game_main() {
     int placedPieces = 0;
 
     if (input == "vos") {
-        column jugada = player.minimaxAB(placedPieces).second;
+        column jugada = player.calcularJugada(alfa_beta, placedPieces);
         player.addPiece(jugada, 1);
         cout << jugada << endl;
         placedPieces++;
@@ -34,11 +34,10 @@ void game_main() {
         // leo jugada del otro
         column jugada_otro = stoi(input);
         player.addPiece(jugada_otro, -1);
-        placedPieces++;
         player.printBoard();
 
         // calculo la jugada
-        column jugada = player.minimaxAB(placedPieces).second;
+        column jugada = player.calcularJugada(alfa_beta, placedPieces);
         player.addPiece(jugada, 1);
         placedPieces++;
         player.printBoard();

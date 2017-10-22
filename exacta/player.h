@@ -2,8 +2,11 @@
 
 using namespace std;
 
+enum solucion{ minimax, alfa_beta, golosa}
+
 class Player {
 public:
+    column calcularJugada(solucion h, int placedPieces);
     pair<score, column> minimax(int placedPieces, int maximizingPlayer);
     pair <score, column> minimaxABaux(int placedPieces, int maximizingPlayer, score alfa, score beta);
     pair <score, column> minimaxAB(int placedPieces);
@@ -12,8 +15,15 @@ public:
     void printBoard();
 private:
     Game game;
-    // column bestMove;
+    int usedPieces;
 };
+
+column Player::calcularJugada(solucion h, int placedPieces){
+    if(h == minimax) return minimax(placedPieces, 1).second;
+    if(h == alfa_beta) return minimaxAB(placedPieces).second;
+    if(h == golosa) return 0;
+
+}
 
 Player::Player(Game game):
         game(game) {
