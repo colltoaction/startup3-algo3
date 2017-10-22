@@ -2,7 +2,7 @@
 
 using namespace std;
 
-enum solucion{ minimax, alfa_beta, golosa}
+enum solucion{ MINIMAX, ALFA_BETA, GOLOSA};
 
 class Player {
 public:
@@ -15,13 +15,17 @@ public:
     void printBoard();
 private:
     Game game;
-    int usedPieces;
 };
 
 column Player::calcularJugada(solucion h, int placedPieces){
-    if(h == minimax) return minimax(placedPieces, 1).second;
-    if(h == alfa_beta) return minimaxAB(placedPieces).second;
-    if(h == golosa) return 0;
+
+    if(h == MINIMAX) {
+        return minimax(placedPieces, 1).second;
+    }
+    if(h == ALFA_BETA){
+        return minimaxAB(placedPieces).second;
+    }
+    return 0;
 
 }
 
