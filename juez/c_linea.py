@@ -4,7 +4,6 @@ from random import choice
 import argparse
 
 from LogicalBoard import *
-from GraphicalBoard import *
 from Referee import *
 from PlayerCommunicator import *
 from HumanPlayer import *

@@ -1,7 +1,6 @@
 import sys
 
 from LogicalBoard import *
-from GraphicalBoard import *
 from constants import *
 
 
@@ -15,6 +14,7 @@ class Referee:
         self.logicalBoard = LogicalBoard(columns, rows, c, p)
 
         if show_ui:
+            from GraphicalBoard import *
             self.graphicalBoard = GraphicalBoard(self.logicalBoard)
         else:
             self.graphicalBoard = None
