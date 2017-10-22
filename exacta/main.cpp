@@ -1,12 +1,10 @@
-
 #include "player.h"
 
 using namespace std;
 
-
 void game_main() {
     int rows, columns, p, c;
-    cin >> rows >> columns >> p >> c;
+    cin >> columns >> rows >> p >> c;
 
     string input;
     cin >> input;
@@ -15,69 +13,53 @@ void game_main() {
     Player player = Player(game);
 
     int placedPieces = 0;
-    bool termino = false;
 
-    while(!termino){
-	    column jugada;
-
-        if (input =="vos"){
-        	//calculo la jugada
-            // jugada = player.minimax(placedPieces,1).second;
-            jugada = player.minimaxAB(placedPieces).second;
-            cout << jugada;
-            //agrego la ficha en la columna que elegi
-            // game.addPiece(jugada,1);
-            player.addPiece(jugada,1);
-        }
-        else {
-        	if(input == "el"){
-        		//si empieza el otro jugador, tengo que leer su jugada
-	        	cin >> jugada;
-        	}
-        	else{
-        		//paso el input a int
-        		jugada = stoi(input);
-        	}
-        	//agrego la ficha que puso mi rival al tablero
-            //game.addPiece(jugada,-1);
-        	player.addPiece(jugada,-1);
-	        player.printBoard();
-	        // game.printBoard();	        //calculo la jugada
-	        jugada = player.minimaxAB(placedPieces).second;
-            // jugada = player.minimax(placedPieces,1).second;
-            cout << jugada;
-            //agrego la ficha en la columna elegida
-            // game.addPiece(jugada,1);
-            player.addPiece(jugada,1);
-        }
-
-        //incremento las fichas usadas
+    if (input == "vos") {
+        column jugada = player.minimaxAB(placedPieces).second;
+        player.addPiece(jugada, 1);
+        cout << jugada << endl;
         placedPieces++;
-		player.printBoard();
-        // game.printBoard();
-
-       	//espero a que juegue mi rival y leo su jugada
-        cin >> input;
-        
-        if(input == "perdiste" || input == "ganaste" || input == "empataron") termino=true;
     }
-    return;
+
+    while (true) {
+        cin >> input;
+        if (input == "ganaste" || input == "perdiste" || input == "empataron") {
+            cerr << "se terminó: " << input << endl << flush;
+            // terminó este juego
+            return;
+        }
+
+        cerr << "input: " << input << endl << flush;
+
+        // leo jugada del otro
+        column jugada_otro = stoi(input);
+        player.addPiece(jugada_otro, -1);
+        placedPieces++;
+        player.printBoard();
+
+        // calculo la jugada
+        column jugada = player.minimaxAB(placedPieces).second;
+        player.addPiece(jugada, 1);
+        placedPieces++;
+        player.printBoard();
+        cout << jugada << endl;
+    }
 }
 
 int main() {
-    string line;
-    while (getline(cin, line) && line != "salir") {
-        // line tiene los colores, por ahora lo ignoramos
+    while (true) {
+        string color;
+        cin >> color;
+    
+        if (color == "salir") {
+            cout << "listo" << endl;
+            return 0;
+        }
 
-        // además hay dos valores que no sabemos para qué son
+        string color_otro;
+        cin >> color_otro;
 
-        //descomento esto para poder correr el test
-        // int dummy;
-        // cin >> dummy >> dummy;
+        // por ahora ignoramos los colores
         game_main();
-        line = "salir";
-        break;
     }
-
-    return 0;
 }

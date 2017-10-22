@@ -1,10 +1,14 @@
 import pygame
+import os
 from pygame.locals import *
 from LogicalBoard import *
 from constants import *
 
 clock = pygame.time.Clock()
+basePath = os.path.dirname(__file__)
 
+def load_image(relative_path):
+    return pygame.image.load(os.path.join(basePath, relative_path))
 
 class GraphicalBoard:
 
@@ -25,22 +29,22 @@ class GraphicalBoard:
         }
 
         # img sources TODO: do not scale images
-        self.red_token = pygame.image.load('img/tokens/red.png')
+        self.red_token = load_image('img/tokens/red.png')
         self.red_token = pygame.transform.smoothscale(self.red_token, (SPACESIZE, SPACESIZE))
-        self.blue_token = pygame.image.load('img/tokens/blue.png')
+        self.blue_token = load_image('img/tokens/blue.png')
         self.blue_token = pygame.transform.smoothscale(self.blue_token, (SPACESIZE, SPACESIZE))
-        self.cell_img = pygame.image.load('img/cell.png')
+        self.cell_img = load_image('img/cell.png')
         self.cell_img = pygame.transform.smoothscale(self.cell_img, (SPACESIZE, SPACESIZE))
 
-        self.red_won_img = pygame.image.load('img/results/red_won.png')
+        self.red_won_img = load_image('img/results/red_won.png')
         self.red_won_rect = self.red_won_img.get_rect()
         self.red_won_rect.center = (int(self.stage_width / 2), int(self.stage_height / 2))
 
-        self.blue_won_img = pygame.image.load('img/results/blue_won.png')
+        self.blue_won_img = load_image('img/results/blue_won.png')
         self.blue_won_rect = self.blue_won_img.get_rect()
         self.blue_won_rect.center = (int(self.stage_width / 2), int(self.stage_height / 2))
 
-        self.tie_img = pygame.image.load('img/results/tie.png')
+        self.tie_img = load_image('img/results/tie.png')
         w, h = self.tie_img.get_size()
         scale = float(self.logicalBoard.columns * SPACESIZE) / float(w)
         self.tie_img = pygame.transform.smoothscale(self.tie_img, (int(scale * w), int(scale * h)))

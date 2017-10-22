@@ -50,12 +50,12 @@ Game::Game(int rows, int columns, int p, int c):
 }
 
 void Game::printLow(){
-	cout << "[ ";
+	cerr << "[ ";
 	int size = lowestFreeCell.size();
 	for ( int i = 0; i < size; ++i){
-		cout << lowestFreeCell[i] << " ";
+		cerr << lowestFreeCell[i] << " ";
 	}
-	cout << "]";
+	cerr << "]";
 }
 int Game::getColumns(){
 	return columns;
@@ -67,9 +67,9 @@ bool Game::isFree(column col){
 
 void Game::printBoard(){
 	printLow();
-	cout << endl;
+	cerr << endl;
 	for(int i = 0; i < rows; ++i){
-		cout << '|';
+		cerr << '|';
 		for (int j = 0; j < columns; ++j){
 			char c;
 			if(board.at(i).at(j) == 1) c='O';
@@ -77,7 +77,7 @@ void Game::printBoard(){
 			if(board.at(i).at(j) == 0) c=' ';
 			cerr << c <<"|";
 		}
-		cout << endl;
+		cerr << endl;
 	}
 }
 

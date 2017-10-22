@@ -15,5 +15,5 @@ test: $(all-tests)
 	@./main < $< 2> /dev/null | diff -q $(word 2, $?) - >/dev/null || \
 	(echo "Falló el test $@ en main" && exit 1)
 
-main: main.cpp
+main: main.cpp game.h player.h
 	$(CXX) $(CXXFLAGS) -o $@ $<
