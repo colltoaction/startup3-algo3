@@ -26,7 +26,6 @@ class Game {
         void printBoard();
         void printLow();
         bool isFree(column col);
-        int getColumns();
         column firstFreeColumn();
     private:
         int rows;
@@ -53,16 +52,13 @@ void Game::printLow(){
     cerr << "[ ";
     int size = lowestFreeCell.size();
     for ( int i = 0; i < size; ++i){
-        cerr << lowestFreeCell[i] << " ";
+        cerr << lowestFreeCell.at(i) << " ";
     }
     cerr << "]";
 }
-int Game::getColumns(){
-    return columns;
-}
 
 bool Game::isFree(column col){
-    return lowestFreeCell[col] > -1;
+    return lowestFreeCell.at(col) > -1;
 }
 
 void Game::printBoard(){
@@ -87,8 +83,8 @@ void Game::addPiece(column col, Winner player) {
     assert(lowestFreeCell.at(col) > -1);
 
     int i = lowestFreeCell.at(col);
-    board.at(i)[col] = player;
-    lowestFreeCell[col]--;
+    board.at(i).at(col) = player;
+    lowestFreeCell.at(col)--;
 }
 
 void Game::removePiece(column col) {
@@ -97,20 +93,21 @@ void Game::removePiece(column col) {
     assert(lowestFreeCell.at(col) < rows - 1);
 
     int i = lowestFreeCell.at(col) + 1;
-    board.at(i)[col] = Winner::DRAW;
-    lowestFreeCell[col]++;
+    board.at(i).at(col) = Winner::DRAW;
+    lowestFreeCell.at(col)++;
 }
 column Game::firstFreeColumn(){
     for (int i = 0; i < columns; ++i){
-        if(lowestFreeCell.at(i) > -1) return i;
+        if (isFree(i)) return i;
     }
+
     return -1;
 }
 
 vector<column> Game::possibleMoves() {
     vector<column> possible;
     for (column col = 0; col < columns; ++col) {
-        if (lowestFreeCell.at(col) > -1) {
+        if (isFree(col)) {
             possible.push_back(col);
         }
     }
@@ -133,11 +130,16 @@ Winner Game::checkGame() {
     return Winner::DRAW;
 }
 
-bool Game::connectC(int i, int j, Winner player) {
+bool Game::connectC(const int i, const int j, Winner player) {
     // Dice si hay C piezas en línea del jugador dado que incluyan a la posición (i, j).
     // Quiero pedirles perdón a Dijkstra, a Turing, a John von Neumann
     // y al Prof. Francisco Soulignac por estos 7 whiles separados
     // y las row y col que se resetean.
+
+    // Cortamos rápidamente cuando la posición no tiene al jugador que se desea chequear
+    if (board.at(i).at(j) != player) {
+        return false;
+    }
 
     int downwards = 0, leftwards = 0, rightwards = 0; // Cuentan las fichas en vertical y horizontal
     int leftUpwards = 0, leftDownwards = 0, rightUpwards = 0, rightDownwards = 0; // Cuentan las fichas en diagonal
@@ -219,7 +221,7 @@ bool Game::connectC(int i, int j, Winner player) {
         ++col;
     }
 
-    if (leftDownwards + rightDownwards >= c) {
+    if (leftDownwards + rightUpwards >= c) {
         // C en la otra diagonal.
         return true;
     }

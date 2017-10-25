@@ -4,7 +4,7 @@ using namespace std;
 
 void game_main() {
     int rows, columns, p, c;
-    cin >> columns >> rows >> p >> c;
+    cin >> columns >> rows >> c >> p;
 
     string input;
     cin >> input;
@@ -15,7 +15,7 @@ void game_main() {
     int placedPieces = 0;
 
     if (input == "vos") {
-        column move = player.calculateMove(SolutionType::ALFA_BETA, placedPieces);
+        column move = player.calculateMove(SolutionType::MINIMAX, placedPieces);
         player.addPiece(move, Winner::PLAYER1);
         cout << move << endl;
         placedPieces++;
@@ -37,7 +37,7 @@ void game_main() {
         player.printBoard();
 
         // calculo la jugada
-        column move = player.calculateMove(SolutionType::ALFA_BETA, placedPieces);
+        column move = player.calculateMove(SolutionType::MINIMAX, placedPieces);
         player.addPiece(move, Winner::PLAYER1);
         placedPieces++;
         player.printBoard();
