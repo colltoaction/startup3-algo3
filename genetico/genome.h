@@ -80,13 +80,14 @@ class Genome {
         Genome(int c);
         Genome(int c, vector<float> geneWeights);
         void activate(Board b);
-    private:
-        vector<Gene> genes;
         vector<float> geneWeights;
+    private:
+        void initialiseGenes();
+        vector<Gene> genes;
         int c;
 };
 
-Genome::Genome(int c) : c(c) {
+void Genome::initialiseGenes() {
     for (int k = c; k >= 2; --k) {
         genes.push_back(ConnectKGene(k));
     }
@@ -99,10 +100,17 @@ Genome::Genome(int c) : c(c) {
 
     genes.push_back(AmountOfNeighboursGene(US));
     genes.push_back(AmountOfNeighboursGene(THEM));
-    genes.push_back(AmountOfNeighboursGene(NONE));
+    genes.push_back(AmountOfNeighboursGene(NONE));    
+}
 
+Genome::Genome(int c) : c(c) {
+    initialiseGenes();
     for (int i = 0; i < genes.size(); ++i) {
         geneWeights.push_back(rand(-1, 1));
     }
+}
 
+Genome::Genome(int c, vector<float> geneWeights) {
+    initialiseGenes();
+    geneWeights = geneWeights;
 }

@@ -1,33 +1,48 @@
-#include <vector>
+#include "genome.h"
 
-using namespace std;
+enum class FitnessFunction {
+    AVERAGE_OF_WINS;
+    SCORE;
+}
 
-class MatingPool
-{
+class MatingPool {
 public:
+    MatingPool(unsigned int p, int c, float pc, float pm, FitnessFunction f);
 private:
     unsigned int populationSize;
-    unsigned int genomeSize;
+    int c;
+    unsigned int amountOfGamesToPlay;
     float pCrossover;
     float pMutate;
-    vector<vector<float>> population;
+    vector<Genome> population;
+    vector<float> fitnesses;
+    FitnessFunction f;
 
-    float fitness(vector<float> v);
+    float fitness(Genome g);
     void evolvePopulation(unsigned int generations);
     void newGeneration();
-    void fittestK(unsigned int k);
+    &vector<Genome> fittestK(unsigned int k);
 };
 
-MatingPool::MatingPool(unsigned int p, unsigned int g, float pc, float pm) :
+MatingPool::MatingPool(unsigned int p, int c, float pc, float pm, FitnessFunction f) :
     populationSize(p),
     genomeSize(g),
     pCrossover(pc),
-    pMutate(p) {
-    for (unsigned int i = 0; i < populationSize; ++i) {
-        vector<float> individual;
-        for (unsigned int j = 0; j < genomeSize; ++j) {
-            individual.push_back(0);
-        }
+    pMutate(pm),
+    population(populationSize, Genome(c)),
+    fitnesses(populationSize),
+    f(f) {}
+
+void MatingPool::newGeneration() {
+    float totalFitness = 0;
+    for (int i = 0; i < populationSize; ++i) {
+        fitnesses[i] = fitness( population.at(i) );
+        totalFitness += fitnesses.at(i);
     }
 }
 
+void MatingPool::evolvePopulation(unsigned int generations) {
+    for (unsigned int i = 0; i < generations; ++i) {
+        newGeneration();
+    }
+}
