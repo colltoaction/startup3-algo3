@@ -86,7 +86,7 @@ class Genome {
     public:
         Genome(int c);
         Genome(int c, vector<float> geneWeights);
-        void activate(Board b);
+        float activate(Board b);
         vector<float> geneWeights;
     private:
         void initialiseGenes();
@@ -95,6 +95,8 @@ class Genome {
 };
 
 void Genome::initialiseGenes() {
+    // Inicializa un vector de genes donde a cada posición le corresponde un gen
+    // con una función determinada (similar al genoma de un ser vivo real).
     for (int k = c; k >= 2; --k) {
         genes.push_back(ConnectKGene(k));
     }
@@ -116,6 +118,7 @@ void Genome::initialiseGenes() {
 Genome::Genome(int c) : c(c) {
     initialiseGenes();
     for (int i = 0; i < genes.size(); ++i) {
+        // Le asigna a cada gen un peso con distribución U[-1, 1].
         geneWeights.push_back(rand(-1, 1));
     }
 }
@@ -123,4 +126,11 @@ Genome::Genome(int c) : c(c) {
 Genome::Genome(int c, vector<float> geneWeights) {
     initialiseGenes();
     geneWeights = geneWeights;
+}
+
+float Genome::activate(Board b) {
+    // Al gen de genes[i] le corresponde el peso de geneWeights[i];
+    // de esta forma, el producto interno entre genes y geneWeights
+    // calcula el puntaje del tablero dado por ubicar una ficha
+    // en una posición determinada.
 }
