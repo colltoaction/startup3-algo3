@@ -1,8 +1,7 @@
-#include <vector>
 #include <random>
 #include "board.h"
 
-using namespace std;
+using namespace Players;
 
 class Gene {
     public:
@@ -36,14 +35,24 @@ class BlockKGene : Gene {
 BlockKGene::BlockKGene(int k) : k(k) {}
 
 int BlockKGene::property(Board b, int row, int col) {
-    // ¡¡¡¡¡¡¡¡¡IMPORTANTE!!!!!!!!!!!! RIIIIIIZZZZOOOOOO
-    // Arreglar positionIsInLine para que sirva con cualquier jugador que se le pase como parámetro.
-    // Chequear los casos borde: cuando miramos una línea nuestra hay que sumar K y cuando
-    // miramos una del oponente hay que sumar K-1 Y NO INCLUIR LA NUESTRA.
     assert (col >= 0 && col < b.columns());
 
     // El gen se activa si la ficha introducida en col bloquea un K en línea del oponente.
     return b.positionIsInLine(row, col, k, THEM);
+}
+
+class KFreeGene : Gene {
+    public:
+        KFreeGene(int k);
+}
+
+KFreeGene::KFreeGene(int k) : k(k) {}
+
+int KFreeGene::property(Board b, int row, int col) {
+    assert (col >= 0 && col < b.columns());
+
+    // El gen se activa si la ficha introducida en col tiene K-1 posiciones libres en línea alrededor.
+    return b.positionIsInLine(row, col, k, NONE);
 }
 
 class AmountOfLinesOfLengthKGene : Gene {
@@ -56,8 +65,7 @@ class AmountOfLinesOfLengthKGene : Gene {
 AmountOfLinesOfLengthKGene::AmountOfLinesOfLengthKGene(int k) : k(k) {}
 
 AmountOfLinesOfLengthKGene::property(Board b, int row, int col) {
-    // HACER!!!! IMPORTANTÍSIMO
-    return b.amountOfLinesOfLength(row, col, k);
+    return b.amountOfLinesOfLengthK(row, col, k);
 }
 
 class AmountOfNeighboursGene : Gene {
@@ -71,7 +79,6 @@ AmountOfNeighboursGene::AmountOfNeighboursGene(Players player) : player(player) 
 
 AmountOfNeighboursGene::property(Board b, int row, int col) {
     // Player indica de qué tipo son los vecinos que estamos devolviendo.
-    // IMPORTANTE, HACER ESA FUNCIÓN
     return b.amountOfNeighbours(row, col, player);
 }
 
@@ -95,12 +102,15 @@ void Genome::initialiseGenes() {
         genes.push_back(BlockKGene(k));
     }
     for (int k = c; k >= 2; --k) {
+        genes.push_back(KFreeGene(k));
+    }
+    for (int k = c; k >= 2; --k) {
         genes.push_back(AmountOfLinesOfLengthKGene(k));
     }
 
     genes.push_back(AmountOfNeighboursGene(US));
     genes.push_back(AmountOfNeighboursGene(THEM));
-    genes.push_back(AmountOfNeighboursGene(NONE));    
+    genes.push_back(AmountOfNeighboursGene(NONE));
 }
 
 Genome::Genome(int c) : c(c) {

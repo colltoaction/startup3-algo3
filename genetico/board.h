@@ -1,3 +1,7 @@
+#include <vector>
+
+using namespace std;
+
 enum class Players {
     NONE,
     US,
@@ -19,6 +23,9 @@ public:
     }
 
     int addPiece(const int column, Players player) {
+        // Agrega una ficha en la posición libre más baja de la columna column.
+        // Devuelve el número de la fila en la que fue ubicada la ficha.
+
         // Si la celda más baja desocupada es -1, quiere decir
         // que la columna está llena y no es válido poner fichas ahí.
         assert(lowestFreeCell.at(column) > -1);
@@ -148,5 +155,129 @@ public:
         }
 
         return false; // No contó K en línea en ninguna dirección.
+    }
+
+    int amountOfLinesOfLengthK(const int i, const int j, const int k, const Players player) {
+        // Similar a la función anterior, pero cuenta la cantidad de líneas formadas.
+
+        int downwards = 0, leftwards = 0, rightwards = 0; // Cuentan las fichas en vertical y horizontal
+        int leftUpwards = 0, leftDownwards = 0, rightUpwards = 0, rightDownwards = 0; // Cuentan las fichas en diagonal
+        int row = i + 1, col = j - 1; // Recorren la matriz
+        int result; //Cantidad de líneas
+
+        while (row < rows && matrix.at(row).at(j) == player) {
+            // Cuenta las fichas de player mirando para abajo.
+            ++downwards;
+            ++row;
+        }
+
+        if (downwards >= k - 1) {
+            // K en línea vertical.
+            ++result;
+        }
+
+        row = i; // Vuelve a i para mirar a la izquierda y a la derecha.
+
+        while (col >= 0 && matrix.at(i).at(col) == player) {
+            // Cuenta las fichas de player mirando para la izquierda.
+            ++leftwards;
+            --col;
+        }
+
+        col = j + 1; // Vuelve a j + 1 para mirar a la derecha.
+        // Es j + 1 en vez de j para no contar matrix[i,j].
+
+        while (col < columns && matrix.at(i).at(col) == player) {
+            // Cuenta las fichas de player mirando para la derecha.
+            ++rightwards;
+            ++col;
+        }
+
+        if (leftwards + rightwards >= k - 1) {
+            // K en línea horizontal.
+            ++result;
+        }
+
+        // Vuelve a (i - 1, j - 1) para mirar las diagonales, empezando por la superior izquierda.
+        row = i - 1;
+        col = j - 1;
+
+        while (row >= 0 && col >= 0 && matrix.at(row).at(col) == player) {
+            // Cuenta las fichas de player mirando en diagonal para arriba a la izquierda.
+            ++leftUpwards;
+            --row;
+            --col;
+        }
+
+        row = i + 1; // Vuelve a i + 1 para mirar en diagonal para abajo a la derecha.
+        col = j + 1;
+
+        while (row < rows && col < columns && matrix.at(row).at(col) == player) {
+            ++rightDownwards;
+            ++row;
+            ++col;
+        }
+
+        if (leftUpwards + rightDownwards >= k + 1) {
+            // K en una diagonal.
+            ++result;
+        }
+
+        row = i + 1; // Vuelve a (i + 1, j - 1) para mirar la diagonal en el otro ángulo.
+        col = j - 1;
+
+        while (row < rows && col >= 0 && matrix.at(row).at(col) == player) {
+            // Cuenta las fichas de player mirando en diagonal para abajo a la izquierda.
+            ++leftDownwards;
+            ++row;
+            --col;
+        }
+
+        row = i - 1; // Vuelve a i - 1 para mirar en diagonal para arriba a la derecha.
+        col = j + 1;
+
+        while (row >= 0 && col < columns && matrix.at(row).at(col) == player) {
+            ++rightUpwards;
+            --row;
+            ++col;
+        }
+
+        if (leftDownwards + rightUpwards >= k + 1) {
+            // K en la otra diagonal.
+            ++result;
+        }
+
+        return result;
+    }
+
+    int amountOfNeighbours(const int i, const int j, const Players player) {
+        int res = 0;
+
+        if (matrix.at(i).at(j-1) == player) {
+            ++res;
+        }
+        if (matrix.at(i-1).at(j-1) == player) {
+            ++res;
+        }
+        if (matrix.at(i-1).at(j) == player) {
+            ++res;
+        }
+        if (matrix.at(i-1).at(j+1) == player) {
+            ++res;
+        }
+        if (matrix.at(i).at(j+1) == player) {
+            ++res;
+        }
+        if (matrix.at(i+1).at(j+1) == player) {
+            ++res;
+        }
+        if (matrix.at(i+1).at(j) == player) {
+            ++res;
+        }
+        if (matrix.at(i+1).at(j-1) == player) {
+            ++res;
+        }
+
+        return res;
     }
 };
