@@ -15,6 +15,7 @@ class Gene {
     public:
         // Propiedad que debe cumplir el tablero para que se sume el peso del locus asociado al gen.
         virtual int boardProperty(Board b, int row, int col) = 0;
+        int pepe = 0;
 };
 
 class ConnectKGene : public Gene {
@@ -25,14 +26,13 @@ class ConnectKGene : public Gene {
         int k;
 };
 
-ConnectKGene::ConnectKGene(int k) : k(k) {
-    cerr << "ConnectKGene with k = " << k << "." << endl;
-}
+ConnectKGene::ConnectKGene(int k) : k(k) {}
 
 int ConnectKGene::boardProperty(Board b, int row, int col) {
-    assert (col >= 0 && col < b.getColumns());
+    assert (row < b.getRows() && col >= 0 && col < b.getColumns());
 
     // El gen se activa si la ficha introducida en col forma un K en línea.
+    cerr << "ConnectKGene with k = " << k << "." << endl;
     return b.positionIsInLine(row, col, k, Players::US);
 }
 
@@ -44,14 +44,13 @@ class BlockKGene : public Gene {
         int k;
 };
 
-BlockKGene::BlockKGene(int k) : k(k) {
-    cerr << "BlockKGene with k = " << k << "." << endl;
-}
+BlockKGene::BlockKGene(int k) : k(k) {}
 
 int BlockKGene::boardProperty(Board b, int row, int col) {
-    assert (col >= 0 && col < b.getColumns());
+    assert (row < b.getRows() && col >= 0 && col < b.getColumns());
 
     // El gen se activa si la ficha introducida en col bloquea un K en línea del oponente.
+    cerr << "BlockKGene with k = " << k << "." << endl;
     return b.positionIsInLine(row, col, k, Players::THEM);
 }
 
@@ -63,14 +62,13 @@ class KFreeGene : public Gene {
         int k;
 };
 
-KFreeGene::KFreeGene(int k) : k(k) {
-    cerr << "KFreeGene with k = " << k << "." << endl;
-}
+KFreeGene::KFreeGene(int k) : k(k) {}
 
 int KFreeGene::boardProperty(Board b, int row, int col) {
-    assert (col >= 0 && col < b.getColumns());
+    assert (row < b.getRows() && col >= 0 && col < b.getColumns());
 
     // El gen se activa si la ficha introducida en col tiene K-1 posiciones libres en línea alrededor.
+    cerr << "KFreeGene with k = " << k << "." << endl;
     return b.positionIsInLine(row, col, k, Players::NONE);
 }
 
@@ -82,11 +80,14 @@ class AmountOfLinesOfLengthKGene : public Gene {
         int k;
 };
 
-AmountOfLinesOfLengthKGene::AmountOfLinesOfLengthKGene(int k) : k(k) {
-    cerr << "AmountOfLinesOfLengthKGene with k = " << k << "." << endl;
-}
+AmountOfLinesOfLengthKGene::AmountOfLinesOfLengthKGene(int k) : k(k) {}
 
 int AmountOfLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
+    assert (row < b.getRows() && col >= 0 && col < b.getColumns());
+
+    // Cuenta la cantidad de líneas de largo k de las que forma parte la posición
+    // al introducir la ficha.
+    cerr << "AmountOfLinesOfLengthKGene with k = " << k << "." << endl;
     return b.amountOfLinesOfLengthK(row, col, k, Players::US);
 }
 
@@ -98,11 +99,11 @@ class AmountOfBlockedLinesOfLengthKGene : public Gene {
         int k;
 };
 
-AmountOfBlockedLinesOfLengthKGene::AmountOfBlockedLinesOfLengthKGene(int k) : k(k) {
-    cerr << "AmountOfBlockedLinesOfLengthKGene with k = " << k << "." << endl;
-}
+AmountOfBlockedLinesOfLengthKGene::AmountOfBlockedLinesOfLengthKGene(int k) : k(k) {}
 
 int AmountOfBlockedLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
+    assert (row < b.getRows() && col >= 0 && col < b.getColumns());
+    cerr << "AmountOfBlockedLinesOfLengthKGene with k = " << k << "." << endl;
     return b.amountOfLinesOfLengthK(row, col, k, Players::THEM);
 }
 
@@ -114,11 +115,11 @@ class AmountOfFreeLinesOfLengthKGene : public Gene {
         int k;
 };
 
-AmountOfFreeLinesOfLengthKGene::AmountOfFreeLinesOfLengthKGene(int k) : k(k) {
-    cerr << "AmountOfFreeLinesOfLengthKGene with k = " << k << "." << endl;
-}
+AmountOfFreeLinesOfLengthKGene::AmountOfFreeLinesOfLengthKGene(int k) : k(k) {}
 
 int AmountOfFreeLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
+    assert (row < b.getRows() && col >= 0 && col < b.getColumns());
+    cerr << "AmountOfFreeLinesOfLengthKGene with k = " << k << "." << endl;
     return b.amountOfLinesOfLengthK(row, col, k, Players::NONE);
 }
 
@@ -130,12 +131,12 @@ class AmountOfNeighboursGene : public Gene {
         Players player;
 };
 
-AmountOfNeighboursGene::AmountOfNeighboursGene(Players player) : player(player) {
-    cerr << "AmountOfNeighboursGene." << endl;
-}
+AmountOfNeighboursGene::AmountOfNeighboursGene(Players player) : player(player) {}
 
 int AmountOfNeighboursGene::boardProperty(Board b, int row, int col) {
     // Player indica de qué tipo son los vecinos que estamos devolviendo.
+    assert (row < b.getRows() && col >= 0 && col < b.getColumns());
+    cerr << "AmountOfNeighboursGene." << endl;
     return b.amountOfNeighbours(row, col, player);
 }
 
@@ -209,9 +210,8 @@ float Genome::activate(Board b, int col) {
     // el puntaje asociado a poner la ficha en una columna determinada.
     float result = 0;
     for (int i = 0; i < genes.size(); ++i) {
-        int row = b.getLowestFreeCell(col) + 1;
-        int prop = genes.at(i)->boardProperty(b, row, col);
-        cerr << prop << endl;
+        int row = b.getLowestFreeCell(col);
+        cerr << genes.at(i)->boardProperty(b, row, col) << endl;
     }
     return result;
 }
