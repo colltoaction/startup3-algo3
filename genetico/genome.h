@@ -1,4 +1,5 @@
 #include <random>
+#include <chrono>
 #include "board.h"
 
 // FUNCIÓN DE DEBUG
@@ -187,13 +188,18 @@ void Genome::initialiseGenes() {
 
 Genome::Genome(int c) : c(c) {
     initialiseGenes();
-    default_random_engine generator;
+
+    // Genera una distribución U[-1, 1].
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    default_random_engine generator(seed);
     uniform_real_distribution<float> distribution(-1.0, 1.0);
+
     for (int i = 0; i < genes.size(); ++i) {
-        // Le asigna a cada gen un peso con distribución U[-1, 1]. MUY
-        // MUY IMPORTANTE: VER CÓMO SE HACE ESTO
+        // Le asigna a cada gen un peso con distribución U[-1, 1].
         geneWeights.push_back(distribution(generator));
     }
+
+    cerr << "Gene weights: ";
     displayVector(geneWeights);
 }
 

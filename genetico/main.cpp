@@ -1,5 +1,5 @@
 #include <iostream>
-#include "genome.h"
+#include "matingpool.h"
 
 using namespace std;
 
