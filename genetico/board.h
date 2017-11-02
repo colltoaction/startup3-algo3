@@ -1,4 +1,5 @@
 #include <vector>
+#include <cassert>
 
 using namespace std;
 
@@ -20,6 +21,18 @@ public:
         , columns(columns)
         , matrix(rows, vector<Players>(columns, Players::NONE))
         , lowestFreeCell(columns, rows - 1) {
+    }
+
+    int getRows() {
+        return rows;
+    }
+
+    int getColumns() {
+        return columns;
+    }
+
+    int getLowestFreeCell(int column) {
+        return lowestFreeCell.at(column);
     }
 
     int addPiece(const int column, Players player) {
@@ -163,7 +176,7 @@ public:
         int downwards = 0, leftwards = 0, rightwards = 0; // Cuentan las fichas en vertical y horizontal
         int leftUpwards = 0, leftDownwards = 0, rightUpwards = 0, rightDownwards = 0; // Cuentan las fichas en diagonal
         int row = i + 1, col = j - 1; // Recorren la matriz
-        int result; //Cantidad de líneas
+        int result = 0; //Cantidad de líneas
 
         while (row < rows && matrix.at(row).at(j) == player) {
             // Cuenta las fichas de player mirando para abajo.
@@ -253,28 +266,28 @@ public:
     int amountOfNeighbours(const int i, const int j, const Players player) {
         int res = 0;
 
-        if (matrix.at(i).at(j-1) == player) {
+        if (j-1 >= 0 && matrix.at(i).at(j-1) == player) {
             ++res;
         }
-        if (matrix.at(i-1).at(j-1) == player) {
+        if (i-1 >= 0 && j-1 >= 0 && matrix.at(i-1).at(j-1) == player) {
             ++res;
         }
-        if (matrix.at(i-1).at(j) == player) {
+        if (i-1 >= 0 && matrix.at(i-1).at(j) == player) {
             ++res;
         }
-        if (matrix.at(i-1).at(j+1) == player) {
+        if (i-1 >= 0 && j+1 < columns && matrix.at(i-1).at(j+1) == player) {
             ++res;
         }
-        if (matrix.at(i).at(j+1) == player) {
+        if (j+1 < columns && matrix.at(i).at(j+1) == player) {
             ++res;
         }
-        if (matrix.at(i+1).at(j+1) == player) {
+        if (i+1 < rows && j+1 < columns && matrix.at(i+1).at(j+1) == player) {
             ++res;
         }
-        if (matrix.at(i+1).at(j) == player) {
+        if (i+1 < rows && matrix.at(i+1).at(j) == player) {
             ++res;
         }
-        if (matrix.at(i+1).at(j-1) == player) {
+        if (i+1 < rows && j-1 >= 0 && matrix.at(i+1).at(j-1) == player) {
             ++res;
         }
 

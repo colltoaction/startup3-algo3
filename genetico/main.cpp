@@ -1,8 +1,13 @@
 #include <iostream>
+#include "genome.h"
 
 using namespace std;
 
 int main() {
-	cout << "ricardo fort";
+    Board board(6, 7);
+    AmountOfFreeLinesOfLengthKGene gene(3);
+    cerr << gene.boardProperty(board, board.getLowestFreeCell(3), 3) << endl;
+    Genome genome(4);
+    genome.activate(board, 2);
 	return 0;
 }

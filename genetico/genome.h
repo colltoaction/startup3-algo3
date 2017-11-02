@@ -1,83 +1,140 @@
 #include <random>
 #include "board.h"
 
-using namespace Players;
+// FUNCIÓN DE DEBUG
+
+void displayVector(vector<float> v) {
+    cerr << "[ ";
+    for (auto i : v) {
+        cerr << i << " ";
+    }
+    cerr << "]" << endl;
+}
 
 class Gene {
     public:
         // Propiedad que debe cumplir el tablero para que se sume el peso del locus asociado al gen.
-        int property(Board b, int row, int col);
+        virtual int boardProperty(Board b, int row, int col) = 0;
 };
 
-class ConnectKGene : Gene {
+class ConnectKGene : public Gene {
     public:
         ConnectKGene(int k);
+        int boardProperty(Board b, int row, int col);
     private:
         int k;
 };
 
-ConnectKGene::ConnectKGene(int k) : k(k) {}
+ConnectKGene::ConnectKGene(int k) : k(k) {
+    cerr << "ConnectKGene with k = " << k << "." << endl;
+}
 
-int ConnectKGene::property(Board b, int row, int col) {
-    assert (col >= 0 && col < b.columns());
+int ConnectKGene::boardProperty(Board b, int row, int col) {
+    assert (col >= 0 && col < b.getColumns());
 
     // El gen se activa si la ficha introducida en col forma un K en línea.
-    return b.positionIsInLine(row, col, k, US);
+    return b.positionIsInLine(row, col, k, Players::US);
 }
 
-class BlockKGene : Gene {
+class BlockKGene : public Gene {
     public:
         BlockKGene(int k);
+        int boardProperty(Board b, int row, int col);
     private:
         int k;
 };
 
-BlockKGene::BlockKGene(int k) : k(k) {}
+BlockKGene::BlockKGene(int k) : k(k) {
+    cerr << "BlockKGene with k = " << k << "." << endl;
+}
 
-int BlockKGene::property(Board b, int row, int col) {
-    assert (col >= 0 && col < b.columns());
+int BlockKGene::boardProperty(Board b, int row, int col) {
+    assert (col >= 0 && col < b.getColumns());
 
     // El gen se activa si la ficha introducida en col bloquea un K en línea del oponente.
-    return b.positionIsInLine(row, col, k, THEM);
+    return b.positionIsInLine(row, col, k, Players::THEM);
 }
 
-class KFreeGene : Gene {
+class KFreeGene : public Gene {
     public:
         KFreeGene(int k);
-}
-
-KFreeGene::KFreeGene(int k) : k(k) {}
-
-int KFreeGene::property(Board b, int row, int col) {
-    assert (col >= 0 && col < b.columns());
-
-    // El gen se activa si la ficha introducida en col tiene K-1 posiciones libres en línea alrededor.
-    return b.positionIsInLine(row, col, k, NONE);
-}
-
-class AmountOfLinesOfLengthKGene : Gene {
-    public:
-        AmountOfLinesOfLengthKGene(int k);
+        int boardProperty(Board b, int row, int col);
     private:
         int k;
 };
 
-AmountOfLinesOfLengthKGene::AmountOfLinesOfLengthKGene(int k) : k(k) {}
-
-AmountOfLinesOfLengthKGene::property(Board b, int row, int col) {
-    return b.amountOfLinesOfLengthK(row, col, k);
+KFreeGene::KFreeGene(int k) : k(k) {
+    cerr << "KFreeGene with k = " << k << "." << endl;
 }
 
-class AmountOfNeighboursGene : Gene {
+int KFreeGene::boardProperty(Board b, int row, int col) {
+    assert (col >= 0 && col < b.getColumns());
+
+    // El gen se activa si la ficha introducida en col tiene K-1 posiciones libres en línea alrededor.
+    return b.positionIsInLine(row, col, k, Players::NONE);
+}
+
+class AmountOfLinesOfLengthKGene : public Gene {
+    public:
+        AmountOfLinesOfLengthKGene(int k);
+        int boardProperty(Board b, int row, int col);
+    private:
+        int k;
+};
+
+AmountOfLinesOfLengthKGene::AmountOfLinesOfLengthKGene(int k) : k(k) {
+    cerr << "AmountOfLinesOfLengthKGene with k = " << k << "." << endl;
+}
+
+int AmountOfLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
+    return b.amountOfLinesOfLengthK(row, col, k, Players::US);
+}
+
+class AmountOfBlockedLinesOfLengthKGene : public Gene {
+    public:
+        AmountOfBlockedLinesOfLengthKGene(int k);
+        int boardProperty(Board b, int row, int col);
+    private:
+        int k;
+};
+
+AmountOfBlockedLinesOfLengthKGene::AmountOfBlockedLinesOfLengthKGene(int k) : k(k) {
+    cerr << "AmountOfBlockedLinesOfLengthKGene with k = " << k << "." << endl;
+}
+
+int AmountOfBlockedLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
+    return b.amountOfLinesOfLengthK(row, col, k, Players::THEM);
+}
+
+class AmountOfFreeLinesOfLengthKGene : public Gene {
+    public:
+        AmountOfFreeLinesOfLengthKGene(int k);
+        int boardProperty(Board b, int row, int col);
+    private:
+        int k;
+};
+
+AmountOfFreeLinesOfLengthKGene::AmountOfFreeLinesOfLengthKGene(int k) : k(k) {
+    cerr << "AmountOfFreeLinesOfLengthKGene with k = " << k << "." << endl;
+}
+
+int AmountOfFreeLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
+    return b.amountOfLinesOfLengthK(row, col, k, Players::NONE);
+}
+
+class AmountOfNeighboursGene : public Gene {
     public:
         AmountOfNeighboursGene(Players player);
+        int boardProperty(Board b, int row, int col);
     private:
         Players player;
 };
 
-AmountOfNeighboursGene::AmountOfNeighboursGene(Players player) : player(player) {}
+AmountOfNeighboursGene::AmountOfNeighboursGene(Players player) : player(player) {
+    cerr << "AmountOfNeighboursGene." << endl;
+}
 
-AmountOfNeighboursGene::property(Board b, int row, int col) {
+int AmountOfNeighboursGene::boardProperty(Board b, int row, int col) {
     // Player indica de qué tipo son los vecinos que estamos devolviendo.
     return b.amountOfNeighbours(row, col, player);
 }
@@ -86,51 +143,75 @@ class Genome {
     public:
         Genome(int c);
         Genome(int c, vector<float> geneWeights);
-        float activate(Board b);
+        float activate(Board b, int col);
         vector<float> geneWeights;
     private:
-        void initialiseGenes();
-        vector<Gene> genes;
         int c;
+        vector< Gene* > genes;
+        void initialiseGenes();
 };
 
 void Genome::initialiseGenes() {
     // Inicializa un vector de genes donde a cada posición le corresponde un gen
     // con una función determinada (similar al genoma de un ser vivo real).
     for (int k = c; k >= 2; --k) {
-        genes.push_back(ConnectKGene(k));
+        ConnectKGene* gene = new ConnectKGene(k);
+        genes.push_back(gene);
     }
     for (int k = c; k >= 2; --k) {
-        genes.push_back(BlockKGene(k));
+        BlockKGene* gene = new BlockKGene(k);
+        genes.push_back(gene);
     }
     for (int k = c; k >= 2; --k) {
-        genes.push_back(KFreeGene(k));
+        KFreeGene* gene = new KFreeGene(k);
+        genes.push_back(gene);
     }
     for (int k = c; k >= 2; --k) {
-        genes.push_back(AmountOfLinesOfLengthKGene(k));
+        AmountOfLinesOfLengthKGene* gene = new AmountOfLinesOfLengthKGene(k);
+        genes.push_back(gene);
+    }
+    for (int k = c; k >= 2; --k) {
+        AmountOfBlockedLinesOfLengthKGene* gene = new AmountOfBlockedLinesOfLengthKGene(k);
+        genes.push_back(gene);
+    }
+    for (int k = c; k >= 2; --k) {
+        AmountOfFreeLinesOfLengthKGene* gene = new AmountOfFreeLinesOfLengthKGene(k);
+        genes.push_back(gene);
     }
 
-    genes.push_back(AmountOfNeighboursGene(US));
-    genes.push_back(AmountOfNeighboursGene(THEM));
-    genes.push_back(AmountOfNeighboursGene(NONE));
+    genes.push_back(new AmountOfNeighboursGene(Players::US));
+    genes.push_back(new AmountOfNeighboursGene(Players::THEM));
+    genes.push_back(new AmountOfNeighboursGene(Players::NONE));
 }
 
 Genome::Genome(int c) : c(c) {
     initialiseGenes();
+    default_random_engine generator;
+    uniform_real_distribution<float> distribution(-1.0, 1.0);
     for (int i = 0; i < genes.size(); ++i) {
-        // Le asigna a cada gen un peso con distribución U[-1, 1].
-        geneWeights.push_back(rand(-1, 1));
+        // Le asigna a cada gen un peso con distribución U[-1, 1]. MUY
+        // MUY IMPORTANTE: VER CÓMO SE HACE ESTO
+        geneWeights.push_back(distribution(generator));
     }
+    displayVector(geneWeights);
 }
 
-Genome::Genome(int c, vector<float> geneWeights) {
+Genome::Genome(int c, vector<float> geneWeights) : c(c), geneWeights(geneWeights) {
     initialiseGenes();
-    geneWeights = geneWeights;
 }
 
-float Genome::activate(Board b) {
+float Genome::activate(Board b, int col) {
     // Al gen de genes[i] le corresponde el peso de geneWeights[i];
     // de esta forma, el producto interno entre genes y geneWeights
     // calcula el puntaje del tablero dado por ubicar una ficha
     // en una posición determinada.
+    // Es necesario pasar col como parámetro para saber cuál es
+    // el puntaje asociado a poner la ficha en una columna determinada.
+    float result = 0;
+    for (int i = 0; i < genes.size(); ++i) {
+        int row = b.getLowestFreeCell(col) + 1;
+        int prop = genes.at(i)->boardProperty(b, row, col);
+        cerr << prop << endl;
+    }
+    return result;
 }
