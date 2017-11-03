@@ -38,11 +38,13 @@ MatingPool::MatingPool(unsigned int p, unsigned int games, int c, float pc, floa
     pMutate(pm),
     crossoverThreshold(t),
     mutationRadius(mr),
-    population(populationSize, Genome(c)),
     fitnesses(populationSize),
     f(f) {
         assert(crossoverThreshold >= 0 && crossoverThreshold <= 1 &&
             pMutate >= 0 && pMutate <= 1 && mutationRadius >= 0);
+        for (unsigned int i = 0; i < populationSize; ++i) {
+            population.push_back(Genome(c));
+        }
     }
 
 vector<Genome> MatingPool::getPopulation() {
