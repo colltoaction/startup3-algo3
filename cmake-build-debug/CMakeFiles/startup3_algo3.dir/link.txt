@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/startup3_algo3.dir/exacta/main.cpp.o CMakeFiles/startup3_algo3.dir/juez/random_player.cpp.o  -o startup3_algo3 
