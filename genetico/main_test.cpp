@@ -8,6 +8,6 @@ int main() {
     AmountOfFreeLinesOfLengthKGene gene(3);
     cerr << gene.boardProperty(board, board.getLowestFreeCell(3), 3) << endl;
     Genome genome(4);
-    genome.activate(board, 2);
+    cout << genome.activate(board, 2) << endl;
 	return 0;
 }
