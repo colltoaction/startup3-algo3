@@ -198,9 +198,6 @@ Genome::Genome(int c) : c(c) {
         // Le asigna a cada gen un peso con distribución U[-1, 1].
         geneWeights.push_back(distribution(generator));
     }
-
-    cerr << "Gene weights: ";
-    displayVector(geneWeights);
 }
 
 Genome::Genome(int c, vector<float> geneWeights) : c(c), geneWeights(geneWeights) {

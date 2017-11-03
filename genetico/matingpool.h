@@ -70,8 +70,12 @@ float MatingPool::fitness(Genome g) {
 }
 
 Genome MatingPool::crossover(Genome& g1, Genome& g2) {
+    cerr << "Parent 1: " << endl;
+    displayVector(g1.geneWeights);
+    cerr << "Parent 2: " << endl;
+    displayVector(g2.geneWeights);
+
     vector<float> newWeights;
-    cerr << "g1: " << &g1 << endl;
     Genome* activeGenome = &g1;
 
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -93,12 +97,11 @@ Genome MatingPool::crossover(Genome& g1, Genome& g2) {
         if (pCut > crossoverThreshold) {
             // Si la variable aleatoria supera el umbral, se hace un corte en los cromosomas.
             // Cuando se hace un corte, se empiezan a copiar alelos del otro cromosoma.
-            cerr << "Making cut at locus " << i << "." << endl;
             if (activeGenome == &g1) {
-                cerr << "Switching active genome to g2." << endl;
+                cerr << "Switching active genome to g2 at locus " << i << "." << endl;
                 activeGenome = &g2;
             } else if (activeGenome == &g2) {
-                cerr << "Switching active genome to g1." << endl;
+                cerr << "Switching active genome to g1 at locus " << i << "." << endl;
                 activeGenome = &g1;
             }
         }
