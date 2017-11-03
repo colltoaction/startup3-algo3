@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     Board board(6, 7);
-    MatingPool mp(10, 10, 4, 0.5, 0.05, 0.9, 2.0, FitnessFunction::AVERAGE_OF_WINS);
+    MatingPool mp(10, 10, 4, 0.5, 0.05, 0.75, 2.0, FitnessFunction::AVERAGE_OF_WINS);
     Genome g1 = mp.getPopulation().at(0);
     Genome g2 = mp.getPopulation().at(1);
     for (int i = 0; i < 10; ++ i) {

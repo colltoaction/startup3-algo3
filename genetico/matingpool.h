@@ -71,7 +71,8 @@ float MatingPool::fitness(Genome g) {
 
 Genome MatingPool::crossover(Genome& g1, Genome& g2) {
     vector<float> newWeights;
-    Genome& activeGenome = g1;
+    cerr << "g1: " << &g1 << endl;
+    Genome* activeGenome = &g1;
 
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     default_random_engine cutGenerator(seed);
@@ -84,7 +85,7 @@ Genome MatingPool::crossover(Genome& g1, Genome& g2) {
     float startP = cutDistribution(cutGenerator);
     if (startP >= 0.5) {
         cerr << "Switching starting genome to g2." << endl;
-        activeGenome = g2;
+        activeGenome = &g2;
     }
 
     for (int i = 0; i < g1.geneWeights.size(); ++i) {
@@ -93,15 +94,15 @@ Genome MatingPool::crossover(Genome& g1, Genome& g2) {
             // Si la variable aleatoria supera el umbral, se hace un corte en los cromosomas.
             // Cuando se hace un corte, se empiezan a copiar alelos del otro cromosoma.
             cerr << "Making cut at locus " << i << "." << endl;
-            if (&activeGenome == &g1) {
+            if (activeGenome == &g1) {
                 cerr << "Switching active genome to g2." << endl;
-                activeGenome = g2;
-            } else if (&activeGenome == &g2) {
+                activeGenome = &g2;
+            } else if (activeGenome == &g2) {
                 cerr << "Switching active genome to g1." << endl;
-                activeGenome = g1;
+                activeGenome = &g1;
             }
         }
-        float w = activeGenome.geneWeights.at(i);
+        float w = activeGenome->geneWeights.at(i);
         float p = mutationDecisionDistribution(mutationDecisionGenerator);
         if (p <= pMutate) {
             cerr << "The gene on locus " << i << " has mutated." << endl;
