@@ -217,7 +217,8 @@ float Genome::activate(Board b, int col) {
     float result = 0;
     for (int i = 0; i < genes.size(); ++i) {
         int row = b.getLowestFreeCell(col);
-        cerr << genes.at(i)->boardProperty(b, row, col) << endl;
+        result += genes.at(i)->boardProperty(b, row, col) * geneWeights.at(i)
+        // cerr << genes.at(i)->boardProperty(b, row, col) << endl;
     }
     return result;
 }
