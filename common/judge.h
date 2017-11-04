@@ -38,8 +38,7 @@ public:
     int addPiece(const int column, Players player) {
         // Si la celda más baja desocupada es -1, quiere decir
         // que la columna está llena y no es válido poner fichas ahí.
-        printBoard();
-        cerr << column << endl;
+        // cerr << column << endl;
         assert(lowestFreeCell_.at(column) > -1);
         ++playedPieces_;
 
@@ -47,6 +46,7 @@ public:
         // cerr << "add: (" << row << ", " << column << ") = " << (player == Players::US ? "US" : "EM") << endl;
         matrix.at(row).at(column) = player;
         lowestFreeCell_.at(column)--;
+        // printBoard();
         return row;
     }
 
@@ -161,7 +161,7 @@ public:
             ++col;
         }
 
-        if (leftUpwards + rightDownwards >= k + 1) {
+        if (leftUpwards + rightDownwards >= k - 1) {
             // K en una diagonal.
             return true;
         }
@@ -185,7 +185,7 @@ public:
             ++col;
         }
 
-        if (leftDownwards + rightUpwards >= k + 1) {
+        if (leftDownwards + rightUpwards >= k - 1) {
             // K en la otra diagonal.
             return true;
         }
@@ -438,7 +438,10 @@ public:
             addPiece(playerOne.nextMove(*this));
         }
 
-        return 0;
+
+        // board().printBoard();
+        // TODO manejar empate
+        return winner() == Players::US ? 1 : 0;
     }
 };
 
@@ -546,6 +549,7 @@ public:
             if (input == "ganaste" || input == "perdiste" || input == "empataron") {
                 cerr << "se terminó: " << input << endl << flush;
                 // terminó este juego
+                game.board().printBoard();
                 return;
             }
 
@@ -570,7 +574,6 @@ public:
             int move = player.nextMove(game);
             game.addPiece(move);
             cout << move << endl;
-            // player.printBoard();
         }
     }
 };

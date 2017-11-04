@@ -3,7 +3,7 @@
 
 class PlayerRandom : public Player {
 private:
-std::random_device rd;
+    std::random_device rd;
     std::mt19937 generator = std::mt19937(rd());
 
 public:
@@ -11,6 +11,15 @@ public:
         auto moves = game.board().possibleMoves();
         std::uniform_int_distribution<int> do_move(0, moves.size() - 1);
         int m = do_move(generator);
+
+        // cerr << "PossibleMoves: " << endl;
+        // for (int i = 0; i < moves.size(); ++i)
+        // {
+        //     cerr << moves.at(i) <<" ";
+        // }
+
+        // cerr << endl << "Random elige: " << moves.at(m) << endl;
+
         return moves.at(m);
 
     }
@@ -23,19 +32,24 @@ private:
 public:
     PlayerGenetic(Genome g) : g(g) {}
     int nextMove(Game& game) {
-        int max = 0;
-        int bestCol = 0;
 
-        // TODO only available columns
-        for (auto i : game.board().possibleMoves()) {
-            int possibleValue = g.activate(game.board(), i);
-            if (max < possibleValue) {
-                bestCol = i;
-                max = possibleValue;
+        auto moves = game.board().possibleMoves();
+        auto bestCol = max_element(moves.begin(), moves.end(),
+            [this, game](const int& m1, const int& m2) {
+                return g.activate(game.board(), m1) < g.activate(game.board(), m2);
             }
-        }
+        );
+        assert(bestCol != moves.end()); // encontró alguno
 
-        return bestCol;
+        // cerr << "PossibleMoves: " << endl;
+        // for (auto i : game.board().possibleMoves())
+        // {
+        //     cerr << i <<" ";
+        // }
+
+        // cerr << endl << "Genetic elige: " << *bestCol << endl;
+
+        return *bestCol;
     }
 };
 
@@ -46,7 +60,7 @@ public:
     vector<Genome> getPopulation();
     Genome crossover(Genome& g1, Genome& g2);
     Genome mitosis(Genome& g1);
-    void newGeneration();
+    void evolvePopulation(unsigned int generations);
 private:
     int rows;
     int cols;
@@ -60,10 +74,9 @@ private:
     float crossoverThreshold; // probabilidad de que haya un "corte" durante el crossover
     float mutationRadius;
     vector<Genome> population;
-    vector< pair<float, bool> > fitnesses;
 
+    void newGeneration();
     float calculateFitness(Genome g);
-    void evolvePopulation(unsigned int generations);
     vector<unsigned int> survivorIndices();
 };
 
@@ -92,6 +105,8 @@ vector<Genome> MatingPool::getPopulation() {
 
 void MatingPool::newGeneration() {
     vector<unsigned int> fittest = survivorIndices();
+    assert(population.size() == populationSize);
+    assert(fittest.size() == amountOfSurvivors);
 
     vector<Genome> newPopulation;
 
@@ -100,11 +115,11 @@ void MatingPool::newGeneration() {
         newPopulation.push_back(population.at(fittest.at(j)));
     }
 
-
-    for (unsigned int j = 0; j < populationSize - amountOfSurvivors; ++j) {
-        Genome& firstGenome = population.at(fittest.at(j));
+    int dead = populationSize - amountOfSurvivors;
+    for (unsigned int j = 0; j < dead; ++j) {
+        Genome& firstGenome = population.at(fittest.at(j % amountOfSurvivors));
         // Module for not going out of range
-        Genome& secondGenome = population.at(fittest.at((j + 1) % (populationSize - amountOfSurvivors)));
+        Genome& secondGenome = population.at(fittest.at((j + 1) % amountOfSurvivors));
 
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         default_random_engine crossOrMitosisGenerator(seed);
@@ -128,34 +143,30 @@ void MatingPool::evolvePopulation(unsigned int generations) {
     for (unsigned int i = 0; i < generations; ++i) {
         newGeneration();
     }
+    displayVector(population.at(0).geneWeights);
 }
 
 float MatingPool::calculateFitness(Genome g) {
-
     PlayerGenetic player(g);
-
     PlayerRandom random;
 
-    Game game = Game(rows, cols, c, pieces);
-
     int wins = 0;
-
     for (unsigned int i = 0; i < amountOfGamesToPlay; ++i) {
-
+        Game game(rows, cols, c, pieces);
         int result = game.playMatch(player, random);
 
         //Chequear que result siempre sea 1 o 0 nunca -1!!!!
         wins += result;
     }
 
-    return wins / amountOfGamesToPlay;
+    return (float)wins / (float)amountOfGamesToPlay;
 }
 
 Genome MatingPool::crossover(Genome& g1, Genome& g2) {
-    cerr << "Parent 1: " << endl;
-    displayVector(g1.geneWeights);
-    cerr << "Parent 2: " << endl;
-    displayVector(g2.geneWeights);
+    // cerr << "Parent 1: " << endl;
+    // displayVector(g1.geneWeights);
+    // cerr << "Parent 2: " << endl;
+    // displayVector(g2.geneWeights);
 
     vector<float> newWeights;
     Genome* activeGenome = &g1;
@@ -170,7 +181,7 @@ Genome MatingPool::crossover(Genome& g1, Genome& g2) {
 
     float startP = cutDistribution(cutGenerator);
     if (startP >= 0.5) {
-        cerr << "Switching starting genome to g2." << endl;
+        // cerr << "Switching starting genome to g2." << endl;
         activeGenome = &g2;
     }
 
@@ -180,17 +191,17 @@ Genome MatingPool::crossover(Genome& g1, Genome& g2) {
             // Si la variable aleatoria supera el umbral, se hace un corte en los cromosomas.
             // Cuando se hace un corte, se empiezan a copiar alelos del otro cromosoma.
             if (activeGenome == &g1) {
-                cerr << "Switching active genome to g2 at locus " << i << "." << endl;
+                // cerr << "Switching active genome to g2 at locus " << i << "." << endl;
                 activeGenome = &g2;
             } else if (activeGenome == &g2) {
-                cerr << "Switching active genome to g1 at locus " << i << "." << endl;
+                // cerr << "Switching active genome to g1 at locus " << i << "." << endl;
                 activeGenome = &g1;
             }
         }
         float w = activeGenome->geneWeights.at(i);
         float p = mutationDecisionDistribution(mutationDecisionGenerator);
         if (p <= pMutate) {
-            cerr << "The gene on locus " << i << " has mutated." << endl;
+            // cerr << "The gene on locus " << i << " has mutated." << endl;
             float mutation = mutationDistribution(mutationGenerator);
             w += mutation;
         }
@@ -209,15 +220,15 @@ Genome MatingPool::mitosis(Genome& g1) {
 
 
 vector<unsigned int> MatingPool::survivorIndices() {
-    assert(fitnesses.empty());
+    vector< pair<float, bool> > fitnesses(populationSize);
 
     vector<unsigned int> result;
     float totalFitness = 0;
 
     for (unsigned int i = 0; i < populationSize; ++i) {
         // pair means fitness and has_been_used
-        fitnesses.push_back(make_pair(calculateFitness( population.at(i) ), false));
-        totalFitness += fitnesses.at(i).first;
+        fitnesses.at(i) = make_pair(calculateFitness( population.at(i) ), false);
+        cerr << "Fitness: " << fitnesses.at(i).first << endl;
     }
 
     // For k iterations, lets search the fittest
