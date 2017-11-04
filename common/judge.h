@@ -38,6 +38,8 @@ public:
     int addPiece(const int column, Players player) {
         // Si la celda más baja desocupada es -1, quiere decir
         // que la columna está llena y no es válido poner fichas ahí.
+        printBoard();
+        cerr << column << endl;
         assert(lowestFreeCell_.at(column) > -1);
         ++playedPieces_;
 
@@ -314,6 +316,22 @@ public:
 
         return res;
     }
+
+    void printBoard(){
+        cerr << endl;
+        for(int i = 0; i < rows_; ++i){
+            cerr << '|';
+            for (int j = 0; j < columns_; ++j){
+                char c;
+                if(matrix.at(i).at(j) == Players::US) c='O';
+                if(matrix.at(i).at(j) == Players::THEM) c='*';
+                if(matrix.at(i).at(j) == Players::NONE) c=' ';
+                cerr << c <<"|";
+            }
+            cerr << endl;
+        }
+    }
+
 };
 
 class Game {
