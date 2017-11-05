@@ -74,6 +74,7 @@ private:
     float crossoverThreshold; // probabilidad de que haya un "corte" durante el crossover
     float mutationRadius;
     vector<Genome> population;
+    Player* lastChampion;
 
     void newGeneration();
     float calculateFitness(Genome g);
@@ -97,6 +98,7 @@ MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurviv
         for (unsigned int i = 0; i < populationSize; ++i) {
             population.push_back(Genome(c));
         }
+    lastChampion = new PlayerRandom();
 }
 
 vector<Genome> MatingPool::getPopulation() {
@@ -136,12 +138,14 @@ void MatingPool::newGeneration() {
             newPopulation.push_back(mitosis(firstGenome));
         }
     }
-    Genome g = population.at(fittest.at(0));
+    *lastChampion = PlayerGenetic(population.at( fittest.at(0)) );
+
     population = newPopulation;
 }
 
 void MatingPool::evolvePopulation(unsigned int generations) {
     for (unsigned int i = 0; i < generations; ++i) {
+        cout<<"Gen "<< i <<"------------------------------------"<<endl;
         newGeneration();
     }
     displayVector(population.at(0).geneWeights);
@@ -156,7 +160,7 @@ float MatingPool::calculateFitness(Genome g) {
     int globalNumberOfMoves = 0;
     for (unsigned int i = 0; i < amountOfGamesToPlay; ++i) {
         Game game(rows, cols, c, pieces);
-        pair<int,int > result = game.playMatch(player, sensei);
+        pair<int,int > result = game.playMatch(player, (*lastChampion) );
 
         //Chequear que result siempre sea 1 o 0 nunca -1!!!!
         wins += result.first;
