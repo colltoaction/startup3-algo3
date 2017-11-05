@@ -220,7 +220,7 @@ float Genome::activate(Board b, int col) {
     // Es necesario pasar col como parámetro para saber cuál es
     // el puntaje asociado a poner la ficha en una columna determinada.
     float result = 0;
-    for (int i = 0; i < genes.size(); ++i) {
+    for (unsigned int i = 0; i < genes.size(); ++i) {
         int row = b.lowestFreeCell(col);
         result += genes.at(i)->boardProperty(b, row, col) * geneWeights.at(i);
     }

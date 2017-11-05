@@ -96,7 +96,7 @@ MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurviv
                pMutate >= 0 && pMutate <= 1 && mutationRadius >= 0);
         for (unsigned int i = 0; i < populationSize; ++i) {
             population.push_back(Genome(c));
-    }
+        }
 }
 
 vector<Genome> MatingPool::getPopulation() {
@@ -106,17 +106,18 @@ vector<Genome> MatingPool::getPopulation() {
 void MatingPool::newGeneration() {
     vector<unsigned int> fittest = survivorIndices();
     assert(population.size() == populationSize);
-    assert(fittest.size() == amountOfSurvivors);
+    int fitSize = fittest.size();
+    assert( fitSize == amountOfSurvivors);
 
     vector<Genome> newPopulation;
 
     // Copiamos los k mejores
-    for (unsigned int j = 0; j < amountOfSurvivors; ++j) {
+    for (int j = 0; j < amountOfSurvivors; ++j) {
         newPopulation.push_back(population.at(fittest.at(j)));
     }
 
     int dead = populationSize - amountOfSurvivors;
-    for (unsigned int j = 0; j < dead; ++j) {
+    for (int j = 0; j < dead; ++j) {
         Genome& firstGenome = population.at(fittest.at(j % amountOfSurvivors));
         // Module for not going out of range
         Genome& secondGenome = population.at(fittest.at((j + 1) % amountOfSurvivors));
@@ -135,7 +136,7 @@ void MatingPool::newGeneration() {
             newPopulation.push_back(mitosis(firstGenome));
         }
     }
-
+    Genome g = population.at(fittest.at(0));
     population = newPopulation;
 }
 
@@ -191,7 +192,7 @@ Genome MatingPool::crossover(Genome& g1, Genome& g2) {
         activeGenome = &g2;
     }
 
-    for (int i = 0; i < g1.geneWeights.size(); ++i) {
+    for (unsigned int i = 0; i < g1.geneWeights.size(); ++i) {
         float pCut = cutDistribution(cutGenerator);
         if (pCut > crossoverThreshold) {
             // Si la variable aleatoria supera el umbral, se hace un corte en los cromosomas.
@@ -229,7 +230,7 @@ vector<unsigned int> MatingPool::survivorIndices() {
     vector< pair<float, bool> > fitnesses(populationSize);
 
     vector<unsigned int> result;
-    float totalFitness = 0;
+    // float totalFitness = 0;
 
     for (unsigned int i = 0; i < populationSize; ++i) {
         // pair means fitness and has_been_used
@@ -238,13 +239,13 @@ vector<unsigned int> MatingPool::survivorIndices() {
     }
 
     // For k iterations, lets search the fittest
-    for (unsigned int i = 0; i < amountOfSurvivors; ++i) {
+    for (int i = 0; i < amountOfSurvivors; ++i) {
         // Reinitialize the max and the bestGenome
         float max = 0;
         unsigned int bestGenome = 0;
 
         // For every genome
-        for (int j = 0; j < populationSize; ++j) {
+        for (unsigned int j = 0; j < populationSize; ++j) {
             // If its better than the max and hasnt been used
             if (max < fitnesses.at(j).first && !fitnesses.at(j).second) {
                 // Update the max and the bestGenome Position

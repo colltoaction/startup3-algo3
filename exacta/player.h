@@ -98,7 +98,7 @@ pair<score, column> Player::minimax(int placedPieces, Winner maximizingPlayer) {
 
         for (column col : game.possibleMoves()) {
             game.addPiece(col, Winner::PLAYER2);
-            pair<score, column> value = minimax(placedPieces + 1, Winner::PLAYER1);
+            pair<score, column> value = minimax(placedPieces , Winner::PLAYER1);
             if (value.first < bestValue) {
                 bestValue = value.first;
                 bestMove = col;

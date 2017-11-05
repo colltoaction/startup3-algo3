@@ -322,7 +322,7 @@ public:
         for(int i = 0; i < rows_; ++i){
             cerr << '|';
             for (int j = 0; j < columns_; ++j){
-                char c;
+                char c = '.';
                 if(matrix.at(i).at(j) == Players::US) c='O';
                 if(matrix.at(i).at(j) == Players::THEM) c='*';
                 if(matrix.at(i).at(j) == Players::NONE) c=' ';
