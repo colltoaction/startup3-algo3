@@ -1,19 +1,19 @@
-.PHONY: test all juez/random_player minimax/main
+.PHONY: test all juez/random_player genetico/main
 
 all: test_juez
 
 %.all: %
 	@make -C $<
 
-test_juez: juez/random_player juez/c_linea.py minimax/main
+test_juez: juez/random_player juez/c_linea.py genetico/main
 	python2 juez/c_linea.py\
-	        --blue_player ./juez/random_player\
-	        --red_player ./minimax/main\
+	        --ui True\
+	        --red_player ./genetico/main\
 	        --iterations 10\
-	        --columns 4 --rows 4 --p 8 --c 3
+	        --columns 7 --rows 6 --p 21 --c 4
 
 juez/random_player:
 	@make -C juez random_player
 
-minimax/main:
-	@make -C minimax main
+genetico/main:
+	@make -C genetico main

@@ -148,18 +148,24 @@ void MatingPool::evolvePopulation(unsigned int generations) {
 
 float MatingPool::calculateFitness(Genome g) {
     PlayerGenetic player(g);
-    PlayerRandom random;
+    Genome genome(4, { -0.314897, 1.09549, 0.0594074, 2.79274, 0.703102, -0.139028, -0.517212, 0.671523, 0.667185, 2.54945, -0.237511, 0.950038, -0.66933, 0.900584, -0.434702, -0.355428, -0.790875, 0.590007, -0.53404, 0.442229, 0.345638 });
+    PlayerGenetic sensei(genome);
 
     int wins = 0;
+    int globalNumberOfMoves = 0;
     for (unsigned int i = 0; i < amountOfGamesToPlay; ++i) {
         Game game(rows, cols, c, pieces);
-        int result = game.playMatch(player, random);
+        pair<int,int > result = game.playMatch(player, sensei);
 
         //Chequear que result siempre sea 1 o 0 nunca -1!!!!
-        wins += result;
+        wins += result.first;
+        globalNumberOfMoves += result.second;
     }
 
-    return (float)wins / (float)amountOfGamesToPlay;
+
+    int totalMovesPossible = rows*cols*amountOfGamesToPlay;
+    return 0.9f * ((float)wins / amountOfGamesToPlay) +
+           0.1f * (1 - (float)globalNumberOfMoves/totalMovesPossible);
 }
 
 Genome MatingPool::crossover(Genome& g1, Genome& g2) {

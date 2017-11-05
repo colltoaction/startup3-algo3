@@ -5,11 +5,14 @@
 // FUNCIÓN DE DEBUG
 
 void displayVector(vector<float> v) {
-    cerr << "[ ";
+    cerr << "{ ";
+    auto last = v.back();
+    v.pop_back();
     for (auto i : v) {
-        cerr << i << " ";
+        cerr << i << ", ";
     }
-    cerr << "]" << endl;
+    v.push_back(last);
+    cerr << last << " }" << endl;
 }
 
 class Gene {

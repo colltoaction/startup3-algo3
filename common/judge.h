@@ -415,33 +415,40 @@ public:
         return 2 * p - board_.playedPieces();
     }
 
-    int playMatch(Player& playerOne, Player& playerTwo) {
+    pair<int,int> playMatch(Player& playerOne, Player& playerTwo) {
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
         default_random_engine initGenerator(seed);
         uniform_real_distribution<float> initDistribution(0.0, 1.0);
 
         float startP = initDistribution(initGenerator);
 
+        int numberOfMoves = 0;
         if (startP >= 0.5) {
             startWith(Players::US);
             addPiece(playerOne.nextMove(*this));
+            numberOfMoves++;
         } else {
             startWith(Players::THEM);
 
         }
 
+
         while (!gameFinished()) {
             addPiece(playerTwo.nextMove(*this));
+            numberOfMoves++;
 
             if(gameFinished()) break;
 
             addPiece(playerOne.nextMove(*this));
+            numberOfMoves++;
         }
 
 
         // board().printBoard();
         // TODO manejar empate
-        return winner() == Players::US ? 1 : 0;
+        int didItWin = winner() == Players::US ? 1 : 0;
+
+        return make_pair(didItWin, numberOfMoves);
     }
 };
 
