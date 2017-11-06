@@ -76,72 +76,146 @@ int KFreeGene::boardProperty(Board b, int row, int col) {
     return b.positionIsInLine(row, col, k, Players::NONE);
 }
 
-class AmountOfLinesOfLengthKGene : public Gene {
+class NumberOfLinesOfLengthKGene : public Gene {
 public:
-    AmountOfLinesOfLengthKGene(int k);
+    NumberOfLinesOfLengthKGene(int k);
     int boardProperty(Board b, int row, int col);
 private:
     int k;
 };
 
-AmountOfLinesOfLengthKGene::AmountOfLinesOfLengthKGene(int k) : k(k) {}
+NumberOfLinesOfLengthKGene::NumberOfLinesOfLengthKGene(int k) : k(k) {}
 
-int AmountOfLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
+int NumberOfLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
     assert (row < b.rows() && col >= 0 && col < b.columns());
 
     // Cuenta la cantidad de líneas de largo k de las que forma parte la posición
     // al introducir la ficha.
-    // cerr << "AmountOfLinesOfLengthKGene with k = " << k << "." << endl;
-    return b.amountOfLinesOfLengthK(row, col, k, Players::US);
+    // cerr << "NumberOfLinesOfLengthKGene with k = " << k << "." << endl;
+    return b.numberOfLinesOfLengthK(row, col, k, Players::US);
 }
 
-class AmountOfBlockedLinesOfLengthKGene : public Gene {
+class NumberOfBlockedLinesOfLengthKGene : public Gene {
 public:
-    AmountOfBlockedLinesOfLengthKGene(int k);
+    NumberOfBlockedLinesOfLengthKGene(int k);
     int boardProperty(Board b, int row, int col);
 private:
     int k;
 };
 
-AmountOfBlockedLinesOfLengthKGene::AmountOfBlockedLinesOfLengthKGene(int k) : k(k) {}
+NumberOfBlockedLinesOfLengthKGene::NumberOfBlockedLinesOfLengthKGene(int k) : k(k) {}
 
-int AmountOfBlockedLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
+int NumberOfBlockedLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
     assert (row < b.rows() && col >= 0 && col < b.columns());
-    // cerr << "AmountOfBlockedLinesOfLengthKGene with k = " << k << "." << endl;
-    return b.amountOfLinesOfLengthK(row, col, k, Players::THEM);
+    // cerr << "NumberOfBlockedLinesOfLengthKGene with k = " << k << "." << endl;
+    return b.numberOfLinesOfLengthK(row, col, k, Players::THEM);
 }
 
-class AmountOfFreeLinesOfLengthKGene : public Gene {
+class NumberOfFreeLinesOfLengthKGene : public Gene {
 public:
-    AmountOfFreeLinesOfLengthKGene(int k);
+    NumberOfFreeLinesOfLengthKGene(int k);
     int boardProperty(Board b, int row, int col);
 private:
     int k;
 };
 
-AmountOfFreeLinesOfLengthKGene::AmountOfFreeLinesOfLengthKGene(int k) : k(k) {}
+NumberOfFreeLinesOfLengthKGene::NumberOfFreeLinesOfLengthKGene(int k) : k(k) {}
 
-int AmountOfFreeLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
+int NumberOfFreeLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
     assert (row < b.rows() && col >= 0 && col < b.columns());
-    // cerr << "AmountOfFreeLinesOfLengthKGene with k = " << k << "." << endl;
-    return b.amountOfLinesOfLengthK(row, col, k, Players::NONE);
+    // cerr << "NumberOfFreeLinesOfLengthKGene with k = " << k << "." << endl;
+    return b.numberOfLinesOfLengthK(row, col, k, Players::NONE);
 }
 
-class AmountOfNeighboursGene : public Gene {
+class SuicideMoveGene : public Gene {
 public:
-    AmountOfNeighboursGene(Players player);
+    SuicideMoveGene(int k);
+    int boardProperty(Board b, int row, int col);
+private:
+    int k;
+};
+
+SuicideMoveGene::SuicideMoveGene(int k) : k(k) {}
+
+int SuicideMoveGene::boardProperty(Board b, int row, int col) {
+    return b.suicideMove(row, col, k);
+}
+
+class NumberOfNeighboursGene : public Gene {
+public:
+    NumberOfNeighboursGene(Players player);
     int boardProperty(Board b, int row, int col);
 private:
     Players player;
 };
 
-AmountOfNeighboursGene::AmountOfNeighboursGene(Players player) : player(player) {}
+NumberOfNeighboursGene::NumberOfNeighboursGene(Players player) : player(player) {}
 
-int AmountOfNeighboursGene::boardProperty(Board b, int row, int col) {
+int NumberOfNeighboursGene::boardProperty(Board b, int row, int col) {
     // Player indica de qué tipo son los vecinos que estamos devolviendo.
     assert (row < b.rows() && col >= 0 && col < b.columns());
-    // cerr << "AmountOfNeighboursGene." << endl;
-    return b.amountOfNeighbours(row, col, player);
+    // cerr << "NumberOfNeighboursGene." << endl;
+    return b.numberOfNeighbours(row, col, player);
+}
+
+class PiecesInRowGene : public Gene {
+public:
+    PiecesInRowGene(Players player);
+    int boardProperty(Board b, int row, int col);
+private:
+    Players player;
+};
+
+PiecesInRowGene::PiecesInRowGene(Players player) : player(player) {}
+
+int PiecesInRowGene::boardProperty(Board b, int row, int col) {
+    assert (row < b.rows() && col >= 0 && col < b.columns());
+    return b.piecesInRow(row, player);
+}
+
+class PiecesInColumnGene : public Gene {
+public:
+    PiecesInColumnGene(Players player);
+    int boardProperty(Board b, int row, int col);
+private:
+    Players player;
+};
+
+PiecesInColumnGene::PiecesInColumnGene(Players player) : player(player) {}
+
+int PiecesInColumnGene::boardProperty(Board b, int row, int col) {
+    assert (row < b.rows() && col >= 0 && col < b.columns());
+    return b.piecesInColumn(col, player);
+}
+
+class PiecesInUpperLeftDiagonalGene : public Gene {
+public:
+    PiecesInUpperLeftDiagonalGene(Players player);
+    int boardProperty(Board b, int row, int col);
+private:
+    Players player;
+};
+
+PiecesInUpperLeftDiagonalGene::PiecesInUpperLeftDiagonalGene(Players player) : player(player) {}
+
+int PiecesInUpperLeftDiagonalGene::boardProperty(Board b, int row, int col) {
+    assert (row < b.rows() && col >= 0 && col < b.columns());
+    return b.piecesInUpperLeftDiagonal(row, col, player);
+}
+
+class PiecesInLowerLeftDiagonalGene : public Gene {
+public:
+    PiecesInLowerLeftDiagonalGene(Players player);
+    int boardProperty(Board b, int row, int col);
+private:
+    Players player;
+};
+
+PiecesInLowerLeftDiagonalGene::PiecesInLowerLeftDiagonalGene(Players player) : player(player) {}
+
+int PiecesInLowerLeftDiagonalGene::boardProperty(Board b, int row, int col) {
+    assert (row < b.rows() && col >= 0 && col < b.columns());
+    return b.piecesInLowerLeftDiagonal(row, col, player);
 }
 
 class Genome {
@@ -174,21 +248,35 @@ vector< Gene* > Genome::initialiseGenes() {
         genes.push_back(gene);
     }
     for (int k = c; k >= 2; --k) {
-        AmountOfLinesOfLengthKGene* gene = new AmountOfLinesOfLengthKGene(k);
+        NumberOfLinesOfLengthKGene* gene = new NumberOfLinesOfLengthKGene(k);
         genes.push_back(gene);
     }
     for (int k = c; k >= 2; --k) {
-        AmountOfBlockedLinesOfLengthKGene* gene = new AmountOfBlockedLinesOfLengthKGene(k);
+        NumberOfBlockedLinesOfLengthKGene* gene = new NumberOfBlockedLinesOfLengthKGene(k);
         genes.push_back(gene);
     }
     for (int k = c; k >= 2; --k) {
-        AmountOfFreeLinesOfLengthKGene* gene = new AmountOfFreeLinesOfLengthKGene(k);
+        NumberOfFreeLinesOfLengthKGene* gene = new NumberOfFreeLinesOfLengthKGene(k);
+        genes.push_back(gene);
+    }
+    for (int k = c; k >= 2; --k) {
+        SuicideMoveGene* gene = new SuicideMoveGene(k);
         genes.push_back(gene);
     }
 
-    genes.push_back(new AmountOfNeighboursGene(Players::US));
-    genes.push_back(new AmountOfNeighboursGene(Players::THEM));
-    genes.push_back(new AmountOfNeighboursGene(Players::NONE));
+    vector<Players> ps = {Players::US, Players::THEM, Players::NONE};
+
+    for (auto p : ps) {
+        genes.push_back(new NumberOfNeighboursGene(p));
+        genes.push_back(new PiecesInRowGene(p));
+        genes.push_back(new PiecesInColumnGene(p));
+        // genes.push_back(new PiecesInUpperLeftDiagonalGene(p));
+        // genes.push_back(new PiecesInLowerLeftDiagonalGene(p));
+    }
+
+    genes.push_back(new NumberOfNeighboursGene(Players::US));
+    genes.push_back(new NumberOfNeighboursGene(Players::THEM));
+    genes.push_back(new NumberOfNeighboursGene(Players::NONE));
     return genes;
 }
 

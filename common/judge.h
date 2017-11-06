@@ -193,7 +193,7 @@ public:
         return false; // No contó K en línea en ninguna dirección.
     }
 
-    int amountOfLinesOfLengthK(const int i, const int j, const int k, const Players player) {
+    int numberOfLinesOfLengthK(const int i, const int j, const int k, const Players player) {
         // Similar a la función anterior, pero cuenta la cantidad de líneas formadas.
 
         int downwards = 0, leftwards = 0, rightwards = 0; // Cuentan las fichas en vertical y horizontal
@@ -286,7 +286,17 @@ public:
         return result;
     }
 
-    int amountOfNeighbours(const int i, const int j, const Players player) {
+    int suicideMove(const int i, const int j, const int k) {
+        // Dice si al ubicar una ficha en la posición (i, j) le estamos dejando servido
+        // un K en línea al oponente.
+        if (i == 0) {
+            return false;
+        } else {
+            return positionIsInLine(i-1, j, k, Players::THEM);
+        }
+    }
+
+    int numberOfNeighbours(const int i, const int j, const Players player) {
         int res = 0;
 
         if (j-1 >= 0 && matrix.at(i).at(j-1) == player) {
@@ -314,6 +324,70 @@ public:
             ++res;
         }
 
+        return res;
+    }
+
+    int piecesInRow(const int i, const Players player) {
+        int res = 0;
+        for (int j = 0; j < columns_; ++j) {
+            if (matrix.at(i).at(j) == player) {
+                ++res;
+            }
+        }
+        return res;
+    }
+
+    int piecesInColumn(const int j, const Players player) {
+        int res = 0;
+        for (int i = 0; i < rows_; ++i) {
+            if (matrix.at(i).at(j) == player) {
+                ++res;
+            }
+        }
+        return res;
+    }
+
+    int piecesInUpperLeftDiagonal(const int i, const int j, const Players player) {
+        int res = 0;
+        int row = i, col = j;
+        while (row >= 0 && col >= 0) {
+            if (matrix.at(row).at(col) == player) {
+                ++res;
+            }
+            --row;
+            --col;
+        }
+        row = i + 1; // mira lo que falta de la diagonal
+        col = j + 1;
+        while (row < rows_ && col < columns_) {
+            if (matrix.at(row).at(col) == player) {
+                ++res;
+            }
+            ++row;
+            ++col;
+        }
+        return res;
+    }
+
+    int piecesInLowerLeftDiagonal(const int i, const int j, const Players player) {
+        int res = 0;
+        int row = i, col = j;
+        while (row < rows_ && col >= 0) {
+            if (matrix.at(row).at(col) == player) {
+                ++res;
+            }
+            ++row;
+            --col;
+        }
+        row = i - 1; // mira lo que falta de la diagonal
+        col = j + 1;
+        while (row >= 0 && col < columns_) {
+            if (matrix.at(row).at(col) == player) {
+                ++res;
+            }
+            --row;
+            ++col;
+        }
         return res;
     }
 
