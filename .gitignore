@@ -30,6 +30,10 @@
 *.exe
 *.out
 *.app
+main
+
+# Temp
+*.swp
 
 # VSCode
 .vscode/
@@ -41,3 +45,6 @@ cmake-build-debug/
 
 # Logs
 log/
+
+#Experimentacion
+experimentacion/resultados.out

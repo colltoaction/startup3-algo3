@@ -8,4 +8,7 @@ main: main.cpp matingpool.h genome.h ../common/judge.h
 	g++ $(CXXFLAGS) $< -o $@
 
 test: main_test.cpp matingpool.h genome.h ../common/judge.h
-	g++ $(CXXFLAGS) main_test.cpp -o ricardofort.o
+	g++ $(CXXFLAGS) -DSHOWSENSEI main_test.cpp -o ricardofort.o
+
+experimentar fitness: main_test.cpp matingpool.h genome.h ../common/judge.h
+	g++ $(CXXFLAGS) -DFITNESS main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/resultados.out
