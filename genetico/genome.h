@@ -141,6 +141,20 @@ int SuicideMoveGene::boardProperty(Board b, int row, int col) {
     return b.suicideMove(row, col, k);
 }
 
+class AntiSuicideMoveGene : public Gene {
+public:
+    AntiSuicideMoveGene(int k);
+    int boardProperty(Board b, int row, int col);
+private:
+    int k;
+};
+
+AntiSuicideMoveGene::AntiSuicideMoveGene(int k) : k(k) {}
+
+int AntiSuicideMoveGene::boardProperty(Board b, int row, int col) {
+    return b.antiSuicideMove(row, col, k);
+}
+
 class NumberOfNeighboursGene : public Gene {
 public:
     NumberOfNeighboursGene(Players player);
@@ -218,6 +232,33 @@ int PiecesInLowerLeftDiagonalGene::boardProperty(Board b, int row, int col) {
     return b.piecesInLowerLeftDiagonal(row, col, player);
 }
 
+class ColumnHeightGene : public Gene {
+public:
+    ColumnHeightGene();
+    int boardProperty(Board b, int row, int col);
+};
+
+ColumnHeightGene::ColumnHeightGene() {}
+
+int ColumnHeightGene::boardProperty(Board b, int row, int col) {
+    return b.columnHeight(col);
+}
+
+class DistanceToPieceGene : public Gene {
+public:
+    DistanceToPieceGene(Players player);
+    int boardProperty(Board b, int row, int col);
+private:
+    Players player;
+};
+
+DistanceToPieceGene::DistanceToPieceGene(Players player) : player(player) {}
+
+int DistanceToPieceGene::boardProperty(Board b, int row, int col) {
+    assert(row >= 0 && row < b.rows() && col >= 0 && col < b.columns());
+    return b.distanceToPiece(row, col, player);
+}
+
 class Genome {
 private:
     int c;
@@ -263,6 +304,10 @@ vector< Gene* > Genome::initialiseGenes() {
         SuicideMoveGene* gene = new SuicideMoveGene(k);
         genes.push_back(gene);
     }
+    for (int k = c; k >= 2; --k) {
+        AntiSuicideMoveGene* gene = new AntiSuicideMoveGene(k);
+        genes.push_back(gene);
+    }
 
     vector<Players> ps = {Players::US, Players::THEM, Players::NONE};
 
@@ -270,13 +315,13 @@ vector< Gene* > Genome::initialiseGenes() {
         genes.push_back(new NumberOfNeighboursGene(p));
         genes.push_back(new PiecesInRowGene(p));
         genes.push_back(new PiecesInColumnGene(p));
-        // genes.push_back(new PiecesInUpperLeftDiagonalGene(p));
-        // genes.push_back(new PiecesInLowerLeftDiagonalGene(p));
+        genes.push_back(new PiecesInUpperLeftDiagonalGene(p));
+        genes.push_back(new PiecesInLowerLeftDiagonalGene(p));
+        genes.push_back(new DistanceToPieceGene(p));
     }
 
-    genes.push_back(new NumberOfNeighboursGene(Players::US));
-    genes.push_back(new NumberOfNeighboursGene(Players::THEM));
-    genes.push_back(new NumberOfNeighboursGene(Players::NONE));
+    genes.push_back(new ColumnHeightGene());
+
     return genes;
 }
 
