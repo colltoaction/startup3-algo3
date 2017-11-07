@@ -171,6 +171,20 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
         newGeneration();
 
     }
+
+    #ifdef GENECORRELATION
+    for (auto genome : population)
+    {
+        for (int i = 0; i < genome.geneWeights.size(); ++i)
+        {
+           cerr << genome.geneWeights.at(i);
+           if(i != genome.geneWeights.size() -1){
+            cerr << ";";
+           }
+        }
+        cerr << endl;
+    }
+    #endif
     #ifdef SHOWSENSEI
     displayVector(population.at(0).geneWeights); // el individuo de mayor fitness
     #endif

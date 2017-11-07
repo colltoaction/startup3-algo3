@@ -11,7 +11,7 @@ int main() {
     int c = 4;
     int pieces = 21;
     int amountOfSurvivors = 5;
-    unsigned int populationSize = 30;
+    unsigned int populationSize = 50;
     unsigned int games = 50;
     float pc = 0.6f;
     float pm = 0.05f;
