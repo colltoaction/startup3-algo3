@@ -32,7 +32,7 @@ public:
 
 class MatingPool {
 public:
-    MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating);
+    MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, float pNewcomer);
     vector<Genome> getPopulation();
     Genome crossover(Genome& g1, Genome& g2);
     Genome mitosis(Genome& g1);
@@ -54,13 +54,16 @@ private:
     vector< Player* > lastChampions;
     float averageFitness;
     unsigned int currentGeneration;
+    int fitnessFunction;
+    float alpha;
+    float pNewcomer;
 
     void newGeneration();
     float calculateFitness(Genome g);
     vector<unsigned int> survivorIndices();
 };
 
-MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating) :
+MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, float pNewcomer) :
     rows(rows),
     cols(cols),
     c(c),
@@ -73,13 +76,16 @@ MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurviv
     crossoverThreshold(t),
     mutationRadius(mr),
     currentGeneration(0),
-    pRandomMating(pRandomMating) {
+    pRandomMating(pRandomMating),
+    fitnessFunction(fitnessFunction),
+    alpha(alpha),
+    pNewcomer(pNewcomer) {
         assert(crossoverThreshold >= 0 && crossoverThreshold <= 1 &&
                pMutate >= 0 && pMutate <= 1 && mutationRadius >= 0);
         for (unsigned int i = 0; i < populationSize; ++i) {
             population.push_back(Genome(c));
         }
-        for (int i = 0; i < amountOfSurvivors / 4 + 1; ++i) {
+        for (int i = 0; i < amountOfSurvivors; ++i) {
             // Genome genome (4, { -0.211009, 2.2091, 1.19177, 6.09952, 2.55178, -2.45106, 0.561537, 0.307363, 0.7774, 0.506736, 0.750724, 0.914839, -0.234364, 0.0909093, -0.269583, -0.37189, -0.538976, 0.0200729, 0.0, 0.0, 0.0, 0.192907, 1.02838, 0.762831 });
             // Player* p = new PlayerGenetic(genome);
             Player* p = new PlayerRandom();
@@ -111,12 +117,22 @@ void MatingPool::newGeneration() {
         Genome& secondGenome = population.at(fittest.at((j + 1) % amountOfSurvivors));
 
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+
         default_random_engine crossOrMitosisGenerator(seed);
         uniform_real_distribution<float> crossOrMitosisDistribution(0.0, 1.0);
         default_random_engine randomMatingGenerator(seed);
-        uniform_real_distribution<float> randomMatingDistribution(seed);
+        uniform_real_distribution<float> randomMatingDistribution(0.0, 1.0);
+        default_random_engine randomNewcomerGenerator(seed);
+        uniform_real_distribution<float> randomNewcomerDistribution(0.0, 1.0);
+
         float evolP = crossOrMitosisDistribution(crossOrMitosisGenerator);
         float matingP = randomMatingDistribution(randomMatingGenerator);
+        float newcomerP = randomNewcomerDistribution(randomNewcomerGenerator);
+
+        if (newcomerP <= pNewcomer) {
+            Genome newcomer(c);
+            secondGenome = newcomer;
+        }
 
         if (matingP <= pRandomMating) {
             // Reproducción con un individuo elegido al azar
@@ -132,7 +148,7 @@ void MatingPool::newGeneration() {
             }
         }
     }
-    for (int i = 0; i < amountOfSurvivors / 4 + 1; ++i) {
+    for (int i = 0; i < amountOfSurvivors; ++i) {
         *(lastChampions.at(i)) = PlayerGenetic(population.at( fittest.at(i)) );
     }
 
@@ -172,21 +188,20 @@ float MatingPool::calculateFitness(Genome g) {
     // PlayerGenetic sensei(genome);
 
     int wins = 0;
-    // int globalNumberOfMoves = 0;
+    int globalNumberOfMoves = 0;
     for (unsigned int i = 0; i < numberOfGamesToPlay; ++i) {
         Game game(rows, cols, c, pieces);
         int champion = rand() % lastChampions.size();
         pair<int,int > result = game.playMatch(player, *(lastChampions.at(champion)) );
 
-        //Chequear que result siempre sea 1 o 0 nunca -1!!!!
         wins += result.first;
-        // globalNumberOfMoves += result.second * result.first;
+        globalNumberOfMoves += result.second * result.first;
     }
-
-
-    // int totalPossibleMoves = rows*cols*numberOfGamesToPlay;
-    return (float) wins / numberOfGamesToPlay;
-    // return 0.9f * ((float)wins / numberOfGamesToPlay) + 0.1f * (1 - (float)globalNumberOfMoves/totalPossibleMoves);
+    if (fitnessFunction == 1) {
+        return (float) wins / numberOfGamesToPlay;
+    } else {
+        return (float) wins / numberOfGamesToPlay + alpha * 1 / globalNumberOfMoves;
+    }
 }
 
 Genome MatingPool::crossover(Genome& g1, Genome& g2) {

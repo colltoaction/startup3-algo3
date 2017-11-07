@@ -346,8 +346,6 @@ vector< Gene* > Genome::initialiseGenes() {
         genes.push_back(gene);
     }
 
-
-
     vector<Players> ps = {Players::US, Players::THEM, Players::NONE};
 
     for (auto p : ps) {
