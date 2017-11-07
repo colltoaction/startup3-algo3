@@ -165,7 +165,11 @@ void MatingPool::newGeneration() {
 
 void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
     for (; currentGeneration < generations; ++currentGeneration) {
+        #ifdef SHOWSENSEI
+        cerr << "Generacion: " << currentGeneration << " --------------------------" << endl;
+        #endif
         newGeneration();
+
     }
     #ifdef SHOWSENSEI
     displayVector(population.at(0).geneWeights); // el individuo de mayor fitness
@@ -260,7 +264,9 @@ vector<unsigned int> MatingPool::survivorIndices() {
         #ifdef FITNESS
         cerr << currentGeneration << ";" << fitnesses.at(i).first << endl;
         #endif
-        // cerr << "Fitness: " << fitnesses.at(i).first << endl;
+        #ifdef SHOWSENSEI
+        cerr << "Fitness: " << fitnesses.at(i).first << endl;
+        #endif
     }
 
     for (int i = 0; i < amountOfSurvivors; ++i) {
