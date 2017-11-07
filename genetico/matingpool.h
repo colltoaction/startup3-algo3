@@ -77,6 +77,7 @@ private:
     vector<Genome> population;
     vector< Player* > lastChampions;
     float averageFitness;
+    unsigned int currentGeneration;
 
     void newGeneration();
     float calculateFitness(Genome g);
@@ -95,6 +96,7 @@ MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurviv
     pMutate(pm),
     crossoverThreshold(t),
     mutationRadius(mr),
+    currentGeneration(0),
     pRandomMating(pRandomMating) {
         assert(crossoverThreshold >= 0 && crossoverThreshold <= 1 &&
                pMutate >= 0 && pMutate <= 1 && mutationRadius >= 0);
@@ -162,14 +164,12 @@ void MatingPool::newGeneration() {
 }
 
 void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
-    for (unsigned int i = 0; i < generations; ++i) {
-        cerr << "Gen " << i << "------------------------------------" << endl;
+    for (; currentGeneration < generations; ++currentGeneration) {
         newGeneration();
-        if (i%spacing == 0) {
-            cerr << "Average fitness: " << averageFitness << endl;
-        }
     }
+    #ifdef SHOWSENSEI
     displayVector(population.at(0).geneWeights); // el individuo de mayor fitness
+    #endif
 }
 
 float MatingPool::calculateFitness(Genome g) {
@@ -251,14 +251,15 @@ Genome MatingPool::mitosis(Genome& g1) {
 
 vector<unsigned int> MatingPool::survivorIndices() {
     vector< pair<float, bool> > fitnesses(populationSize);
-    averageFitness = 0;
 
     vector<unsigned int> result;
 
     for (unsigned int i = 0; i < populationSize; ++i) {
         // pair means fitness and has_been_used
         fitnesses.at(i) = make_pair(calculateFitness( population.at(i) ), false);
-        averageFitness += fitnesses.at(i).first;
+        #ifdef FITNESS
+        cerr << currentGeneration << ";" << fitnesses.at(i).first << endl;
+        #endif
         // cerr << "Fitness: " << fitnesses.at(i).first << endl;
     }
 
@@ -282,7 +283,6 @@ vector<unsigned int> MatingPool::survivorIndices() {
         fitnesses.at(bestGenome).second = true;
     }
 
-    averageFitness = averageFitness / populationSize;
 
     return result;
 }
