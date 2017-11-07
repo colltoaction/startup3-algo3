@@ -272,6 +272,8 @@ public:
 
 };
 
+bool theHeadersHaveBeenSet = false;
+
 vector< Gene* > Genome::initialiseGenes() {
     // Inicializa un vector de genes donde a cada posición le corresponde un gen
     // con una función determinada (similar al genoma de un ser vivo real).
@@ -279,35 +281,72 @@ vector< Gene* > Genome::initialiseGenes() {
     for (int k = c; k >= 2; --k) {
         ConnectKGene* gene = new ConnectKGene(k);
         genes.push_back(gene);
+        #ifdef GENECORRELATION
+        if(!theHeadersHaveBeenSet){
+           cerr << "Connect " << k << " Gene;";
+        }
+        #endif
     }
     for (int k = c; k >= 2; --k) {
         BlockKGene* gene = new BlockKGene(k);
         genes.push_back(gene);
+        #ifdef GENECORRELATION
+        if(!theHeadersHaveBeenSet){
+            cerr << "Block " << k << " Gene;";
+        }
+        #endif
     }
     for (int k = c; k >= 2; --k) {
         KFreeGene* gene = new KFreeGene(k);
         genes.push_back(gene);
+        #ifdef GENECORRELATION
+        if(!theHeadersHaveBeenSet){
+            cerr << k << " Free Gene;";
+        }
+        #endif
     }
     for (int k = c; k >= 2; --k) {
         NumberOfLinesOfLengthKGene* gene = new NumberOfLinesOfLengthKGene(k);
         genes.push_back(gene);
+        #ifdef GENECORRELATION
+        if(!theHeadersHaveBeenSet){
+            cerr <<"Number Of Lines Of Length " << k << " Gene;";
+        }
+        #endif
     }
     for (int k = c; k >= 2; --k) {
         NumberOfBlockedLinesOfLengthKGene* gene = new NumberOfBlockedLinesOfLengthKGene(k);
         genes.push_back(gene);
+        #ifdef GENECORRELATION
+        if(!theHeadersHaveBeenSet){
+            cerr <<"Number Of Blocked Lines Of Length " << k << " Gene;";
+        }
+        #endif
     }
     for (int k = c; k >= 2; --k) {
         NumberOfFreeLinesOfLengthKGene* gene = new NumberOfFreeLinesOfLengthKGene(k);
         genes.push_back(gene);
+        #ifdef GENECORRELATION
+        if(!theHeadersHaveBeenSet){
+            cerr <<"Number Of Free Lines Of Length " << k << " Gene;";
+        }
+        #endif
     }
     for (int k = c; k >= 2; --k) {
         SuicideMoveGene* gene = new SuicideMoveGene(k);
         genes.push_back(gene);
+        #ifdef GENECORRELATION
+        if(!theHeadersHaveBeenSet){
+            cerr <<"Suicide Move Gene " << k << ";";
+        }
+        #endif
     }
     for (int k = c; k >= 2; --k) {
         AntiSuicideMoveGene* gene = new AntiSuicideMoveGene(k);
         genes.push_back(gene);
     }
+
+
 
     vector<Players> ps = {Players::US, Players::THEM, Players::NONE};
 
@@ -320,8 +359,34 @@ vector< Gene* > Genome::initialiseGenes() {
         genes.push_back(new DistanceToPieceGene(p));
     }
 
-    genes.push_back(new ColumnHeightGene());
+    genes.push_back(new ColumnHeightGene);
 
+        #ifdef GENECORRELATION
+        if(!theHeadersHaveBeenSet){
+            cerr <<"Number Of numberOfNeighbours Gene: US " << ";"
+            <<"Pieces in Row Gene: US " << ";"
+            <<"Pieces in Column Gene: US " << ";"
+            <<"Number Of numberOfNeighbours Gene: THEM " << ";"
+            <<"Pieces in Row Gene: THEM " << ";"
+            <<"Pieces in Column Gene: THEM " << ";"
+            <<"Number Of numberOfNeighbours Gene: NONE " << ";"
+            <<"Pieces in Row Gene: NONE " << ";"
+            <<"Pieces in Column Gene: NONE ";
+        }
+        #endif
+
+
+       #ifdef GENECORRELATION
+        if(!theHeadersHaveBeenSet){
+            cerr <<endl;
+        }
+        #endif
+
+    theHeadersHaveBeenSet = true;
+
+    // genes.push_back(new NumberOfNeighboursGene(Players::US));
+    // genes.push_back(new NumberOfNeighboursGene(Players::THEM));
+    // genes.push_back(new NumberOfNeighboursGene(Players::NONE));
     return genes;
 }
 
