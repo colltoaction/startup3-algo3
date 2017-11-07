@@ -1,6 +1,6 @@
 #include <random>
 #include <chrono>
-#include "../common/judge.h"
+#include "../common/player_random.h"
 
 // FUNCIÓN DE DEBUG
 

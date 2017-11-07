@@ -1,30 +1,6 @@
 #include "genome.h"
 #include <random>
 
-class PlayerRandom : public Player {
-private:
-    std::random_device rd;
-    std::mt19937 generator = std::mt19937(rd());
-
-public:
-    int nextMove(Game& game) {
-        auto moves = game.board().possibleMoves();
-        std::uniform_int_distribution<int> do_move(0, moves.size() - 1);
-        int m = do_move(generator);
-
-        // cerr << "PossibleMoves: " << endl;
-        // for (int i = 0; i < moves.size(); ++i)
-        // {
-        //     cerr << moves.at(i) <<" ";
-        // }
-
-        // cerr << endl << "Random elige: " << moves.at(m) << endl;
-
-        return moves.at(m);
-
-    }
-};
-
 
 class PlayerGenetic : public Player {
 private:
