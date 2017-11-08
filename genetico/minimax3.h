@@ -1,4 +1,4 @@
-#include "../common/judge.h"
+// 
 
 int minimax(const PossibleMove& node, int depth, bool maximizingPlayer) {
 	if (depth == 0 || node.isTerminal()) {
@@ -40,21 +40,19 @@ public:
     	 // TODO traer p del juego
 
 		auto moves = PossibleMove(game, -1).children(); // -1 ya que no se usa ese valor
-        auto max = max_element(moves.begin(), moves.end(),
-        	[game](const PossibleMove& m1, const PossibleMove& m2) {
-        		m1.in();
-        		auto res1 = minimax(m1, plays-1, false);
-        		m1.out();
-        		m2.in();
-        		auto res2 = minimax(m2, plays-1, false);
-        		m2.out();
-        		return res1 < res2;
-        	}
-        	);
+        int bestMove = moves.at(0).move();
+        int max = 0;
+        for (unsigned int i = 0; i < moves.size();++i) {
+            // in y out son trampas para poder agregar y sacar fichas en el tablero
+            moves.at(i).in();
+            auto v = minimax(moves.at(i), plays - 1, false);
+            moves.at(i).out();
+            if(bestMove<v){
+                bestMove = v;
+                max = i;
+            }
+        }
 
-        
-        assert(max != moves.end()); // encontró alguno
-
-        return max->move();
+        return moves.at(max).move();
     }
 };
