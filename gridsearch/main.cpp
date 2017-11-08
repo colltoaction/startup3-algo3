@@ -3,7 +3,9 @@
 
 PlayerRandom sensei;
 
-int evaluate(vector<float>& gridLine) {
+typedef vector<float> Parameters;
+
+int evaluate(Parameters& gridLine) {
     PlayerGenetic grasshopper(Genome(4, gridLine));
     int wins = 0;
     for (int i = 0; i < 100; ++i) {
@@ -14,67 +16,66 @@ int evaluate(vector<float>& gridLine) {
         }
     }
 
-    cout << std::setw(4) << wins;
+    cerr << wins;
     for (auto&& param : gridLine) {
-        cout << "," << std::setw(4) << param;
+        cerr << "," << param;
     }
-    cout << endl;
+    cerr << endl;
     return wins;
 }
 
-int parameterSubSweep(vector<float>& gridLine, const float& step, const int& paramsLeft, const int& subSweepLeft) {
-    if (paramsLeft == 0) {
-        return -1;
-    }
-
-    if (subSweepLeft == 0) {
-        for (int i = 0; i < paramsLeft; ++i) {
-            gridLine.push_back(0);
+void parameterSubSweep(Parameters& gridLine, Parameters& subSweepMaxGridLine, int& subSweepMaxWins, const float& step, const int& paramsLeft, const int& subSweepLeft) {
+    if (paramsLeft == 0 || subSweepLeft == 0) {
+        auto wins = evaluate(gridLine);
+        if (wins > subSweepMaxWins) {
+            subSweepMaxWins = wins;
+            subSweepMaxGridLine = gridLine;
         }
-        int v = evaluate(gridLine);
-        for (int i = 0; i < paramsLeft; ++i) {
-            gridLine.pop_back();
-        }
-        return v;
     }
     else {
-        int maxWins = -1;
-        vector<float> maxGridLine;
         for (float p = -1.0f; p <= 1.0f; p += step) {
-            gridLine.push_back(p);
-            int v = parameterSubSweep(gridLine, step, paramsLeft - 1, subSweepLeft - 1);
-            if (v > maxWins) {
-                cout << "v > maxWins" << endl;
-                maxWins = v;
-                maxGridLine = gridLine;
-            }
-            gridLine.pop_back();
+            gridLine.at(gridLine.size() - paramsLeft) = p;
+            parameterSubSweep(gridLine, subSweepMaxGridLine, subSweepMaxWins, step, paramsLeft - 1, subSweepLeft - 1);
         }
-        // reemplazamos gridLine con el mayor que hayamos encontrado
-        gridLine = maxGridLine;
-        return maxWins;
     }
 }
 
 
-// EL PROBLEMA ES QUE ESTOY USANDO GRIDLINE PARA ALMACENAR TANTO EL ACTUAL COMO EL MAYOR,
-// Y ESO NO JUEGA PORQUE NO PUEDO ITERAR TRANQUILO
-
-
-void parameterSweep(vector<float>& gridLine, const float& step, const int& paramsLeft, const int& subSweepStep) {
-    for (int i = 0; i < paramsLeft; i += subSweepStep) {
-        parameterSubSweep(gridLine, step, paramsLeft - i, subSweepStep);
-        for (int i = 0; i < paramsLeft; ++i) {
-            gridLine.push_back(0);
-        }
-        cout << "evaluate after: " << evaluate(gridLine) << endl;
+void parameterSweep(const float& step, const int& numberOfParams, const int& subSweepStep) {
+    // en cada sweep me quedo con el mayor y dejo fijos esos valores
+    // para el sweep siguiente
+    Parameters gridLine(numberOfParams, 0.0f);
+    for (int i = 0; i < numberOfParams; i += subSweepStep) {
+        // En cada subsweep busco el que tenga más victorias, sin importar
+        // si antes hubo otro con más victorias.
+        // Esto evita overfitting.
+        Parameters subSweepMaxGridLine(gridLine);
+        int maxWins = -1;
+        parameterSubSweep(gridLine, subSweepMaxGridLine, maxWins, step, numberOfParams - i, subSweepStep);
+        gridLine = subSweepMaxGridLine;
     }
+
+    auto last = gridLine.back();
+    gridLine.pop_back();
+    cout << "GridSensei: { ";
+    for (auto&& param : gridLine) {
+        cout << param << ", ";
+    }
+    cout << last << " }" << endl;
 }
 
-int main() {
-    int numberOfParams = 33;
-    vector<float> gridLine;
-    float step = 0.5f;
-    int subSweepStep = 2;
-    parameterSweep(gridLine, step, numberOfParams, subSweepStep);
+int main(int argc, char** argv) {
+    if (argc != 4) {
+        cerr <<
+        "Uso: ./main NPARAMS STEP SUBSTEP" << endl <<
+        "    NPARAMS     Cantidad de parámetros totales a entrenar." << endl <<
+        "    STEPS       Paso entre cada parámetro a probar. E.g.: 0.25." << endl <<
+        "    SUBSTEP     Cantidad de parámetros en cada subgrilla a entrenar." << endl;
+        return 1;
+    }
+
+    int numberOfParams = stoi(argv[1]);
+    float step = stof(argv[2]);
+    int subSweepStep = stoi(argv[3]);
+    parameterSweep(step, numberOfParams, subSweepStep);
 }
