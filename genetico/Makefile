@@ -1,4 +1,4 @@
-CXXFLAGS= -std=c++11 -pedantic -Wall -O5
+CXXFLAGS= -std=c++11 -pedantic -Wall -O4
 
 .PHONY: test all main
 
@@ -18,3 +18,7 @@ experimentarFitness2: main_test.cpp matingpool.h genome.h ../common/judge.h
 
 experimentarCorrelacionGenes: main_test.cpp matingpool.h genome.h ../common/judge.h
 	g++ $(CXXFLAGS) -DGENECORRELATION -DOUTPUTBEST main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/geneweights.out
+
+
+experimentarNonLinear: main_test.cpp matingpool.h genome.h ../common/judge.h
+	g++ $(CXXFLAGS) -DFITNESS -DFITNESSTWO -DOUTPUTBEST -DNONLINEAR main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/fitnessNonLinear.out

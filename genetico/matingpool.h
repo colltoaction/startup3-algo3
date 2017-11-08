@@ -1,5 +1,7 @@
 #include "genome.h"
 #include <random>
+#include <stdlib.h>     /* abs */
+
 
 class PlayerGenetic : public Player {
 private:
@@ -206,11 +208,23 @@ float MatingPool::calculateFitness(Genome g) {
         }
     }
 
+
+
+
     if (fitnessFunction == 1) {
         return (float) wins / numberOfGamesToPlay;
     } else {
-        return ((1 - alpha)* ((float) wins / numberOfGamesToPlay))
-            + (alpha * numberOfMovesToLose / numberOfMovesToWin);
+
+        int value = 0;
+        for (auto w: g.geneWeights)
+        {
+            value = abs(w);
+        }
+
+
+        return ((1 - alpha)* ((float) wins / numberOfGamesToPlay)) - alpha *value;
+            // + (alpha * numberOfMovesToLose / numberOfMovesToWin);
+            
     }
 }
 

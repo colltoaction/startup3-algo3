@@ -398,7 +398,15 @@ Genome::Genome(int c)
     default_random_engine generator(seed);
     uniform_real_distribution<float> distribution(-1.0, 1.0);
 
-    for (unsigned int i = 0; i < genes.size(); ++i) {
+
+    int bound = genes.size();
+    
+    #ifdef NONLINEAR
+    bound = bound * 2;
+    #endif
+
+    
+    for (unsigned int i = 0; i < bound; ++i) {
         // Le asigna a cada gen un peso con distribución U[-1, 1].
         geneWeights.push_back(distribution(generator));
     }
@@ -418,9 +426,18 @@ float Genome::activate(Board b, int col) {
     // Es necesario pasar col como parámetro para saber cuál es
     // el puntaje asociado a poner la ficha en una columna determinada.
     float result = 0;
-    for (unsigned int i = 0; i < genes.size(); ++i) {
+
+    int bound = genes.size();
+    
+    #ifdef NONLINEAR
+    bound = bound * 2;
+    #endif
+
+
+    for (unsigned int i = 0; i < bound; ++i) {
         int row = b.lowestFreeCell(col);
-        result += genes.at(i)->boardProperty(b, row, col) * geneWeights.at(i);
+        int aux = i > genes.size() ? 2 : 1;
+        result += ((genes.at(i%(genes.size()))->boardProperty(b, row, col)) ^ aux) * geneWeights.at(i);
     }
     return result;
 }
