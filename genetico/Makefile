@@ -21,4 +21,4 @@ experimentarCorrelacionGenes: main_test.cpp matingpool.h genome.h ../common/judg
 
 
 experimentarNonLinear: main_test.cpp matingpool.h genome.h ../common/judge.h
-	g++ $(CXXFLAGS) -DFITNESS -DFITNESSTWO -DOUTPUTBEST -DNONLINEAR main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/fitnessNonLinear.out
+	g++ $(CXXFLAGS) -DFITNESS -DFITNESSONE -DOUTPUTBEST -DNONLINEAR main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/fitnessNonLinear.out
