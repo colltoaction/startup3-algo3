@@ -1,20 +1,22 @@
 #include <random>
 #include <chrono>
 #include "../common/player_random.h"
+    #include <iostream>
+#include <fstream>
 
 const int DEACTIVATE = 0;
 
 // FUNCIÓN DE DEBUG
 
-void displayVector(vector<float> v) {
-    cerr << "{ ";
+void displayVector(vector<float> v, ofstream& outputFile) {
+    outputFile << "{ ";
     auto last = v.back();
     v.pop_back();
     for (auto i : v) {
-        cerr << i << ", ";
+        outputFile << i << ", ";
     }
     v.push_back(last);
-    cerr << last << " }" << endl;
+    outputFile << last << " }" << endl;
 }
 
 class Gene {

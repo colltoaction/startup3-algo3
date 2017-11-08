@@ -586,6 +586,12 @@ public:
         return winner_;
     }
 
+    int cToWin() const {
+        // no hay ganador si no terminó el juego
+        
+        return c;
+    }
+
     int remainingPieces() const {
         return 2 * p - board_.playedPieces();
     }

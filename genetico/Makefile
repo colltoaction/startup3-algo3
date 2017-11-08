@@ -8,10 +8,13 @@ main: main.cpp matingpool.h genome.h ../common/judge.h
 	g++ $(CXXFLAGS) $< -o $@
 
 test: main_test.cpp matingpool.h genome.h ../common/judge.h
-	g++ $(CXXFLAGS) -DSHOWSENSEI	 main_test.cpp -o ricardofort.o
+	g++ $(CXXFLAGS) -DSHOWSENSEI -DOUTPUTBEST	 main_test.cpp -o ricardofort.o
 
-experimentar fitness: main_test.cpp matingpool.h genome.h ../common/judge.h
-	g++ $(CXXFLAGS) -DFITNESS main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/fitness.out
+experimentarFitness: main_test.cpp matingpool.h genome.h ../common/judge.h
+	g++ $(CXXFLAGS) -DFITNESS -DFITNESSONE -DOUTPUTBEST main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/fitness.out
 
-experimentar correlacion genes: main_test.cpp matingpool.h genome.h ../common/judge.h
-	g++ $(CXXFLAGS) -DGENECORRELATION main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/geneweights.out
+experimentarFitness2: main_test.cpp matingpool.h genome.h ../common/judge.h
+	g++ $(CXXFLAGS) -DFITNESS -DFITNESSTWO -DOUTPUTBEST main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/fitness2.out
+
+experimentarCorrelacionGenes: main_test.cpp matingpool.h genome.h ../common/judge.h
+	g++ $(CXXFLAGS) -DGENECORRELATION -DOUTPUTBEST main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/geneweights.out
