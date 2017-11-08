@@ -1,7 +1,6 @@
 #include "genome.h"
 #include <random>
 
-
 class PlayerGenetic : public Player {
 private:
     Genome g;
@@ -34,7 +33,7 @@ class MatingPool {
 public:
     MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, float pNewcomer);
     vector<Genome> getPopulation();
-    Genome crossover(Genome& g1, Genome& g2);
+    Genome crossover(Genome& g1, Genome& g2);   
     Genome mitosis(Genome& g1);
     void evolvePopulation(unsigned int generations, int spacing);
 private:
@@ -75,8 +74,8 @@ MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurviv
     pMutate(pm),
     crossoverThreshold(t),
     mutationRadius(mr),
-    currentGeneration(0),
     pRandomMating(pRandomMating),
+    currentGeneration(0),
     fitnessFunction(fitnessFunction),
     alpha(alpha),
     pNewcomer(pNewcomer) {
@@ -177,8 +176,11 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
         cerr << endl;
     }
     #endif
-    #ifdef SHOWSENSEI
-    displayVector(population.at(0).geneWeights); // el individuo de mayor fitness
+    #ifdef OUTPUTBEST
+    ofstream outputFile;
+    outputFile.open("../experimentacion/sensei.txt");
+    displayVector(population.at(0).geneWeights, outputFile); // el individuo de mayor fitness
+    outputFile.close();
     #endif
 }
 
@@ -188,19 +190,27 @@ float MatingPool::calculateFitness(Genome g) {
     // PlayerGenetic sensei(genome);
 
     int wins = 0;
-    int globalNumberOfMoves = 0;
+    int numberOfMovesToWin = 1; //So we never divide by 0
+    int numberOfMovesToLose = 0;
+
     for (unsigned int i = 0; i < numberOfGamesToPlay; ++i) {
         Game game(rows, cols, c, pieces);
         int champion = rand() % lastChampions.size();
         pair<int,int > result = game.playMatch(player, *(lastChampions.at(champion)) );
 
         wins += result.first;
-        globalNumberOfMoves += result.second * result.first;
+        if(result.first){
+            numberOfMovesToWin += result.second;
+        } else {
+            numberOfMovesToLose += result.second;
+        }
     }
+
     if (fitnessFunction == 1) {
         return (float) wins / numberOfGamesToPlay;
     } else {
-        return (float) wins / numberOfGamesToPlay + alpha * 1 / globalNumberOfMoves;
+        return ((1 - alpha)* ((float) wins / numberOfGamesToPlay))
+            + (alpha * numberOfMovesToLose / numberOfMovesToWin);
     }
 }
 

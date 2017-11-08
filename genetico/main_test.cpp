@@ -11,16 +11,24 @@ int main() {
     int cols = 7;
     int c = 4;
     int pieces = 21;
-    int amountOfSurvivors = 20;
-    unsigned int populationSize = 100;
-    unsigned int games = 300;
+    int amountOfSurvivors = 5;
+    unsigned int populationSize = 50;
+    unsigned int games = 50;
     float pc = 0.7f;
     float pm = 0.05f;
     float t = 0.3f;
     float mr = 1.0f;
     float pRandomMating = 0.005f;
+
+
+    #ifdef FITNESSONE
     int fitnessFunction = 1;
-    float alpha = 0.002f;
+    #endif
+    #ifdef FITNESSTWO
+    int fitnessFunction = 2;
+    #endif
+
+    float alpha = 0.1;
     float pNewcomer = 0.01f;
 
     #ifdef FITNESS
@@ -30,7 +38,7 @@ int main() {
 
 
     MatingPool mp(rows, cols, c, pieces, amountOfSurvivors, populationSize, games, pc, pm, t, mr, pRandomMating, fitnessFunction, alpha, pNewcomer);
-    mp.evolvePopulation	(300, 5);
+    mp.evolvePopulation	(5, 5);
     // Genome g1 = mp.getPopulation().at(0);
     // Genome g2 = mp.getPopulation().at(1);
     // Genome g3 = mp.crossover(g1, g2);
