@@ -43,10 +43,10 @@ public:
         auto max = max_element(moves.begin(), moves.end(),
         	[game](const PossibleMove& m1, const PossibleMove& m2) {
         		m1.in();
-        		auto res1 = minimax(m1, n, false);
+        		auto res1 = minimax(m1, plays-1, false);
         		m1.out();
         		m2.in();
-        		auto res2 = minimax(m2, n, false);
+        		auto res2 = minimax(m2, plays-1, false);
         		m2.out();
         		return res1 < res2;
         	}
