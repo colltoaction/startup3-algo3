@@ -5,7 +5,7 @@
 #include <fstream>
 using namespace std::chrono;
 
-int minimax(const PossibleMove& node, int depth, bool maximizingPlayer) {
+int alphabeta(const PossibleMove& node, int depth, int alfa,  int beta, bool maximizingPlayer) {
 	if (depth == 0 || node.isTerminal()) {
 		return node.heuristic();
 	}
@@ -15,44 +15,48 @@ int minimax(const PossibleMove& node, int depth, bool maximizingPlayer) {
 		for (PossibleMove child : node.children()) {
             // in y out son trampas para poder agregar y sacar fichas en el tablero
 			child.in();
-			int v = minimax(child, depth - 1, false);
+			int v = alphabeta(child, depth - 1, alfa, beta, false);
+			child.out();
 			bestValue = std::max(bestValue, v);
-			child.out();
-		}
+			alfa = std::max(alfa,bestValue);
+            if(alfa >= beta) break; //**Beta cut-off**
+        }
 
-		return bestValue;
-	}
-	else {
-		int bestValue = std::numeric_limits<int>::max();
-		for (PossibleMove child : node.children()) {
+        return bestValue;
+    }
+    else {
+    	int bestValue = std::numeric_limits<int>::max();
+    	for (PossibleMove child : node.children()) {
             // in y out son trampas para poder agregar y sacar fichas en el tablero
-			child.in();
-			int v = minimax(child, depth - 1, true);
-			bestValue = std::min(bestValue, v);
-			child.out();
-		}
+    		child.in();
+    		int v = alphabeta(child, depth - 1, alfa, beta, true);
+    		child.out();
+    		bestValue = std::min(bestValue, v);
+    		beta = std::min(beta, bestValue);
+            if(alfa >= beta) break; //**Alpha cut-off**
+        }
 
-		return bestValue;
-	}
+        return bestValue;
+    }
 }
 
-class PlayerMinimax : public Player {
+class PlayerAlfaBeta : public Player {
 public:
 	int nextMove(Game& game) {
-    	 // TODO traer p del juego
+        // TODO traer p del juego
+
 
 		high_resolution_clock::time_point beginMove = high_resolution_clock::now();
 
-
-
         auto moves = PossibleMove(game, -1).children(); // -1 ya que no se usa ese valor
+        
         auto max = max_element(moves.begin(), moves.end(),
         	[game](const PossibleMove& m1, const PossibleMove& m2) {
         		m1.in();
-        		auto res1 = minimax(m1, game.remainingPieces(), false);
+        		auto res1 = alphabeta(m1, game.remainingPieces(), -1, 1, false);
         		m1.out();
         		m2.in();
-        		auto res2 = minimax(m2, game.remainingPieces(), false);
+        		auto res2 = alphabeta(m2, game.remainingPieces(), -1, 1, false);
         		m2.out();
         		return res1 < res2;
         	}
@@ -64,35 +68,34 @@ public:
 
         assert(max != moves.end()); // encontró alguno
 
-        std::cerr << game.board().possibleMoves().size() << "; "<< timeFindingMove.count() << "; "<< game.board().columns() <<"; "<< game.board().rows() <<"; " << game.cToWin()<<endl;
-        
+        std::cerr << game.board().possibleMoves().size() << "; "<< timeFindingMove.count() << "; "<< game.board().columns() <<"; "<< game.board().rows() << "; " << game.cToWin()<<endl;
+
         return max->move();
     }
 };
 
-int mainExpeMM(){
-	std::cerr << "Columnas libres; Tiempo de ejecucion; Columnas; Filas; C "<< endl;
+int mainExpeAB(){
+	std::cerr << "Columnas libres; Tiempo de ejecucion; Columnas; Filas; C"<< endl;
 	for (int rows = 2; rows <= 5; ++rows){
 		for (int cols = 2; cols <= 5; ++cols){
 			for (int c = 2; c <= 5; ++c){
 				for (int i = 0; i < 10; ++i){
 					Game game(rows, cols, c, (rows*cols)/2);
 					PlayerRandom playerR;
-					PlayerMinimax playerM;
-					game.playMatch(playerM, playerR);
+					PlayerAlfaBeta playerAB;
+					game.playMatch(playerAB, playerR);
 				}
 			}
 		}	
-	}
+	}	
 	return 0;
 }
 
 int main() {
-	mainExpeMM();
+	mainExpeAB();
 	// JudgeProxy judge;
 	/*while (judge.keepPlaying()) {
-		PlayerMinimax player;
-
+		PlayerAlfaBeta player;
 		judge.play(player);
 	}*/
 }
