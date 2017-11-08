@@ -1,7 +1,6 @@
 #include "genome.h"
 #include <random>
 
-
 class PlayerGenetic : public Player {
 private:
     Genome g;
@@ -32,7 +31,7 @@ public:
 
 class MatingPool {
 public:
-    MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, float pNewcomer);
+    MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, float pNewcomer, int extinctionRate);
     vector<Genome> getPopulation();
     Genome crossover(Genome& g1, Genome& g2);
     Genome mitosis(Genome& g1);
@@ -57,13 +56,14 @@ private:
     int fitnessFunction;
     float alpha;
     float pNewcomer;
+    int extinctionRate;
 
     void newGeneration();
     float calculateFitness(Genome g);
     vector<unsigned int> survivorIndices();
 };
 
-MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, float pNewcomer) :
+MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, float pNewcomer, int extinctionRate) :
     rows(rows),
     cols(cols),
     c(c),
@@ -79,7 +79,8 @@ MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurviv
     pRandomMating(pRandomMating),
     fitnessFunction(fitnessFunction),
     alpha(alpha),
-    pNewcomer(pNewcomer) {
+    pNewcomer(pNewcomer),
+    extinctionRate(extinctionRate) {
         assert(crossoverThreshold >= 0 && crossoverThreshold <= 1 &&
                pMutate >= 0 && pMutate <= 1 && mutationRadius >= 0);
         for (unsigned int i = 0; i < populationSize; ++i) {
@@ -131,7 +132,7 @@ void MatingPool::newGeneration() {
 
         if (newcomerP <= pNewcomer) {
             Genome newcomer(c);
-            secondGenome = newcomer;
+            firstGenome = newcomer;
         }
 
         if (matingP <= pRandomMating) {
@@ -148,8 +149,11 @@ void MatingPool::newGeneration() {
             }
         }
     }
-    for (int i = 0; i < amountOfSurvivors; ++i) {
-        *(lastChampions.at(i)) = PlayerGenetic(population.at( fittest.at(i)) );
+    if (currentGeneration % extinctionRate == 0 || currentGeneration < extinctionRate) {
+        // queremos entrenar a los primeros campeones contra algo mejor que random
+        for (int i = 0; i < amountOfSurvivors; ++i) {
+            *(lastChampions.at(i)) = PlayerGenetic(population.at( fittest.at(i)) );
+        }
     }
 
     population = newPopulation;
@@ -160,7 +164,14 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
         #ifdef SHOWSENSEI
         cerr << "Generacion: " << currentGeneration << " --------------------------" << endl;
         #endif
-        newGeneration();
+        if (currentGeneration % extinctionRate == 0 && currentGeneration > 0) {
+            vector<unsigned int> fittest = survivorIndices();
+            for (int i = 0; i < populationSize; ++i) {
+                population.at(i) = Genome(c);
+            }
+        } else {
+            newGeneration();
+        }
 
     }
 

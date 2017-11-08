@@ -72,7 +72,7 @@ void parameterSweep(vector<float>& gridLine, const float& step, const int& param
 }
 
 int main() {
-    int numberOfParams = 33;
+    int numberOfParams = 43;
     vector<float> gridLine;
     float step = 0.5f;
     int subSweepStep = 2;

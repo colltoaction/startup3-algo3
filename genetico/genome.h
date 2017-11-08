@@ -2,6 +2,8 @@
 #include <chrono>
 #include "../common/player_random.h"
 
+const int DEACTIVATE = 0;
+
 // FUNCIÓN DE DEBUG
 
 void displayVector(vector<float> v) {
@@ -184,7 +186,7 @@ PiecesInRowGene::PiecesInRowGene(Players player) : player(player) {}
 
 int PiecesInRowGene::boardProperty(Board b, int row, int col) {
     assert (row < b.rows() && col >= 0 && col < b.columns());
-    return b.piecesInRow(row, player);
+    return b.piecesInRow(row, player) * DEACTIVATE;
 }
 
 class PiecesInColumnGene : public Gene {
@@ -199,7 +201,7 @@ PiecesInColumnGene::PiecesInColumnGene(Players player) : player(player) {}
 
 int PiecesInColumnGene::boardProperty(Board b, int row, int col) {
     assert (row < b.rows() && col >= 0 && col < b.columns());
-    return b.piecesInColumn(col, player);
+    return b.piecesInColumn(col, player) * DEACTIVATE;
 }
 
 class PiecesInUpperLeftDiagonalGene : public Gene {
@@ -214,7 +216,7 @@ PiecesInUpperLeftDiagonalGene::PiecesInUpperLeftDiagonalGene(Players player) : p
 
 int PiecesInUpperLeftDiagonalGene::boardProperty(Board b, int row, int col) {
     assert (row < b.rows() && col >= 0 && col < b.columns());
-    return b.piecesInUpperLeftDiagonal(row, col, player);
+    return b.piecesInUpperLeftDiagonal(row, col, player) * DEACTIVATE;
 }
 
 class PiecesInLowerLeftDiagonalGene : public Gene {
@@ -229,7 +231,7 @@ PiecesInLowerLeftDiagonalGene::PiecesInLowerLeftDiagonalGene(Players player) : p
 
 int PiecesInLowerLeftDiagonalGene::boardProperty(Board b, int row, int col) {
     assert (row < b.rows() && col >= 0 && col < b.columns());
-    return b.piecesInLowerLeftDiagonal(row, col, player);
+    return b.piecesInLowerLeftDiagonal(row, col, player) * DEACTIVATE;
 }
 
 class ColumnHeightGene : public Gene {
@@ -241,7 +243,7 @@ public:
 ColumnHeightGene::ColumnHeightGene() {}
 
 int ColumnHeightGene::boardProperty(Board b, int row, int col) {
-    return b.columnHeight(col);
+    return b.columnHeight(col) * DEACTIVATE;
 }
 
 class DistanceToPieceGene : public Gene {
@@ -256,7 +258,7 @@ DistanceToPieceGene::DistanceToPieceGene(Players player) : player(player) {}
 
 int DistanceToPieceGene::boardProperty(Board b, int row, int col) {
     assert(row >= 0 && row < b.rows() && col >= 0 && col < b.columns());
-    return b.distanceToPiece(row, col, player);
+    return b.distanceToPiece(row, col, player) * DEACTIVATE;
 }
 
 class Genome {

@@ -1,4 +1,4 @@
-CXXFLAGS= -std=c++11 -pedantic -Wall -O5
+CXXFLAGS= -std=c++11 -pedantic -Wall -O4
 
 .PHONY: test all main
 
