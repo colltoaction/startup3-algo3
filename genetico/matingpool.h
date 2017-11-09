@@ -110,7 +110,7 @@ public:
 
 class MatingPool {
 public:
-    MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, int extinctionRate);
+    MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, unsigned int extinctionRate);
     vector<Genome> getPopulation();
     Genome crossover(Genome& g1, Genome& g2);
     Genome mitosis(Genome& g1);
@@ -134,14 +134,14 @@ private:
     unsigned int currentGeneration;
     int fitnessFunction;
     float alpha;
-    int extinctionRate;
+    unsigned int extinctionRate;
 
     void newGeneration();
     float calculateFitness(Genome g);
     vector<unsigned int> survivorIndices();
 };
 
-MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, int extinctionRate) :
+MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, unsigned int extinctionRate) :
     rows(rows),
     cols(cols),
     c(c),
@@ -198,12 +198,9 @@ void MatingPool::newGeneration() {
         uniform_real_distribution<float> crossOrMitosisDistribution(0.0, 1.0);
         default_random_engine randomMatingGenerator(seed);
         uniform_real_distribution<float> randomMatingDistribution(0.0, 1.0);
-        default_random_engine randomNewcomerGenerator(seed);
-        uniform_real_distribution<float> randomNewcomerDistribution(0.0, 1.0);
 
         float evolP = crossOrMitosisDistribution(crossOrMitosisGenerator);
         float matingP = randomMatingDistribution(randomMatingGenerator);
-        float newcomerP = randomNewcomerDistribution(randomNewcomerGenerator);
 
         if (matingP <= pRandomMating) {
             // Reproducción con un individuo elegido al azar
