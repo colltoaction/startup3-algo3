@@ -68,7 +68,7 @@ public:
          // TODO traer p del juego
 
         auto moves = PossibleMove(game, -1).children(); // -1 ya que no se usa ese valor
-        int bestMove = -1;
+        int bestResult = -1;
         vector<int> losers;
         int max = 0;
         for (unsigned int i = 0; i < moves.size();++i) {
@@ -77,8 +77,8 @@ public:
             auto v = minimax(moves.at(i), plays - 1, false);
             moves.at(i).out();
             if(v == -1) losers.push_back(i);
-            if(bestMove<v){
-                bestMove = v;
+            if(bestResult<v){
+                bestResult = v;
                 max = i;
             }
 
