@@ -40,16 +40,13 @@ private:
 public:
     PlayerMinimax_n(int n) : plays(n){}
     int nextMove(Game& game) {
-         // TODO traer p del juego
-
-        auto moves = PossibleMove(game, -1).children(); // -1 ya que no se usa ese valor
+        auto moves = PossibleMove(game, -1).children();
         int bestResult = -1;
         vector<int> losers;
         int max = 0;
         for (unsigned int i = 0; i < moves.size();++i) {
-            // in y out son trampas para poder agregar y sacar fichas en el tablero
             moves.at(i).in();
-            auto v = minimax(moves.at(i), plays - 1, false);
+            auto v = minimax(moves.at(i), 2*plays-2, false);
             moves.at(i).out();
             if(v == -1) losers.push_back(i);
             if(bestResult<v){
@@ -72,6 +69,7 @@ public:
                         break;
                     } 
                     if(losers.at(i) > max){
+                    	loser= false;
                         break;
                     }
                 }
