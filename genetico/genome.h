@@ -1,10 +1,25 @@
-#include <random>
 #include <chrono>
 #include <iostream>
 #include <fstream>
-#include "../common/player_random.h"
+#include "../common/board.h"
+
+#ifndef __ENUMPLAYERS__
+#define __ENUMPLAYERS__
+enum class Players {
+    NONE,
+    US,
+    THEM,
+};
+#endif
+
+#ifndef __GENOME__
+#define __GENOME__
 
 const int DEACTIVATE = 1;
+
+#ifdef GENEKNOCKOUT
+DEACTIVATE = 0;
+#endif
 
 // FUNCIÓN DE DEBUG
 
@@ -402,12 +417,12 @@ Genome::Genome(int c)
 
 
     int bound = genes.size();
-    
+
     #ifdef NONLINEAR
     bound = bound * 2;
     #endif
 
-    
+
     for (unsigned int i = 0; i < bound; ++i) {
         // Le asigna a cada gen un peso con distribución U[-1, 1].
         geneWeights.push_back(distribution(generator));
@@ -430,7 +445,7 @@ float Genome::activate(Board b, int col) {
     float result = 0;
 
     int bound = genes.size();
-    
+
     #ifdef NONLINEAR
     bound = bound * 2;
     #endif
@@ -443,3 +458,5 @@ float Genome::activate(Board b, int col) {
     }
     return result;
 }
+
+#endif

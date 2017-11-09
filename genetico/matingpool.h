@@ -1,114 +1,9 @@
-#include "genome.h"
-#include <random>
 #include <stdlib.h>     /* abs */
+#include "genome.h"
+#include "../common/player.h"
 
-
-class PlayerGenetic : public Player {
-private:
-    Genome g;
-public:
-    PlayerGenetic(Genome g) : g(g) {}
-    int nextMove(Game& game) {
-
-        auto moves = game.board().possibleMoves();
-        auto bestCol = max_element(moves.begin(), moves.end(),
-            [this, game](const int& m1, const int& m2) {
-                return g.activate(game.board(), m1) < g.activate(game.board(), m2);
-            }
-        );
-        assert(bestCol != moves.end()); // encontró alguno
-
-        // cerr << "PossibleMoves: " << endl;
-        // for (auto i : game.board().possibleMoves())
-        // {
-        //     cerr << i <<" ";
-        // }
-
-        // cerr << endl << "Genetic elige: " << *bestCol << endl;
-
-        return *bestCol;
-    }
-};
-
-int minimax(const PossibleMove& node, int depth, bool maximizingPlayer) {
-	if (depth == 0 || node.isTerminal()) {
-		return node.heuristic();
-	}
-
-	if (maximizingPlayer) {
-		int bestValue = std::numeric_limits<int>::min();
-		for (PossibleMove child : node.children()) {
-            // in y out son trampas para poder agregar y sacar fichas en el tablero
-			child.in();
-			int v = minimax(child, depth - 1, false);
-			bestValue = std::max(bestValue, v);
-			child.out();
-		}
-
-		return bestValue;
-	}
-	else {
-		int bestValue = std::numeric_limits<int>::max();
-		for (PossibleMove child : node.children()) {
-            // in y out son trampas para poder agregar y sacar fichas en el tablero
-			child.in();
-			int v = minimax(child, depth - 1, true);
-			bestValue = std::min(bestValue, v);
-			child.out();
-		}
-
-		return bestValue;
-	}
-}
-
-class PlayerMinimax_n : public Player {
-private:
-	int plays;
-public:
-	PlayerMinimax_n(int n) : plays(n){}
-	int nextMove(Game& game) {
-         // TODO traer p del juego
-
-        auto moves = PossibleMove(game, -1).children(); // -1 ya que no se usa ese valor
-        int bestResult = -1;
-        vector<int> losers;
-        int max = 0;
-        for (unsigned int i = 0; i < moves.size();++i) {
-            // in y out son trampas para poder agregar y sacar fichas en el tablero
-            moves.at(i).in();
-            auto v = minimax(moves.at(i), plays - 1, false);
-            moves.at(i).out();
-            if(v == -1) losers.push_back(i);
-            if(bestResult<v){
-                bestResult = v;
-                max = i;
-            }
-
-        }
-
-        if(bestMove == 0){
-
-            bool loser = false;
-            do{ 
-                // binomial_distribution<int> randomMove(moves.size()/2, 0.5);
-                // max = randomMove.operator();
-                max = rand() % moves.size();
-                for (unsigned int i = 0; i < losers.size(); ++i){
-                    if(losers.at(i) == max){
-                        loser = true;
-                        break;
-                    } 
-                    if(losers.at(i) > max){
-                        break;
-                    }
-                }
-            } while (loser);
-        }
-        
-        return moves.at(max).move();
-    }
-};
-
+#ifndef __MATINGPOOL__
+#define __MATINGPOOL__
 
 class MatingPool {
 public:
@@ -302,7 +197,7 @@ float MatingPool::calculateFitness(Genome g) {
 
         return ((1 - alpha)* ((float) wins / numberOfGamesToPlay)) - alpha *value;
             // + (alpha * numberOfMovesToLose / numberOfMovesToWin);
-            
+
     }
 }
 
@@ -406,3 +301,5 @@ vector<unsigned int> MatingPool::survivorIndices() {
 
     return result;
 }
+
+#endif
