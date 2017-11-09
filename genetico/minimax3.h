@@ -1,5 +1,3 @@
-// 
-
 int minimax(const PossibleMove& node, int depth, bool maximizingPlayer) {
 	if (depth == 0 || node.isTerminal()) {
 		return node.heuristic();
@@ -40,19 +38,40 @@ public:
     	 // TODO traer p del juego
 
 		auto moves = PossibleMove(game, -1).children(); // -1 ya que no se usa ese valor
-        int bestMove = moves.at(0).move();
+        int bestMove = -1;
+        vector<int> losers;
         int max = 0;
         for (unsigned int i = 0; i < moves.size();++i) {
             // in y out son trampas para poder agregar y sacar fichas en el tablero
             moves.at(i).in();
             auto v = minimax(moves.at(i), plays - 1, false);
             moves.at(i).out();
+            if(v == -1) losers.push_back(i);
             if(bestMove<v){
                 bestMove = v;
                 max = i;
             }
+
         }
 
+        if(bestMove == 0){
+
+        	do{	
+        		bool loser = false;
+        		binomial_distribution<int> randomMove(0, moves.size());
+        		max = randomMove;
+        		for (unsigned int i = 0; i < losers.size(); ++i){
+        			if(losers.at(i) == max){
+        				loser = true;
+        				break;
+        			} 
+        			if(losers.at(i) > max){
+        				break;
+        			}
+        		}
+        	} while (loser);
+        }
+        
         return moves.at(max).move();
     }
 };

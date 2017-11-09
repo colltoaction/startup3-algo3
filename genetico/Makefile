@@ -7,11 +7,11 @@ all: main
 main: main.cpp matingpool.h genome.h ../common/judge.h
 	g++ $(CXXFLAGS) $< -o $@
 
-test: main_test.cpp matingpool.h genome.h ../common/judge.h
-	g++ $(CXXFLAGS) -DSHOWSENSEI -DOUTPUTBEST	 main_test.cpp -o ricardofort.o
+test: main_temp.cpp matingpool.h genome.h ../common/judge.h
+	g++ $(CXXFLAGS) -DSHOWSENSEI -DOUTPUTBEST	 main_temp.cpp -o ricardofort2.o
 
-experimentarFitness: main_test.cpp matingpool.h genome.h ../common/judge.h
-	g++ $(CXXFLAGS) -DFITNESS -DFITNESSONE -DOUTPUTBEST main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/fitness.out
+experimentarFitness: main_temp.cpp matingpool.h genome.h ../common/judge.h
+	g++ $(CXXFLAGS) -DFITNESS -DFITNESSONE -DOUTPUTBEST main_temp.cpp -o ricardofort.o
 
 experimentarFitness2: main_test.cpp matingpool.h genome.h ../common/judge.h
 	g++ $(CXXFLAGS) -DFITNESS -DFITNESSTWO -DOUTPUTBEST main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/fitness2.out

@@ -652,6 +652,10 @@ public:
     }
 
     int heuristic() const {
+        if (!game.gameFinished()) {
+            return 0;
+        }
+
         switch (game.winner()) {
         case Players::US:
             // cerr << ">> winner US in col " << col << endl;

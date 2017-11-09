@@ -16,20 +16,20 @@ int main() {
     unsigned int games = 50;
     float pc = 0.7f;
     float pm = 0.05f;
-    float t = 0.3f;
+    float t = 0.5f;
     float mr = 1.0f;
     float pRandomMating = 0.005f;
-
-
     int fitnessFunction = 1;
 
 
     #ifdef FITNESSTWO
     fitnessFunction = 2;
     #endif
+    
     float alpha = 0.002f;
     float pNewcomer = 0.0f;
     int extinctionRate = 1000;
+
 
     #ifdef FITNESS
         cerr << "Generacion" << ";" << "Fitness" << endl;
@@ -39,6 +39,7 @@ int main() {
 
     MatingPool mp(rows, cols, c, pieces, amountOfSurvivors, populationSize, games, pc, pm, t, mr, pRandomMating, fitnessFunction, alpha, pNewcomer, extinctionRate);
     mp.evolvePopulation	(26, 5);
+
 
     // Genome g1 = mp.getPopulation().at(0);
     // Genome g2 = mp.getPopulation().at(1);
