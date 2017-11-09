@@ -22,3 +22,6 @@ experimentarCorrelacionGenes: main_test.cpp matingpool.h genome.h ../common/judg
 
 experimentarNonLinear: main_test.cpp matingpool.h genome.h ../common/judge.h
 	g++ $(CXXFLAGS) -DFITNESS -DFITNESSONE -DOUTPUTBEST -DNONLINEAR main_test.cpp -o ricardofort.o && ./ricardofort.o 2> ../experimentacion/fitnessNonLinear.out
+
+minimaxN: main_minimax_n.cpp minimax3.h ../common/judge.h
+	 g++ $(CXXFLAGS) -DPLAYINGAGAINSTMINIMAXN main_minimax_n.cpp -o minimaxN
