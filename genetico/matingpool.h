@@ -65,25 +65,48 @@ private:
 public:
 	PlayerMinimax_n(int n) : plays(n){}
 	int nextMove(Game& game) {
-    	 // TODO traer p del juego
+         // TODO traer p del juego
 
-		auto moves = PossibleMove(game, -1).children(); // -1 ya que no se usa ese valor
-        int bestMove = moves.at(0).move();
+        auto moves = PossibleMove(game, -1).children(); // -1 ya que no se usa ese valor
+        int bestMove = -1;
+        vector<int> losers;
         int max = 0;
         for (unsigned int i = 0; i < moves.size();++i) {
             // in y out son trampas para poder agregar y sacar fichas en el tablero
             moves.at(i).in();
             auto v = minimax(moves.at(i), plays - 1, false);
             moves.at(i).out();
+            if(v == -1) losers.push_back(i);
             if(bestMove<v){
                 bestMove = v;
                 max = i;
             }
+
         }
 
+        if(bestMove == 0){
+
+            bool loser = false;
+            do{ 
+                // binomial_distribution<int> randomMove(moves.size()/2, 0.5);
+                // max = randomMove.operator();
+                max = rand() % moves.size();
+                for (unsigned int i = 0; i < losers.size(); ++i){
+                    if(losers.at(i) == max){
+                        loser = true;
+                        break;
+                    } 
+                    if(losers.at(i) > max){
+                        break;
+                    }
+                }
+            } while (loser);
+        }
+        
         return moves.at(max).move();
     }
 };
+
 
 class MatingPool {
 public:
@@ -160,14 +183,14 @@ void MatingPool::newGeneration() {
 
     vector<Genome> newPopulation;
 
-    for (int j = 0; j < populationSize; ++j) {
+    for (unsigned int j = 0; j < populationSize; ++j) {
 		unsigned int firstGenomeIndex = rand() % amountOfSurvivors;
 		unsigned int secondGenomeIndex = rand() % amountOfSurvivors;
 		while (firstGenomeIndex == secondGenomeIndex) {
 			secondGenomeIndex = rand() % amountOfSurvivors;
 		}
         Genome& firstGenome = population.at(fittest.at(firstGenomeIndex));
-        Genome& secondGenome = population.at(fittest.at(secondGenomeIndex);
+        Genome& secondGenome = population.at(fittest.at(secondGenomeIndex));
 
         unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 
@@ -214,7 +237,7 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
         if (currentGeneration % extinctionRate == 0 && currentGeneration > 0) {
             vector<unsigned int> fittest = survivorIndices();
             // cerr << "MASS EXTINCTION" << endl;
-            for (int i = 0; i < populationSize; ++i) {
+            for (unsigned int i = 0; i < populationSize; ++i) {
                 population.at(i) = Genome(c);
             }
         } else {
