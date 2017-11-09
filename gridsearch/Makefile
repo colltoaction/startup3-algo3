@@ -1,4 +1,4 @@
-CXXFLAGS=-g -std=c++11 -pedantic -Wall
+CXXFLAGS=-g -std=c++11 -pedantic -Wall -O3
 
 .PHONY: all
 

@@ -1,5 +1,3 @@
-// 
-
 int minimax(const PossibleMove& node, int depth, bool maximizingPlayer) {
 	if (depth == 0 || node.isTerminal()) {
 		return node.heuristic();

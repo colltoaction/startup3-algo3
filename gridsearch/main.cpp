@@ -64,14 +64,6 @@ void parameterSweep(const float& step, const int& numberOfParams, const int& sub
     cout << last << " }" << endl;
 }
 
-<<<<<<< HEAD
-int main() {
-    int numberOfParams = 43;
-    vector<float> gridLine;
-    float step = 0.5f;
-    int subSweepStep = 2;
-    parameterSweep(gridLine, step, numberOfParams, subSweepStep);
-=======
 int main(int argc, char** argv) {
     if (argc != 4) {
         cerr <<
@@ -86,5 +78,4 @@ int main(int argc, char** argv) {
     float step = stof(argv[2]);
     int subSweepStep = stoi(argv[3]);
     parameterSweep(step, numberOfParams, subSweepStep);
->>>>>>> 592eef4b367699327bcadf6c59e99987d1a27cff
 }

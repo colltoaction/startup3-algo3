@@ -22,11 +22,6 @@ int main() {
 
 
     int fitnessFunction = 1;
-<<<<<<< HEAD
-    float alpha = 0.002f;
-    float pNewcomer = 0.0f;
-    int extinctionRate = 100;
-=======
 
     #ifdef FITNESSTWO
     fitnessFunction = 2;
@@ -34,7 +29,6 @@ int main() {
 
     float alpha = 0.03;
     float pNewcomer = 0.01f;
->>>>>>> 592eef4b367699327bcadf6c59e99987d1a27cff
 
     #ifdef FITNESS
         cerr << "Generacion" << ";" << "Fitness" << endl;
@@ -42,13 +36,9 @@ int main() {
 
 
 
-<<<<<<< HEAD
+    int extinctionRate = 100;
     MatingPool mp(rows, cols, c, pieces, amountOfSurvivors, populationSize, games, pc, pm, t, mr, pRandomMating, fitnessFunction, alpha, pNewcomer, extinctionRate);
     mp.evolvePopulation	(400, 5);
-=======
-    MatingPool mp(rows, cols, c, pieces, amountOfSurvivors, populationSize, games, pc, pm, t, mr, pRandomMating, fitnessFunction, alpha, pNewcomer);
-    mp.evolvePopulation	(100, 5);
->>>>>>> 592eef4b367699327bcadf6c59e99987d1a27cff
     // Genome g1 = mp.getPopulation().at(0);
     // Genome g2 = mp.getPopulation().at(1);
     // Genome g3 = mp.crossover(g1, g2);

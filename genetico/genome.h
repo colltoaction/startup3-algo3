@@ -1,8 +1,8 @@
 #include <random>
 #include <chrono>
-#include "../common/player_random.h"
-    #include <iostream>
+#include <iostream>
 #include <fstream>
+#include "../common/player_random.h"
 
 const int DEACTIVATE = 0;
 
