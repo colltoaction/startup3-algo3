@@ -1,21 +1,14 @@
+#ifndef STARTUP3_ALGO3_GENOME_H
+#define STARTUP3_ALGO3_GENOME_H
+
 #include <chrono>
 #include <iostream>
 #include <fstream>
 #include <cassert>
 #include <random>
 #include "../common/board.h"
+#include "gene.h"
 
-#ifndef __ENUMPLAYERS__
-#define __ENUMPLAYERS__
-enum class Players {
-    NONE,
-    US,
-    THEM,
-};
-#endif
-
-#ifndef __GENOME__
-#define __GENOME__
 
 const int DEACTIVATE = 1;
 
@@ -35,13 +28,6 @@ void displayVector(vector<float> v, ofstream& outputFile) {
     v.push_back(last);
     outputFile << last << " }" << endl;
 }
-
-class Gene {
-public:
-    // Propiedad que debe cumplir el tablero para que se sume el peso del locus asociado al gen.
-    virtual int boardProperty(Board b, int row, int col) = 0;
-    int pepe = 0;
-};
 
 class ConnectKGene : public Gene {
 public:
@@ -459,4 +445,4 @@ float Genome::activate(Board b, int col) {
     return result;
 }
 
-#endif
+#endif //STARTUP3_ALGO3_GENOME_H

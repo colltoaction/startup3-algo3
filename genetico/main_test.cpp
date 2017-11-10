@@ -1,48 +1,81 @@
-#include <iostream>
-#include "matingpool.h"
+#include <iomanip>
+#include "mating_pool.h"
 
 using namespace std;
 
-int main() {
-    // Board board(4, 4);
-    // (int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games,
-    // float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, int extinctionRate);
-    int rows = 6;
-    int cols = 7;
-    int c = 4;
-    int pieces = 21;
-    int amountOfSurvivors = 10;
-    unsigned int populationSize = 50;
-    unsigned int games = 50;
-    float pc = 0.7f;
-    float pm = 0.05f;
-    float t = 0.5f;
-    float mr = 1.0f;
-    float pRandomMating = 0.005f;
-    int fitnessFunction = 1;
+int main(int argc, char** argv) {
+    if (argc != 17) {
+        cerr <<
+        "Uso: ./main ROWS COLS C PIECES NSURVIVORS POPSIZE GAMES PC PM T MR PRMATING FFUNCTION ALPHA EXTRATE GENS" << endl <<
+        "    ROWS           Filas." << endl <<
+        "    COLS           Columnas." << endl <<
+        "    C              Cantidad de fichas en línea necesarias para ganar." << endl <<
+        "    PIECES         Fichas de cada jugador." << endl <<
+        "    NSURVIVORS     Cantidad de sobrevivientes." << endl <<
+        "    POPSIZE        Tamaño de la población." << endl <<
+        "    GAMES          Cantidad de partidos para calcular el fitness." << endl <<
+        "    PC             Probabilidad de que haya crossover en vez de mitosis." << endl <<
+        "    PM             Probabilidad de que un alelo mute." << endl <<
+        "    T              1 - probabilidad de que se produzca un corte en un punto dado durante el crossover." << endl <<
+        "    MR             Radio de la mutación." << endl <<
+        "    PRMATING       Probabilidad de que un individuo sobreviviente se reproduzca con uno aleatorio." << endl <<
+        "    FFUNCTION      Función de fitness." << endl <<
+        "    ALPHA          Importancia que se le da a la rapidez en la función de fitness 2." << endl <<
+        "    EXTRATE        Cantidad de generaciones tras las que ocurre una extinción masiva." << endl <<
+        "    GENS           Cantidad de generaciones de la evolución." << endl;
 
+        return 1;
+    }
 
-    #ifdef FITNESSTWO
-    fitnessFunction = 2;
-    #endif
-    
-    float alpha = 0.002f;
-    float pNewcomer = 0.0f;
-    int extinctionRate = 1000;
+    int rows = stoi(argv[1]);
+    // cerr << rows << endl;
 
+    int cols = stoi(argv[2]);
+    // cerr << cols << endl;
 
-    #ifdef FITNESS
-        cerr << "Generacion" << ";" << "Fitness" << endl;
-	#endif
+    int c = stoi(argv[3]);
+    // cerr << c << endl;
 
+    int pieces = stoi(argv[4]);
+    // cerr << pieces << endl;
 
+    int amountOfSurvivors = stoi(argv[5]);
+    // cerr << amountOfSurvivors << endl;
 
-    MatingPool mp(rows, cols, c, pieces, amountOfSurvivors, populationSize, games, pc, pm, t, mr, pRandomMating, fitnessFunction, alpha, pNewcomer, extinctionRate);
-    mp.evolvePopulation	(26, 5);
+    int populationSize = stoi(argv[6]);
+    // cerr << populationSize << endl;
 
+    int games = stoi(argv[7]);
+    // cerr << games << endl;
 
-    // Genome g1 = mp.getPopulation().at(0);
-    // Genome g2 = mp.getPopulation().at(1);
-    // Genome g3 = mp.crossover(g1, g2);
-    return 0;
+    float pc = stof(argv[8]);
+    // cerr << pc << endl;
+
+    float pm = stof(argv[9]);
+    // cerr << pm << endl;
+
+    float t = stof(argv[10]);
+    // cerr << t << endl;
+
+    float mr = stof(argv[11]);
+    // cerr << mr << endl;
+
+    float pRandomMating = stof(argv[12]);
+    // cerr << pRandomMating << endl;
+
+    int fitnessFunction = stoi(argv[13]);
+    // cerr << fitnessFunction << endl;
+
+    float alpha = stof(argv[14]);
+    // cerr << alpha << endl;
+
+    int extinctionRate = stoi(argv[15]);
+    // cerr << extinctionRate << endl;
+
+    int generations = stoi(argv[16]);
+    // cerr << generations << endl;
+
+    MatingPool mp(rows, cols, c, pieces, amountOfSurvivors, populationSize, games, pc, pm, t, mr, pRandomMating, fitnessFunction, alpha, extinctionRate);
+
+    mp.evolvePopulation(generations, 5);
 }

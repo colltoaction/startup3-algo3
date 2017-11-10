@@ -1,5 +1,5 @@
 #include <iomanip>
-#include "../genetico/matingpool.h"
+#include "../genetico/mating_pool.h"
 
 PlayerRandom sensei;
 

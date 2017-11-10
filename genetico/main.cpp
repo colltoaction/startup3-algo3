@@ -1,4 +1,5 @@
-#include "./matingpool.h"
+#include "mating_pool.h"
+#include "../common/judge_proxy.h"
 
 Genome senseiGenome() {
     // sensei 1.0

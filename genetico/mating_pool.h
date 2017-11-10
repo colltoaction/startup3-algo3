@@ -1,9 +1,10 @@
-#include <stdlib.h>     /* abs */
-#include "genome.h"
-#include "../common/player.h"
+#ifndef STARTUP3_ALGO3_MATING_POOL_H
+#define STARTUP3_ALGO3_MATING_POOL_H
 
-#ifndef __MATINGPOOL__
-#define __MATINGPOOL__
+#include "../common/player.h"
+#include "../common/player_minimax_n.h"
+#include "genome.h"
+#include "player_genetic.h"
 
 class MatingPool {
 public:
@@ -302,4 +303,4 @@ vector<unsigned int> MatingPool::survivorIndices() {
     return result;
 }
 
-#endif
+#endif //STARTUP3_ALGO3_MATING_POOL_H

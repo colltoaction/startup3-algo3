@@ -1,20 +1,12 @@
+#ifndef STARTUP3_ALGO3_BOARD_H
+#define STARTUP3_ALGO3_BOARD_H
+
 #include <vector>
 #include <cassert>
-
-#ifndef __ENUMPLAYERS__
-#define __ENUMPLAYERS__
+#include <iostream>
+#include "players.h"
 
 using namespace std;
-
-enum class Players {
-    NONE,
-    US,
-    THEM,
-};
-#endif
-
-#ifndef __BOARD__
-#define __BOARD__
 
 class Board {
 private:
