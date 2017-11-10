@@ -35,5 +35,5 @@ test: $(all-tests)
 main: main.o ${COMMON_OBJS} ${COMMON_HDRS}
 	g++ $(CXXFLAGS) -o $@ $^
 
-limited: main_minimax_n.cpp ${COMMON_OBJS} ${COMMON_HDRS}
+limited: main_minimax_n.o ${COMMON_OBJS} ${COMMON_HDRS}
 	g++ $(CXXFLAGS) -o $@ $^

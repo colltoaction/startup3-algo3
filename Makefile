@@ -1,4 +1,4 @@
-.PHONY: test all juez/random_player genetico/main playAgainstMinimaxN
+.PHONY: test all juez/random_player genetico/main minimax/limited playAgainstMinimaxN
 
 all: test_juez
 
@@ -18,9 +18,12 @@ juez/random_player:
 genetico/main:
 	@make -C genetico main
 
+minimax/limited:
+	@make -C minimax limited
 
-playAgainstMinimaxN: juez/random_player juez/c_linea.py
-	cd minimax && $(MAKE) limited && cd .. && python2 juez/c_linea.py\
+
+playAgainstMinimaxN: minimax/limited juez/c_linea.py
+	python2 juez/c_linea.py\
 	        --ui True\
 	        --red_player ./minimax/limited\
 	        --iterations 10\
