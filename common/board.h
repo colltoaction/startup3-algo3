@@ -242,7 +242,7 @@ public:
             ++col;
         }
 
-        if (leftUpwards + rightDownwards >= k + 1) {
+        if (leftUpwards + rightDownwards >= k - 1) {
             // K en una diagonal.
             ++result;
         }
@@ -266,7 +266,7 @@ public:
             ++col;
         }
 
-        if (leftDownwards + rightUpwards >= k + 1) {
+        if (leftDownwards + rightUpwards >= k - 1) {
             // K en la otra diagonal.
             ++result;
         }
