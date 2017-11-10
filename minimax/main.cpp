@@ -22,7 +22,7 @@ int mainExpeMM() {
 }
 
 int main() {
-    mainExpeMM();
+//    mainExpeMM();
     JudgeProxy judge;
     while (judge.keepPlaying()) {
         PlayerMinimax player;

@@ -1,16 +1,22 @@
 #ifndef STARTUP3_ALGO3_PLAYER_GENETIC_H
 #define STARTUP3_ALGO3_PLAYER_GENETIC_H
 
+#include <algorithm>
+#include "../common/player.h"
+#include "genome.h"
+
+
 class PlayerGenetic : public Player {
 private:
     Genome g;
 public:
     PlayerGenetic(Genome g) : g(g) {}
-    int nextMove(Game& game) {
+
+    int nextMove(Game &game) override {
 
         auto moves = game.board().possibleMoves();
         auto bestCol = max_element(moves.begin(), moves.end(),
-                                   [this, game](const int& m1, const int& m2) {
+                                   [this, game](const int &m1, const int &m2) {
                                        return g.activate(game.board(), m1) < g.activate(game.board(), m2);
                                    }
         );
