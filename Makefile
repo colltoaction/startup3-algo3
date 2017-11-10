@@ -19,10 +19,10 @@ genetico/main:
 	@make -C genetico main
 
 
-playAgainstMinimaxN: juez/random_player juez/c_linea.py genetico/main_minimax_n.cpp genetico/minimax3.h
-	cd genetico && $(MAKE) minimaxN && cd .. && python2 juez/c_linea.py\
+playAgainstMinimaxN: juez/random_player juez/c_linea.py
+	cd minimax && $(MAKE) limited && cd .. && python2 juez/c_linea.py\
 	        --ui True\
-	        --red_player ./genetico/minimaxN\
+	        --red_player ./minimax/limited\
 	        --iterations 10\
 	        --columns 7 --rows 6 --p 21 --c 4
 
