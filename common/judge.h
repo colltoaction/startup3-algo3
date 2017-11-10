@@ -6,14 +6,11 @@
 #include <limits>
 #include <random>
 #include <string>
+#include "board.h"
+#include "player.h"
 
 using namespace std;
 class Game;
-
-class Player {
-public:
-    virtual int nextMove(Game& game) = 0;
-};
 
 class Game {
 private:
@@ -23,6 +20,7 @@ private:
     Players currentPlayer_ = Players::NONE;
     Players winner_ = Players::NONE;
     bool gameFinished_ = false;
+
 public:
     Game(int rows, int columns, int c, int p)
         : board_(rows, columns)

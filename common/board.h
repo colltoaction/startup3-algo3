@@ -1,4 +1,17 @@
 #include <vector>
+#include <cassert>
+
+#ifndef __ENUMPLAYERS__
+#define __ENUMPLAYERS__
+
+using namespace std;
+
+enum class Players {
+    NONE,
+    US,
+    THEM,
+};
+#endif
 
 #ifndef __BOARD__
 #define __BOARD__

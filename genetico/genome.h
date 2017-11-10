@@ -1,6 +1,8 @@
 #include <chrono>
 #include <iostream>
 #include <fstream>
+#include <cassert>
+#include <random>
 #include "../common/board.h"
 
 #ifndef __ENUMPLAYERS__
@@ -415,13 +417,11 @@ Genome::Genome(int c)
     default_random_engine generator(seed);
     uniform_real_distribution<float> distribution(-1.0, 1.0);
 
-
-    int bound = genes.size();
+    unsigned int bound = genes.size();
 
     #ifdef NONLINEAR
     bound = bound * 2;
     #endif
-
 
     for (unsigned int i = 0; i < bound; ++i) {
         // Le asigna a cada gen un peso con distribución U[-1, 1].
@@ -444,7 +444,7 @@ float Genome::activate(Board b, int col) {
     // el puntaje asociado a poner la ficha en una columna determinada.
     float result = 0;
 
-    int bound = genes.size();
+    unsigned int bound = genes.size();
 
     #ifdef NONLINEAR
     bound = bound * 2;

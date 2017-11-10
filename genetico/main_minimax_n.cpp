@@ -1,5 +1,4 @@
-#include "minimax3.h"
-
+#include "../common/player.h"
 
 int main(int argc, char** argv) {
     JudgeProxy judge;
@@ -8,4 +7,3 @@ int main(int argc, char** argv) {
         judge.play(player);
     }
 }
-	
