@@ -42,6 +42,11 @@ public:
                         loser= false;
                         break;
                     }
+                    int end = losers.size()-1;
+                    if(i == end and losers.at(i)< max){
+                        loser= false;
+                        break;
+                    }
                 }
             } while (loser);
         }
