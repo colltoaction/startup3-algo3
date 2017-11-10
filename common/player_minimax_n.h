@@ -27,25 +27,30 @@ public:
 
         }
 
-        // if(bestResult == 0) {
-        //     bool loser = false;
-        //     do{
-        //         // binomial_distribution<int> randomMove(moves.size()/2, 0.5);
-        //         // max = randomMove.operator();
-        //         max = rand() % moves.size();
-        //         for (int i : losers) {
-        //             if(i == max){
-        //                 loser = true;
-        //                 break;
-        //             }
-        //             if(i > max){
-        //                 loser= false;
-        //                 break;
-        //             }
-        //         }
-        //     } while (loser);
-        // }
 
+        if(bestResult == 0) {
+            bool loser = false;
+            do{
+                // binomial_distribution<int> randomMove(moves.size()/2, 0.5);
+                // max = randomMove.operator();
+                max = rand() % moves.size();
+                for (int i : losers) {
+                    if(i == max){
+                        loser = true;
+                        break;
+                    }
+                    if(i > max){
+                        loser= false;
+                        break;
+                    }
+                    int end = losers.size()-1;
+                    if(i == end and losers.at(i)< max){
+                        loser= false;
+                        break;
+                    }
+                }
+            } while (loser);
+        }
         return moves.at(max).move();
     }
 };

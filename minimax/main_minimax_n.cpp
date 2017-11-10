@@ -26,7 +26,6 @@ int main() {
     JudgeProxy judge;
     while (judge.keepPlaying()) {
         PlayerMinimax_n player(4);
-
         judge.play(player);
     }
 }
