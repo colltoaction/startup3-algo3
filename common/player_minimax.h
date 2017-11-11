@@ -13,8 +13,7 @@ class PlayerMinimax : public Player {
 public:
     int nextMove(Game& game) {
         // high_resolution_clock::time_point beginMove = high_resolution_clock::now();
-
-        auto moves = game.possibleMoves(); // -1 ya que no se usa ese valor
+        auto moves = game.possibleMoves();
         auto max = max_element(moves.begin(), moves.end(),
                                [game](PossibleMove& m1, PossibleMove& m2) {
                                    m1.in();

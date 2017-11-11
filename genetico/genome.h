@@ -7,6 +7,7 @@
 #include <cassert>
 #include <random>
 #include "../common/board.h"
+#include "../common/possible_move.h"
 #include "gene.h"
 
 
@@ -44,7 +45,7 @@ int ConnectKGene::boardProperty(Board b, const PossibleMove &move) {
 
     // El gen se activa si la ficha introducida en col forma un K en línea.
     // cerr << "ConnectKGene with k = " << k << "." << endl;
-    return b.positionIsInLine(move.row(), move.move(), k, Players::US);
+    return b.positionIsInLine(move.row(), move.move(), k, move.us());
 }
 
 class BlockKGene : public Gene {
@@ -62,7 +63,7 @@ int BlockKGene::boardProperty(Board b, const PossibleMove &move) {
 
     // El gen se activa si la ficha introducida en col bloquea un K en línea del oponente.
     // cerr << "BlockKGene with k = " << k << "." << endl;
-    return b.positionIsInLine(move.row(), move.move(), k, Players::THEM);
+    return b.positionIsInLine(move.row(), move.move(), k, move.em());
 }
 
 class KFreeGene : public Gene {
@@ -99,7 +100,7 @@ int NumberOfLinesOfLengthKGene::boardProperty(Board b, const PossibleMove &move)
     // Cuenta la cantidad de líneas de largo k de las que forma parte la posición
     // al introducir la ficha.
     // cerr << "NumberOfLinesOfLengthKGene with k = " << k << "." << endl;
-    return b.numberOfLinesOfLengthK(move.row(), move.move(), k, Players::US);
+    return b.numberOfLinesOfLengthK(move.row(), move.move(), k, move.us());
 }
 
 class NumberOfBlockedLinesOfLengthKGene : public Gene {
@@ -115,7 +116,7 @@ NumberOfBlockedLinesOfLengthKGene::NumberOfBlockedLinesOfLengthKGene(int k) : k(
 int NumberOfBlockedLinesOfLengthKGene::boardProperty(Board b, const PossibleMove &move) {
     assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
     // cerr << "NumberOfBlockedLinesOfLengthKGene with k = " << k << "." << endl;
-    return b.numberOfLinesOfLengthK(move.row(), move.move(), k, Players::THEM);
+    return b.numberOfLinesOfLengthK(move.row(), move.move(), k, move.em());
 }
 
 class NumberOfFreeLinesOfLengthKGene : public Gene {
@@ -438,7 +439,7 @@ float Genome::activate(Board b, const PossibleMove &move) {
 
     for (unsigned int i = 0; i < bound; ++i) {
         int aux = i > genes.size() ? 2 : 1;
-        result += (genes.at(i % (genes.size()))->boardProperty(b, move) ^ aux) * geneWeights.at(i);
+        result += ((genes.at(i % (genes.size()))->boardProperty(b, move)) ^ aux) * geneWeights.at(i);
     }
     return result;
 }

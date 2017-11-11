@@ -13,8 +13,11 @@ private:
     int c;
     int p;
     Players currentPlayer_ = Players::NONE;
+    Players nextPlayer_ = Players::NONE;
     Players winner_ = Players::NONE;
     bool gameFinished_ = false;
+
+    void swapPlayers();
 
 public:
     Game(int rows, int columns, int c, int p);

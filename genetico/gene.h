@@ -2,6 +2,7 @@
 #define STARTUP3_ALGO3_GENE_H
 
 #include "../common/board.h"
+#include "../common/possible_move.h"
 
 class Gene {
 public:

@@ -15,6 +15,7 @@ Game::Game(int rows, int columns, int c, int p)
 
 void Game::startWith(Players player) {
     currentPlayer_ = player;
+    nextPlayer_ = player == Players::US ? Players::THEM : Players::US;
 }
 
 void Game::addPiece(const int column) {
@@ -37,8 +38,7 @@ void Game::addPiece(const int column) {
         winner_ = Players::NONE;
     }
 
-    // alterna el jugador en cada jugada
-    currentPlayer_ = currentPlayer_ == Players::US ? Players::THEM : Players::US;
+    swapPlayers();
 }
 
 void Game::removePiece(const int column) {
@@ -51,8 +51,7 @@ void Game::removePiece(const int column) {
 
     // // el jugador al que le hayamos sacado la ficha
     // currentPlayer_ = player;
-    // alterna el jugador en cada jugada
-    currentPlayer_ = currentPlayer_ == Players::US ? Players::THEM : Players::US;
+    swapPlayers();
     gameFinished_ = false;
     winner_ = Players::NONE;
 }
@@ -121,7 +120,20 @@ pair<int, int> Game::playMatch(Player& playerOne, Player& playerTwo) {
 }
 
 vector<PossibleMove> Game::possibleMoves() {
-    return PossibleMove(*this, -1).children(); // -1 ya que no se usa ese valor
+    vector<PossibleMove> possible;
+    for (int col : board().possibleMoves()) {
+        // esto pareciera estar al revés pero así anda.
+        // chequear.
+        possible.emplace_back(*this, col, nextPlayer_, currentPlayer_);
+    }
+
+    return possible;
+}
+
+void Game::swapPlayers() {
+    auto temp = currentPlayer_;
+    currentPlayer_ = nextPlayer_;
+    nextPlayer_ = temp;
 }
 
 #endif //STARTUP3_ALGO3_GAME_CPP

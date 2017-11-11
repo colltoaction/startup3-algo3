@@ -23,7 +23,7 @@ public:
     int nextMove(Game& game) {
         vector<int> drawers;
         vector<int> losers;
-        auto moves = game.possibleMoves(); // -1 ya que no se usa ese valor
+        auto moves = game.possibleMoves();
         assert(!moves.empty());
         for (auto move : moves) {
             move.in();

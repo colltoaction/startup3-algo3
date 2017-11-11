@@ -6,13 +6,17 @@
 class PossibleMove {
 private:
     Game& game;
-    int col;
-    int row_;
+    const int col;
+    const int row_;
+    const Players us_;
+    const Players em_;
 public:
-    PossibleMove(Game& game, int col)
+    PossibleMove(Game& game, int col, Players us, Players em)
             : game(game)
             , col(col)
-            , row_(game.board().lowestFreeCell(col)) {
+            , row_(game.board().lowestFreeCell(col))
+            , us_(us)
+            , em_(em) {
     }
 
     int move() const {
@@ -23,43 +27,55 @@ public:
         return row_;
     }
 
+    Players us() const {
+        return us_;
+    }
+
+    Players em() const {
+        return em_;
+    }
+
     bool isTerminal() const {
         return game.gameFinished();
     }
 
     int heuristic() const {
-        if (!game.gameFinished()) {
+        if (!isTerminal()) {
+            // llegué por depth == 0
             return 0;
         }
 
-        switch (game.winner()) {
-            case Players::US:
-                // cerr << ">> winner US in col " << col << endl;
-                return 1;
-            case Players::THEM:
-                // cerr << ">> winner EM in col " << col << endl;
-                return -1;
-            case Players::NONE:
-                // cerr << ">> winner NO in col " << col << endl;
-                return 0;
+        if (game.winner() == us()) {
+            // cerr << ">> winner US in col " << col << endl;
+            return 1;
         }
+
+        if (game.winner() == em()) {
+            // cerr << ">> winner EM in col " << col << endl;
+            return -1;
+        }
+
+        if (game.winner() == Players::NONE) {
+            // cerr << ">> winner NO in col " << col << endl;
+            return 0;
+        }
+
+        // hay un error
+        assert(false);
     }
 
     vector<PossibleMove> children() const {
-        vector<PossibleMove> possible;
-        for (int col : game.board().possibleMoves()) {
-            possible.emplace_back(game, col);
-        }
-
-        return possible;
+        // nos olvidamos de llamar a .in()
+        assert(row_ != game.board().lowestFreeCell(col));
+        return game.possibleMoves();
     }
 
-    void in() {
-        game.addPiece(col);
+    void in() const {
+        game.addPiece(move());
     }
 
-    void out() {
-        game.removePiece(col);
+    void out() const {
+        game.removePiece(move());
     }
 };
 

@@ -43,7 +43,6 @@ public:
     void gameMain(Player& player) {
         int rows, columns, p, c;
         cin >> columns >> rows >> c >> p;
-        // TODO usar p
 
         string input;
         cin >> input;
@@ -55,6 +54,7 @@ public:
             // column move = player.calculateMove(SolutionType::MINIMAX, placedPieces);
             // player.addPiece(move, Players::US);
             int move = player.nextMove(game);
+
             game.addPiece(move);
             cout << move << endl;
             // placedPieces++;
@@ -91,6 +91,7 @@ public:
             // placedPieces++;
             // calculo la jugada
             int move = player.nextMove(game);
+
             game.addPiece(move);
             cout << move << endl;
         }
