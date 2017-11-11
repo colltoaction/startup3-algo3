@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include "../common/player.h"
+#include "../common/possible_move.h"
 #include "genome.h"
 
 
@@ -14,10 +15,10 @@ public:
 
     int nextMove(Game &game) override {
 
-        auto moves = game.board().possibleMoves();
+        auto moves = game.possibleMoves();
         auto bestCol = max_element(moves.begin(), moves.end(),
-                                   [this, game](const int &m1, const int &m2) {
-                                       return g.activate(game.board(), m1) < g.activate(game.board(), m2);
+                                   [this, game](const PossibleMove& m1, const PossibleMove& m2) {
+                                       return g.activate(game.board(), m1.move()) < g.activate(game.board(), m2.move());
                                    }
         );
         assert(bestCol != moves.end()); // encontró alguno
@@ -30,7 +31,7 @@ public:
 
         // cerr << endl << "Genetic elige: " << *bestCol << endl;
 
-        return *bestCol;
+        return bestCol->move();
     }
 };
 

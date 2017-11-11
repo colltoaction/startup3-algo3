@@ -3,8 +3,8 @@
 
 #include <random>
 #include <chrono>
-#include "players.h"
-#include "game.h"
+#include "player.h"
+#include "possible_move.h"
 
 
 Game::Game(int rows, int columns, int c, int p)
@@ -118,6 +118,10 @@ pair<int, int> Game::playMatch(Player& playerOne, Player& playerTwo) {
     int didItWin = winner() == Players::US ? 1 : 0;
 
     return make_pair(didItWin, numberOfMoves);
+}
+
+vector<PossibleMove> Game::possibleMoves() {
+    return PossibleMove(*this, -1).children(); // -1 ya que no se usa ese valor
 }
 
 #endif //STARTUP3_ALGO3_GAME_CPP

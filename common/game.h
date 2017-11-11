@@ -2,9 +2,10 @@
 #define STARTUP3_ALGO3_GAME_H
 
 #include "board.h"
-#include "player.h"
 
 class Player;
+
+class PossibleMove;
 
 class Game {
 private:
@@ -37,6 +38,8 @@ public:
     int remainingPieces() const;
 
     pair<int,int> playMatch(Player& playerOne, Player& playerTwo);
+
+    vector<PossibleMove> possibleMoves();
 };
 
 #endif //STARTUP3_ALGO3_GAME_H

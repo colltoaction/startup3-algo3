@@ -5,6 +5,7 @@
 #include "game.h"
 #include "minimax.h"
 #include "possible_move.h"
+#include "player.h"
 
 int randomChoice(const vector<int> &drawers) {
     random_device rd;
@@ -22,7 +23,7 @@ public:
     int nextMove(Game& game) {
         vector<int> drawers;
         vector<int> losers;
-        auto moves = PossibleMove(game, -1).children(); // -1 ya que no se usa ese valor
+        auto moves = game.possibleMoves(); // -1 ya que no se usa ese valor
         assert(!moves.empty());
         for (auto move : moves) {
             move.in();
