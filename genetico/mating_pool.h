@@ -181,7 +181,7 @@ float MatingPool::calculateFitness(Genome g) {
     int numberOfMovesToWin = 0;
     int numberOfMovesToLose = 0;
     PlayerRandom randomRival;
-    PlayerMinimax_n minimaxRival(3);
+    PlayerMinimax_n minimaxRival(4);
 
     for (unsigned int i = 0; i < numberOfGamesToPlay; ++i) {
         Game game(rows, cols, c, pieces);
