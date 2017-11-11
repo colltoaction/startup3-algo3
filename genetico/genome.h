@@ -288,65 +288,65 @@ vector< Gene* > Genome::initialiseGenes() {
     for (int k = c; k >= 2; --k) {
         ConnectKGene* gene = new ConnectKGene(k);
         genes.push_back(gene);
-        #ifdef GENECORRELATION
-        if(!theHeadersHaveBeenSet){
-           cerr << "Connect " << k << " Gene;";
+        if (getenv("GENECORRELATION") != NULL) {
+            if (!theHeadersHaveBeenSet) {
+                cerr << "Connect " << k << " Gene;";
+            }
         }
-        #endif
     }
     for (int k = c; k >= 2; --k) {
         BlockKGene* gene = new BlockKGene(k);
         genes.push_back(gene);
-        #ifdef GENECORRELATION
-        if(!theHeadersHaveBeenSet){
-            cerr << "Block " << k << " Gene;";
+        if (getenv("GENECORRELATION") != NULL) {
+            if (!theHeadersHaveBeenSet) {
+                cerr << "Block " << k << " Gene;";
+            }
         }
-        #endif
     }
     for (int k = c; k >= 2; --k) {
         KFreeGene* gene = new KFreeGene(k);
         genes.push_back(gene);
-        #ifdef GENECORRELATION
-        if(!theHeadersHaveBeenSet){
-            cerr << k << " Free Gene;";
+        if (getenv("GENECORRELATION") != NULL) {
+            if (!theHeadersHaveBeenSet) {
+                cerr << k << " Free Gene;";
+            }
         }
-        #endif
     }
     for (int k = c; k >= 2; --k) {
         NumberOfLinesOfLengthKGene* gene = new NumberOfLinesOfLengthKGene(k);
         genes.push_back(gene);
-        #ifdef GENECORRELATION
-        if(!theHeadersHaveBeenSet){
-            cerr <<"Number Of Lines Of Length " << k << " Gene;";
+        if (getenv("GENECORRELATION") != NULL) {
+            if (!theHeadersHaveBeenSet) {
+                cerr << "Number Of Lines Of Length " << k << " Gene;";
+            }
         }
-        #endif
     }
     for (int k = c; k >= 2; --k) {
         NumberOfBlockedLinesOfLengthKGene* gene = new NumberOfBlockedLinesOfLengthKGene(k);
         genes.push_back(gene);
-        #ifdef GENECORRELATION
-        if(!theHeadersHaveBeenSet){
-            cerr <<"Number Of Blocked Lines Of Length " << k << " Gene;";
+        if (getenv("GENECORRELATION") != NULL) {
+            if (!theHeadersHaveBeenSet) {
+                cerr << "Number Of Blocked Lines Of Length " << k << " Gene;";
+            }
         }
-        #endif
     }
     for (int k = c; k >= 2; --k) {
         NumberOfFreeLinesOfLengthKGene* gene = new NumberOfFreeLinesOfLengthKGene(k);
         genes.push_back(gene);
-        #ifdef GENECORRELATION
-        if(!theHeadersHaveBeenSet){
-            cerr <<"Number Of Free Lines Of Length " << k << " Gene;";
+        if (getenv("GENECORRELATION") != NULL) {
+            if (!theHeadersHaveBeenSet) {
+                cerr << "Number Of Free Lines Of Length " << k << " Gene;";
+            }
         }
-        #endif
     }
     for (int k = c; k >= 2; --k) {
         SuicideMoveGene* gene = new SuicideMoveGene(k);
         genes.push_back(gene);
-        #ifdef GENECORRELATION
-        if(!theHeadersHaveBeenSet){
-            cerr <<"Suicide Move Gene " << k << ";";
+        if (getenv("GENECORRELATION") != NULL) {
+            if (!theHeadersHaveBeenSet) {
+                cerr << "Suicide Move Gene " << k << ";";
+            }
         }
-        #endif
     }
     for (int k = c; k >= 2; --k) {
         AntiSuicideMoveGene* gene = new AntiSuicideMoveGene(k);
@@ -366,26 +366,26 @@ vector< Gene* > Genome::initialiseGenes() {
 
     genes.push_back(new ColumnHeightGene);
 
-        #ifdef GENECORRELATION
-        if(!theHeadersHaveBeenSet){
-            cerr <<"Number Of numberOfNeighbours Gene: US " << ";"
-            <<"Pieces in Row Gene: US " << ";"
-            <<"Pieces in Column Gene: US " << ";"
-            <<"Number Of numberOfNeighbours Gene: THEM " << ";"
-            <<"Pieces in Row Gene: THEM " << ";"
-            <<"Pieces in Column Gene: THEM " << ";"
-            <<"Number Of numberOfNeighbours Gene: NONE " << ";"
-            <<"Pieces in Row Gene: NONE " << ";"
-            <<"Pieces in Column Gene: NONE ";
+    if (getenv("GENECORRELATION") != NULL) {
+        if (!theHeadersHaveBeenSet) {
+            cerr << "Number Of numberOfNeighbours Gene: US " << ";"
+                 << "Pieces in Row Gene: US " << ";"
+                 << "Pieces in Column Gene: US " << ";"
+                 << "Number Of numberOfNeighbours Gene: THEM " << ";"
+                 << "Pieces in Row Gene: THEM " << ";"
+                 << "Pieces in Column Gene: THEM " << ";"
+                 << "Number Of numberOfNeighbours Gene: NONE " << ";"
+                 << "Pieces in Row Gene: NONE " << ";"
+                 << "Pieces in Column Gene: NONE ";
         }
-        #endif
+    }
 
 
-       #ifdef GENECORRELATION
-        if(!theHeadersHaveBeenSet){
-            cerr <<endl;
+    if (getenv("GENECORRELATION") != NULL) {
+        if (!theHeadersHaveBeenSet) {
+            cerr << endl;
         }
-        #endif
+    }
 
     theHeadersHaveBeenSet = true;
 
@@ -396,8 +396,8 @@ vector< Gene* > Genome::initialiseGenes() {
 }
 
 Genome::Genome(int c)
-        : c(c)
-        , genes(initialiseGenes()) {
+    : c(c)
+    , genes(initialiseGenes()) {
     // Genera una distribución U[-1, 1].
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
@@ -405,9 +405,9 @@ Genome::Genome(int c)
 
     unsigned int bound = genes.size();
 
-    #ifdef NONLINEAR
-    bound = bound * 2;
-    #endif
+    if (getenv("NONLINEAR") != NULL) {
+        bound = bound * 2;
+    }
 
     for (unsigned int i = 0; i < bound; ++i) {
         // Le asigna a cada gen un peso con distribución U[-1, 1].
@@ -416,9 +416,9 @@ Genome::Genome(int c)
 }
 
 Genome::Genome(int c, vector<float> geneWeights)
-        : c(c)
-        , genes(initialiseGenes())
-        , geneWeights(geneWeights) {
+    : c(c)
+    , genes(initialiseGenes())
+    , geneWeights(geneWeights) {
 }
 
 float Genome::activate(Board b, int col) {
@@ -432,15 +432,14 @@ float Genome::activate(Board b, int col) {
 
     unsigned int bound = genes.size();
 
-    #ifdef NONLINEAR
-    bound = bound * 2;
-    #endif
-
+    if (getenv("NONLINEAR") != NULL) {
+        bound = bound * 2;
+    }
 
     for (unsigned int i = 0; i < bound; ++i) {
         int row = b.lowestFreeCell(col);
         int aux = i > genes.size() ? 2 : 1;
-        result += ((genes.at(i%(genes.size()))->boardProperty(b, row, col)) ^ aux) * geneWeights.at(i);
+        result += ((genes.at(i % (genes.size()))->boardProperty(b, row, col)) ^ aux) * geneWeights.at(i);
     }
     return result;
 }
