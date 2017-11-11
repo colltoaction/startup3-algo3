@@ -62,8 +62,10 @@ MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurviv
     extinctionRate(extinctionRate) {
         assert(crossoverThreshold >= 0 && crossoverThreshold <= 1 &&
                pMutate >= 0 && pMutate <= 1 && mutationRadius >= 0);
-
-        for (int i = 0; i < amountOfSurvivors; ++i) {
+       for (unsigned int i = 0; i < populationSize; ++i) {
+           population.push_back(Genome(c));
+       }
+       for (int i = 0; i < amountOfSurvivors; ++i) {
             // Genome genome (4, { -0.211009, 2.2091, 1.19177, 6.09952, 2.55178, -2.45106, 0.561537, 0.307363, 0.7774, 0.506736, 0.750724, 0.914839, -0.234364, 0.0909093, -0.269583, -0.37189, -0.538976, 0.0200729, 0.0, 0.0, 0.0, 0.192907, 1.02838, 0.762831 });
             // Player* p = new PlayerGenetic(genome);
             Player* p = new PlayerRandom;
@@ -79,7 +81,6 @@ void MatingPool::newGeneration() {
     vector<unsigned int> fittest = survivorIndices();
     assert(population.size() == populationSize);
     int fitSize = fittest.size();
-    assert(fitSize == amountOfSurvivors);
 
     vector<Genome> newPopulation;
 
@@ -132,7 +133,7 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
         cerr << "Generacion: " << currentGeneration << " --------------------------" << endl;
         #endif
         if (currentGeneration % extinctionRate == 0 && currentGeneration > 0) {
-            vector<unsigned int> fittest = survivorIndices();
+            // vector<unsigned int> fittest = survivorIndices();
             // cerr << "MASS EXTINCTION" << endl;
             for (unsigned int i = 0; i < populationSize; ++i) {
                 population.at(i) = Genome(c);
@@ -147,7 +148,7 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
     for (auto genome : population) {
         for (int i = 0; i < genome.geneWeights.size(); ++i) {
            cerr << genome.geneWeights.at(i);
-           if(i != genome.geneWeights.size() -1){
+           if(i != genome.geneWeights.size() - 1){
             cerr << ";";
            }
         }
@@ -155,14 +156,14 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
     }
     #endif
 
-    // std::stringstream ss;
-    // ss << "../experimentacion/sensei_" << string(getenv("RIVAL")) << "_population" << populationSize << ".txt";
-    // string fileName = ss.str();
+    std::stringstream ss;
+    ss << "../experimentacion/sensei_" << string(getenv("RIVAL")) << "_population" << populationSize << ".txt";
+    string fileName = ss.str();
 
-    // ofstream outputFile;
-    // outputFile.open(fileName);
-    // displayVector(population.at(0).geneWeights, outputFile); // el individuo de mayor fitness
-    // outputFile.close();
+    ofstream outputFile;
+    outputFile.open(fileName);
+    displayVector(population.at(0).geneWeights, outputFile); // el individuo de mayor fitness
+    outputFile.close();
 }
 
 float MatingPool::calculateFitness(Genome g) {
@@ -171,10 +172,10 @@ float MatingPool::calculateFitness(Genome g) {
     // PlayerGenetic sensei(genome);
 
     int wins = 0;
-    int numberOfMovesToWin = 0; //So we never divide by 0
+    int numberOfMovesToWin = 0;
     int numberOfMovesToLose = 0;
-    PlayerRandom rivalRandom;
-    PlayerMinimax_n rivalMinimax(3);
+    PlayerRandom randomRival;
+    PlayerMinimax_n minimaxRival(3);
 
     for (unsigned int i = 0; i < numberOfGamesToPlay; ++i) {
         Game game(rows, cols, c, pieces);
@@ -183,18 +184,17 @@ float MatingPool::calculateFitness(Genome g) {
         if(getenv("RIVAL") != NULL && string(getenv("RIVAL")) == "ANCESTORS"){
             result = game.playMatch(player, *(lastChampions.at(champion)) );
         } else if (getenv("RIVAL") != NULL && string(getenv("RIVAL")) == "RANDOM"){
-            result = game.playMatch(player, rivalRandom);
+            result = game.playMatch(player, randomRival);
         } else if(getenv("RIVAL") != NULL && string(getenv("RIVAL")) == "MINIMAX"){
-            result = game.playMatch(player, rivalMinimax);
+            result = game.playMatch(player, minimaxRival);
         } else if(getenv("RIVAL") != NULL && string(getenv("RIVAL")) == "MIXED"){
-            // if (i < numberOfGamesToPlay /3){
-            //     result = game.playMatch(player, *(lastChampions.at(champion)) );
-            // } else if (i < 2 * numberOfGamesToPlay /3) {
-            //     result = game.playMatch(player, rivalRandom);
-            // } else {
-            //     result = game.playMatch(player, rivalMinimax);
-            // }
-            result = make_pair(0, 0);
+            if (i < numberOfGamesToPlay / 3){
+                result = game.playMatch(player, *(lastChampions.at(champion)) );
+            } else if (i < 2 * numberOfGamesToPlay / 3) {
+                result = game.playMatch(player, randomRival);
+            } else {
+                result = game.playMatch(player, minimaxRival);
+            }
         }
         wins += result.first;
         if(result.first){
@@ -204,10 +204,10 @@ float MatingPool::calculateFitness(Genome g) {
         }
     }
 
-    int averageWins = (float) wins / numberOfGamesToPlay;
     if (fitnessFunction == 1) {
-        return averageWins;
+        return (float) wins / numberOfGamesToPlay;
     } else {
+        int averageWins = (float) wins / numberOfGamesToPlay;
         int averageMovesToWin = numeric_limits<double>::infinity();
         if (wins > 0) {
             averageMovesToWin = numberOfMovesToWin / wins;
