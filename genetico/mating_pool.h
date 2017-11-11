@@ -5,6 +5,10 @@
 #include "../common/player_minimax_n.h"
 #include "genome.h"
 #include "player_genetic.h"
+#include "../common/player_random.h"
+#include <limits>
+#include <sstream>
+#include <fstream>
 
 class MatingPool {
 public:
@@ -58,13 +62,11 @@ MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurviv
     extinctionRate(extinctionRate) {
         assert(crossoverThreshold >= 0 && crossoverThreshold <= 1 &&
                pMutate >= 0 && pMutate <= 1 && mutationRadius >= 0);
-        for (unsigned int i = 0; i < populationSize; ++i) {
-            population.push_back(Genome(c));
-        }
+
         for (int i = 0; i < amountOfSurvivors; ++i) {
             // Genome genome (4, { -0.211009, 2.2091, 1.19177, 6.09952, 2.55178, -2.45106, 0.561537, 0.307363, 0.7774, 0.506736, 0.750724, 0.914839, -0.234364, 0.0909093, -0.269583, -0.37189, -0.538976, 0.0200729, 0.0, 0.0, 0.0, 0.192907, 1.02838, 0.762831 });
             // Player* p = new PlayerGenetic(genome);
-            Player* p = new PlayerMinimax_n(4);
+            Player* p = new PlayerRandom;
             lastChampions.push_back(p);
         }
     }
@@ -152,12 +154,15 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
         cerr << endl;
     }
     #endif
-    #ifdef OUTPUTBEST
-    ofstream outputFile;
-    outputFile.open("../experimentacion/sensei.txt");
-    displayVector(population.at(0).geneWeights, outputFile); // el individuo de mayor fitness
-    outputFile.close();
-    #endif
+
+    // std::stringstream ss;
+    // ss << "../experimentacion/sensei_" << string(getenv("RIVAL")) << "_population" << populationSize << ".txt";
+    // string fileName = ss.str();
+
+    // ofstream outputFile;
+    // outputFile.open(fileName);
+    // displayVector(population.at(0).geneWeights, outputFile); // el individuo de mayor fitness
+    // outputFile.close();
 }
 
 float MatingPool::calculateFitness(Genome g) {
@@ -166,14 +171,31 @@ float MatingPool::calculateFitness(Genome g) {
     // PlayerGenetic sensei(genome);
 
     int wins = 0;
-    int numberOfMovesToWin = 1; //So we never divide by 0
+    int numberOfMovesToWin = 0; //So we never divide by 0
     int numberOfMovesToLose = 0;
+    PlayerRandom rivalRandom;
+    PlayerMinimax_n rivalMinimax(3);
 
     for (unsigned int i = 0; i < numberOfGamesToPlay; ++i) {
         Game game(rows, cols, c, pieces);
         int champion = rand() % lastChampions.size();
-        pair<int,int > result = game.playMatch(player, *(lastChampions.at(champion)) );
-
+        pair<int,int > result;
+        if(getenv("RIVAL") != NULL && string(getenv("RIVAL")) == "ANCESTORS"){
+            result = game.playMatch(player, *(lastChampions.at(champion)) );
+        } else if (getenv("RIVAL") != NULL && string(getenv("RIVAL")) == "RANDOM"){
+            result = game.playMatch(player, rivalRandom);
+        } else if(getenv("RIVAL") != NULL && string(getenv("RIVAL")) == "MINIMAX"){
+            result = game.playMatch(player, rivalMinimax);
+        } else if(getenv("RIVAL") != NULL && string(getenv("RIVAL")) == "MIXED"){
+            // if (i < numberOfGamesToPlay /3){
+            //     result = game.playMatch(player, *(lastChampions.at(champion)) );
+            // } else if (i < 2 * numberOfGamesToPlay /3) {
+            //     result = game.playMatch(player, rivalRandom);
+            // } else {
+            //     result = game.playMatch(player, rivalMinimax);
+            // }
+            result = make_pair(0, 0);
+        }
         wins += result.first;
         if(result.first){
             numberOfMovesToWin += result.second;
@@ -182,22 +204,21 @@ float MatingPool::calculateFitness(Genome g) {
         }
     }
 
-
-
-
+    int averageWins = (float) wins / numberOfGamesToPlay;
     if (fitnessFunction == 1) {
-        return (float) wins / numberOfGamesToPlay;
+        return averageWins;
     } else {
-
-        int value = 0;
-        for (auto w: g.geneWeights)
-        {
-            value = abs(w);
+        int averageMovesToWin = numeric_limits<double>::infinity();
+        if (wins > 0) {
+            averageMovesToWin = numberOfMovesToWin / wins;
+        }
+        int averageMovesToLose = numberOfMovesToLose;
+        if (numberOfGamesToPlay - wins != 0) {
+            int averageMovesToLose = numberOfMovesToLose / (numberOfGamesToPlay - wins);
         }
 
-
-        return ((1 - alpha)* ((float) wins / numberOfGamesToPlay)) - alpha *value;
-            // + (alpha * numberOfMovesToLose / numberOfMovesToWin);
+        averageWins = averageWins * 1000 + 9000;
+        return averageWins + alpha * min(1000, averageMovesToLose / averageMovesToWin);
 
     }
 }
@@ -256,20 +277,19 @@ Genome MatingPool::mitosis(Genome& g1) {
     return crossover(g1, g1);
 }
 
+
+
 vector<unsigned int> MatingPool::survivorIndices() {
     vector< pair<float, bool> > fitnesses(populationSize);
 
     vector<unsigned int> result;
 
+    std::ofstream fitnessOutputFile;
+    fitnessOutputFile.open("../experimentacion/myfile.txt", std::ios::app);
     for (unsigned int i = 0; i < populationSize; ++i) {
         // pair means fitness and has_been_used
         fitnesses.at(i) = make_pair(calculateFitness( population.at(i) ), false);
-        #ifdef FITNESS
-        cerr << currentGeneration << ";" << fitnesses.at(i).first << endl;
-        #endif
-        #ifdef SHOWSENSEI
-        cerr << "Fitness: " << fitnesses.at(i).first << endl;
-        #endif
+        fitnessOutputFile << currentGeneration << ";" << fitnesses.at(i).first << endl;
     }
 
     // Selection sort sin la parte de sort. En cada iteración del ciclo externo,
