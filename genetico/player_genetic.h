@@ -17,8 +17,8 @@ public:
 
         auto moves = game.possibleMoves();
         auto bestCol = max_element(moves.begin(), moves.end(),
-                                   [this, game](const PossibleMove& m1, const PossibleMove& m2) {
-                                       return g.activate(game.board(), m1.move()) < g.activate(game.board(), m2.move());
+                                   [this, game](PossibleMove& m1, PossibleMove& m2) {
+                                       return g.activate(game.board(), m1) < g.activate(game.board(), m2);
                                    }
         );
         assert(bestCol != moves.end()); // encontró alguno

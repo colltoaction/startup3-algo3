@@ -16,7 +16,7 @@ public:
 
         auto moves = game.possibleMoves(); // -1 ya que no se usa ese valor
         auto max = max_element(moves.begin(), moves.end(),
-                               [game](const PossibleMove& m1, const PossibleMove& m2) {
+                               [game](PossibleMove& m1, PossibleMove& m2) {
                                    m1.in();
                                    auto res1 = minimax(m1, game.remainingPieces(), false);
                                    m1.out();

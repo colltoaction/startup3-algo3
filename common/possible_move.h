@@ -7,14 +7,20 @@ class PossibleMove {
 private:
     Game& game;
     int col;
+    int row_;
 public:
     PossibleMove(Game& game, int col)
             : game(game)
-            , col(col) {
+            , col(col)
+            , row_(game.board().lowestFreeCell(col)) {
     }
 
     int move() const {
         return col;
+    }
+
+    int row() const {
+        return row_;
     }
 
     bool isTerminal() const {
@@ -48,10 +54,11 @@ public:
         return possible;
     }
 
-    void in() const {
+    void in() {
         game.addPiece(col);
     }
-    void out() const {
+
+    void out() {
         game.removePiece(col);
     }
 };

@@ -32,238 +32,238 @@ void displayVector(vector<float> v, ostream& outputFile) {
 class ConnectKGene : public Gene {
 public:
     ConnectKGene(int k);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     int k;
 };
 
 ConnectKGene::ConnectKGene(int k) : k(k) {}
 
-int ConnectKGene::boardProperty(Board b, int row, int col) {
-    assert (row < b.rows() && col >= 0 && col < b.columns());
+int ConnectKGene::boardProperty(Board b, const PossibleMove &move) {
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
 
     // El gen se activa si la ficha introducida en col forma un K en línea.
     // cerr << "ConnectKGene with k = " << k << "." << endl;
-    return b.positionIsInLine(row, col, k, Players::US);
+    return b.positionIsInLine(move.row(), move.move(), k, Players::US);
 }
 
 class BlockKGene : public Gene {
 public:
     BlockKGene(int k);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     int k;
 };
 
 BlockKGene::BlockKGene(int k) : k(k) {}
 
-int BlockKGene::boardProperty(Board b, int row, int col) {
-    assert (row < b.rows() && col >= 0 && col < b.columns());
+int BlockKGene::boardProperty(Board b, const PossibleMove &move) {
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
 
     // El gen se activa si la ficha introducida en col bloquea un K en línea del oponente.
     // cerr << "BlockKGene with k = " << k << "." << endl;
-    return b.positionIsInLine(row, col, k, Players::THEM);
+    return b.positionIsInLine(move.row(), move.move(), k, Players::THEM);
 }
 
 class KFreeGene : public Gene {
 public:
     KFreeGene(int k);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     int k;
 };
 
 KFreeGene::KFreeGene(int k) : k(k) {}
 
-int KFreeGene::boardProperty(Board b, int row, int col) {
-    assert (row < b.rows() && col >= 0 && col < b.columns());
+int KFreeGene::boardProperty(Board b, const PossibleMove &move) {
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
 
     // El gen se activa si la ficha introducida en col tiene K-1 posiciones libres en línea alrededor.
     // cerr << "KFreeGene with k = " << k << "." << endl;
-    return b.positionIsInLine(row, col, k, Players::NONE);
+    return b.positionIsInLine(move.row(), move.move(), k, Players::NONE);
 }
 
 class NumberOfLinesOfLengthKGene : public Gene {
 public:
     NumberOfLinesOfLengthKGene(int k);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     int k;
 };
 
 NumberOfLinesOfLengthKGene::NumberOfLinesOfLengthKGene(int k) : k(k) {}
 
-int NumberOfLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
-    assert (row < b.rows() && col >= 0 && col < b.columns());
+int NumberOfLinesOfLengthKGene::boardProperty(Board b, const PossibleMove &move) {
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
 
     // Cuenta la cantidad de líneas de largo k de las que forma parte la posición
     // al introducir la ficha.
     // cerr << "NumberOfLinesOfLengthKGene with k = " << k << "." << endl;
-    return b.numberOfLinesOfLengthK(row, col, k, Players::US);
+    return b.numberOfLinesOfLengthK(move.row(), move.move(), k, Players::US);
 }
 
 class NumberOfBlockedLinesOfLengthKGene : public Gene {
 public:
     NumberOfBlockedLinesOfLengthKGene(int k);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     int k;
 };
 
 NumberOfBlockedLinesOfLengthKGene::NumberOfBlockedLinesOfLengthKGene(int k) : k(k) {}
 
-int NumberOfBlockedLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
-    assert (row < b.rows() && col >= 0 && col < b.columns());
+int NumberOfBlockedLinesOfLengthKGene::boardProperty(Board b, const PossibleMove &move) {
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
     // cerr << "NumberOfBlockedLinesOfLengthKGene with k = " << k << "." << endl;
-    return b.numberOfLinesOfLengthK(row, col, k, Players::THEM);
+    return b.numberOfLinesOfLengthK(move.row(), move.move(), k, Players::THEM);
 }
 
 class NumberOfFreeLinesOfLengthKGene : public Gene {
 public:
     NumberOfFreeLinesOfLengthKGene(int k);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     int k;
 };
 
 NumberOfFreeLinesOfLengthKGene::NumberOfFreeLinesOfLengthKGene(int k) : k(k) {}
 
-int NumberOfFreeLinesOfLengthKGene::boardProperty(Board b, int row, int col) {
-    assert (row < b.rows() && col >= 0 && col < b.columns());
+int NumberOfFreeLinesOfLengthKGene::boardProperty(Board b, const PossibleMove &move) {
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
     // cerr << "NumberOfFreeLinesOfLengthKGene with k = " << k << "." << endl;
-    return b.numberOfLinesOfLengthK(row, col, k, Players::NONE);
+    return b.numberOfLinesOfLengthK(move.row(), move.move(), k, Players::NONE);
 }
 
 class SuicideMoveGene : public Gene {
 public:
     SuicideMoveGene(int k);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     int k;
 };
 
 SuicideMoveGene::SuicideMoveGene(int k) : k(k) {}
 
-int SuicideMoveGene::boardProperty(Board b, int row, int col) {
-    return b.suicideMove(row, col, k);
+int SuicideMoveGene::boardProperty(Board b, const PossibleMove &move) {
+    return b.suicideMove(move.row(), move.move(), k);
 }
 
 class AntiSuicideMoveGene : public Gene {
 public:
     AntiSuicideMoveGene(int k);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     int k;
 };
 
 AntiSuicideMoveGene::AntiSuicideMoveGene(int k) : k(k) {}
 
-int AntiSuicideMoveGene::boardProperty(Board b, int row, int col) {
-    return b.antiSuicideMove(row, col, k);
+int AntiSuicideMoveGene::boardProperty(Board b, const PossibleMove &move) {
+    return b.antiSuicideMove(move.row(), move.move(), k);
 }
 
 class NumberOfNeighboursGene : public Gene {
 public:
     NumberOfNeighboursGene(Players player);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     Players player;
 };
 
 NumberOfNeighboursGene::NumberOfNeighboursGene(Players player) : player(player) {}
 
-int NumberOfNeighboursGene::boardProperty(Board b, int row, int col) {
+int NumberOfNeighboursGene::boardProperty(Board b, const PossibleMove &move) {
     // Player indica de qué tipo son los vecinos que estamos devolviendo.
-    assert (row < b.rows() && col >= 0 && col < b.columns());
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
     // cerr << "NumberOfNeighboursGene." << endl;
-    return b.numberOfNeighbours(row, col, player);
+    return b.numberOfNeighbours(move.row(), move.move(), player);
 }
 
 class PiecesInRowGene : public Gene {
 public:
     PiecesInRowGene(Players player);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     Players player;
 };
 
 PiecesInRowGene::PiecesInRowGene(Players player) : player(player) {}
 
-int PiecesInRowGene::boardProperty(Board b, int row, int col) {
-    assert (row < b.rows() && col >= 0 && col < b.columns());
-    return b.piecesInRow(row, player) * DEACTIVATE;
+int PiecesInRowGene::boardProperty(Board b, const PossibleMove &move) {
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
+    return b.piecesInRow(move.row(), player) * DEACTIVATE;
 }
 
 class PiecesInColumnGene : public Gene {
 public:
     PiecesInColumnGene(Players player);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     Players player;
 };
 
 PiecesInColumnGene::PiecesInColumnGene(Players player) : player(player) {}
 
-int PiecesInColumnGene::boardProperty(Board b, int row, int col) {
-    assert (row < b.rows() && col >= 0 && col < b.columns());
-    return b.piecesInColumn(col, player) * DEACTIVATE;
+int PiecesInColumnGene::boardProperty(Board b, const PossibleMove &move) {
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
+    return b.piecesInColumn(move.move(), player) * DEACTIVATE;
 }
 
 class PiecesInUpperLeftDiagonalGene : public Gene {
 public:
     PiecesInUpperLeftDiagonalGene(Players player);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     Players player;
 };
 
 PiecesInUpperLeftDiagonalGene::PiecesInUpperLeftDiagonalGene(Players player) : player(player) {}
 
-int PiecesInUpperLeftDiagonalGene::boardProperty(Board b, int row, int col) {
-    assert (row < b.rows() && col >= 0 && col < b.columns());
-    return b.piecesInUpperLeftDiagonal(row, col, player) * DEACTIVATE;
+int PiecesInUpperLeftDiagonalGene::boardProperty(Board b, const PossibleMove &move) {
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
+    return b.piecesInUpperLeftDiagonal(move.row(), move.move(), player) * DEACTIVATE;
 }
 
 class PiecesInLowerLeftDiagonalGene : public Gene {
 public:
     PiecesInLowerLeftDiagonalGene(Players player);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     Players player;
 };
 
 PiecesInLowerLeftDiagonalGene::PiecesInLowerLeftDiagonalGene(Players player) : player(player) {}
 
-int PiecesInLowerLeftDiagonalGene::boardProperty(Board b, int row, int col) {
-    assert (row < b.rows() && col >= 0 && col < b.columns());
-    return b.piecesInLowerLeftDiagonal(row, col, player) * DEACTIVATE;
+int PiecesInLowerLeftDiagonalGene::boardProperty(Board b, const PossibleMove &move) {
+    assert (move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
+    return b.piecesInLowerLeftDiagonal(move.row(), move.move(), player) * DEACTIVATE;
 }
 
 class ColumnHeightGene : public Gene {
 public:
     ColumnHeightGene();
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 };
 
 ColumnHeightGene::ColumnHeightGene() {}
 
-int ColumnHeightGene::boardProperty(Board b, int row, int col) {
-    return b.columnHeight(col) * DEACTIVATE;
+int ColumnHeightGene::boardProperty(Board b, const PossibleMove &move) {
+    return b.columnHeight(move.move()) * DEACTIVATE;
 }
 
 class DistanceToPieceGene : public Gene {
 public:
     DistanceToPieceGene(Players player);
-    int boardProperty(Board b, int row, int col);
+    int boardProperty(Board b, const PossibleMove &move);
 private:
     Players player;
 };
 
 DistanceToPieceGene::DistanceToPieceGene(Players player) : player(player) {}
 
-int DistanceToPieceGene::boardProperty(Board b, int row, int col) {
-    assert(row >= 0 && row < b.rows() && col >= 0 && col < b.columns());
-    return b.distanceToPiece(row, col, player) * DEACTIVATE;
+int DistanceToPieceGene::boardProperty(Board b, const PossibleMove &move) {
+    assert(move.row() >= 0 && move.row() < b.rows() && move.move() >= 0 && move.move() < b.columns());
+    return b.distanceToPiece(move.row(), move.move(), player) * DEACTIVATE;
 }
 
 class Genome {
@@ -274,7 +274,7 @@ private:
 public:
     Genome(int c);
     Genome(int c, vector<float> geneWeights);
-    float activate(Board b, int col);
+    float activate(Board b, const PossibleMove &move);
     vector<float> geneWeights;
 
 };
@@ -421,7 +421,7 @@ Genome::Genome(int c, vector<float> geneWeights)
     , geneWeights(geneWeights) {
 }
 
-float Genome::activate(Board b, int col) {
+float Genome::activate(Board b, const PossibleMove &move) {
     // Al gen de genes[i] le corresponde el peso de geneWeights[i];
     // de esta forma, el producto interno entre genes y geneWeights
     // calcula el puntaje del tablero dado por ubicar una ficha
@@ -437,9 +437,8 @@ float Genome::activate(Board b, int col) {
     }
 
     for (unsigned int i = 0; i < bound; ++i) {
-        int row = b.lowestFreeCell(col);
         int aux = i > genes.size() ? 2 : 1;
-        result += ((genes.at(i % (genes.size()))->boardProperty(b, row, col)) ^ aux) * geneWeights.at(i);
+        result += (genes.at(i % (genes.size()))->boardProperty(b, move) ^ aux) * geneWeights.at(i);
     }
     return result;
 }
