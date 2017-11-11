@@ -48,3 +48,5 @@ log/
 
 #Experimentacion
 experimentacion/resultados.out
+experimentacion/fitness_*.*
+experimentacion/sensei_*.*
