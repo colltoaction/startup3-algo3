@@ -146,7 +146,7 @@ private:
 SuicideMoveGene::SuicideMoveGene(int k) : k(k) {}
 
 int SuicideMoveGene::boardProperty(Board b, const PossibleMove &move) {
-    return b.suicideMove(move.row(), move.move(), k);
+    return b.nextMoveConnectsK(move.row(), move.move(), k, move.em());
 }
 
 class AntiSuicideMoveGene : public Gene {
@@ -160,7 +160,7 @@ private:
 AntiSuicideMoveGene::AntiSuicideMoveGene(int k) : k(k) {}
 
 int AntiSuicideMoveGene::boardProperty(Board b, const PossibleMove &move) {
-    return b.antiSuicideMove(move.row(), move.move(), k);
+    return b.nextMoveConnectsK(move.row(), move.move(), k, move.us());
 }
 
 class NumberOfNeighboursGene : public Gene {

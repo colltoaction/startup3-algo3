@@ -274,23 +274,13 @@ public:
         return result;
     }
 
-    int suicideMove(const int i, const int j, const int k) {
-        // Dice si al ubicar una ficha en la posición (i, j) le estamos dejando servido
-        // un K en línea al oponente.
+    int nextMoveConnectsK(const int i, const int j, const int k, Players player) {
+        // Dice si al ubicar una ficha en la posición (i, j)
+        // habilitamos K en línea al jugador en la posición i-1 (arriba).
         if (i == 0) {
             return false;
         } else {
-            return positionIsInLine(i-1, j, k, Players::THEM);
-        }
-    }
-
-    int antiSuicideMove(const int i, const int j, const int k) {
-        // Dice si al ubicar una ficha en la posición (i, j) estamos dejando
-        // un posible 4 en línea para nosotros.
-        if (i == 0) {
-            return false;
-        } else {
-            return positionIsInLine(i-1, j, k, Players::US);
+            return positionIsInLine(i-1, j, k, player);
         }
     }
 
