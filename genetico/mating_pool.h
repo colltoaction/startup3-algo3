@@ -12,7 +12,7 @@
 
 class MatingPool {
 public:
-    MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, unsigned int extinctionRate);
+    MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, unsigned int extinctionRate, ofstream& fitnessOutputFile);
     vector<Genome> getPopulation();
     Genome crossover(Genome& g1, Genome& g2);
     Genome mitosis(Genome& g1);
@@ -37,13 +37,14 @@ private:
     int fitnessFunction;
     float alpha;
     unsigned int extinctionRate;
+    ofstream& fitnessOutputFile;
 
     void newGeneration();
     float calculateFitness(Genome g);
     vector<unsigned int> survivorIndices();
 };
 
-MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, unsigned int extinctionRate) :
+MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, unsigned int extinctionRate, ofstream& fitnessOutputFile) :
     rows(rows),
     cols(cols),
     c(c),
@@ -59,7 +60,8 @@ MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurviv
     currentGeneration(0),
     fitnessFunction(fitnessFunction),
     alpha(alpha),
-    extinctionRate(extinctionRate) {
+    extinctionRate(extinctionRate),
+    fitnessOutputFile(fitnessOutputFile) {
         assert(crossoverThreshold >= 0 && crossoverThreshold <= 1 &&
                pMutate >= 0 && pMutate <= 1 && mutationRadius >= 0);
        for (unsigned int i = 0; i < populationSize; ++i) {
@@ -129,9 +131,9 @@ void MatingPool::newGeneration() {
 
 void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
     for (; currentGeneration < generations; ++currentGeneration) {
-        #ifdef SHOWSENSEI
-        cerr << "Generacion: " << currentGeneration << " --------------------------" << endl;
-        #endif
+        if(getenv("SHOWPROGRESS") != NULL){
+            cout << "Generacion: " << currentGeneration << " --------------------------" << endl;
+        }
         if (currentGeneration % extinctionRate == 0 && currentGeneration > 0) {
             // vector<unsigned int> fittest = survivorIndices();
             // cerr << "MASS EXTINCTION" << endl;
@@ -144,33 +146,37 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
 
     }
 
-    #ifdef GENECORRELATION
-    for (auto genome : population) {
-        for (int i = 0; i < genome.geneWeights.size(); ++i) {
-           cerr << genome.geneWeights.at(i);
-           if(i != genome.geneWeights.size() - 1){
-            cerr << ";";
-           }
+    if(getenv("GENECORRELATION") != NULL){
+        std::stringstream ssGeneWeights;
+        ssGeneWeights << "../experimentacion/geneWeights_" << string(getenv("RIVAL")) << "_population" << populationSize << ".txt";
+        string geneWeightsFileName = ssGeneWeights.str();
+        ofstream geneWeightsOutputFile;
+        geneWeightsOutputFile.open(geneWeightsFileName);
+
+        for (auto genome : population) {
+            for (int i = 0; i < genome.geneWeights.size(); ++i) {
+               geneWeightsOutputFile << genome.geneWeights.at(i);
+               if(i != genome.geneWeights.size() - 1){
+                geneWeightsOutputFile << ";";
+               }
+            }
+            geneWeightsOutputFile << endl;
         }
-        cerr << endl;
     }
-    #endif
+
 
     std::stringstream ss;
     ss << "../experimentacion/sensei_" << string(getenv("RIVAL")) << "_population" << populationSize << ".txt";
     string fileName = ss.str();
 
-    ofstream outputFile;
-    outputFile.open(fileName);
-    displayVector(population.at(0).geneWeights, outputFile); // el individuo de mayor fitness
-    outputFile.close();
+    ofstream senseiOutputFile;
+    senseiOutputFile.open(fileName);
+    displayVector(population.at(0).geneWeights, senseiOutputFile); // el individuo de mayor fitness
+    senseiOutputFile.close();
 }
 
 float MatingPool::calculateFitness(Genome g) {
     PlayerGenetic player(g);
-    // Genome genome(4, { -0.211009, 2.2091, 1.19177, 6.09952, 2.55178, -2.45106, 0.561537, 0.307363, 0.7774, 0.506736, 0.750724, 0.914839, -0.234364, 0.0909093, -0.269583, -0.37189, -0.538976, 0.0200729, 0.192907, 1.02838, 0.762831 });
-    // PlayerGenetic sensei(genome);
-
     int wins = 0;
     int numberOfMovesToWin = 0;
     int numberOfMovesToLose = 0;
@@ -284,8 +290,10 @@ vector<unsigned int> MatingPool::survivorIndices() {
 
     vector<unsigned int> result;
 
-    std::ofstream fitnessOutputFile;
-    fitnessOutputFile.open("../experimentacion/myfile.txt", std::ios::app);
+    
+
+
+
     for (unsigned int i = 0; i < populationSize; ++i) {
         // pair means fitness and has_been_used
         fitnesses.at(i) = make_pair(calculateFitness( population.at(i) ), false);

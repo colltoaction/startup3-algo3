@@ -31,7 +31,7 @@ main: main.o ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
 	g++ $(CXXFLAGS) -o $@ $^
 
 main_test: main_test.o ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
-	g++ $(CXXFLAGS) -DSHOWSENSEI -DOUTPUTBEST -o $@ $^
+	g++ $(CXXFLAGS) -DSHOWPROGRESS -DOUTPUTBEST -o $@ $^
 
 experimentarFitness: main_test.o ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
 	g++ $(CXXFLAGS) -DFITNESS -DFITNESSONE -DOUTPUTBEST  -o $@ $^ &&\
