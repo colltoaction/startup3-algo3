@@ -18,7 +18,7 @@ DEACTIVATE = 0;
 
 // FUNCIÓN DE DEBUG
 
-void displayVector(vector<float> v, ofstream& outputFile) {
+void displayVector(vector<float> v, ostream& outputFile) {
     outputFile << "{ ";
     auto last = v.back();
     v.pop_back();

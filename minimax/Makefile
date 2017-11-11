@@ -32,8 +32,8 @@ test: $(all-tests)
 	@./main < $< 2> /dev/null | diff -q $(word 2, $?) - >/dev/null || \
 	(echo "Falló el test $@ en main" && exit 1)
 
-main: main.o ${COMMON_OBJS} ${COMMON_HDRS}
+main: main.cpp ${COMMON_OBJS} ${COMMON_HDRS}
 	g++ $(CXXFLAGS) -o $@ $^
 
-limited: main_minimax_n.o ${COMMON_OBJS} ${COMMON_HDRS}
+limited: limited.cpp ${COMMON_OBJS} ${COMMON_HDRS}
 	g++ $(CXXFLAGS) -o $@ $^

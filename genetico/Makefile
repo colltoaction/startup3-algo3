@@ -27,25 +27,25 @@ GENETICO_FILES = \
 
 all: main
 
-main: main.o ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
+main: main.cpp ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
 	g++ $(CXXFLAGS) -o $@ $^
 
-main_test: main_test.o ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
+main_test: main_test.cpp ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
 	g++ $(CXXFLAGS) -DSHOWSENSEI -DOUTPUTBEST -o $@ $^
 
-experimentarFitness: main_test.o ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
+experimentarFitness: main_test.cpp ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
 	g++ $(CXXFLAGS) -DFITNESS -DFITNESSONE -DOUTPUTBEST  -o $@ $^ &&\
 	 ./$@ 2> ../experimentacion/fitness.out
 
-experimentarFitness2: main_test.o ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
+experimentarFitness2: main_test.cpp ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
 	g++ $(CXXFLAGS) -DFITNESS -DFITNESSTWO -DOUTPUTBEST  -o $@ $^ &&\
 	 ./$@ 2> ../experimentacion/fitness2.out
 
-experimentarCorrelacionGenes: main_test.o ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
+experimentarCorrelacionGenes: main_test.cpp ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
 	g++ $(CXXFLAGS) -DGENECORRELATION -DOUTPUTBEST  -o $@ $^ &&\
 	 ./$@ 2> ../experimentacion/geneweights.out
 
-experimentarNonLinear: main_test.o ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
+experimentarNonLinear: main_test.cpp ${COMMON_OBJS} ${COMMON_HDRS} ${GENETICO_FILES}
 	g++ $(CXXFLAGS) -DFITNESS -DFITNESSONE -DOUTPUTBEST -DNONLINEAR  -o $@ $^ &&\
 	 && ./$@ 2> ../experimentacion/fitnessNonLinear.out
 

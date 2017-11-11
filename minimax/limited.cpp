@@ -1,7 +1,5 @@
-#include <iostream>
 #include "../common/game.h"
 #include "../common/player_minimax_n.h"
-#include "../common/player_random.h"
 #include "../common/judge_proxy.h"
 
 // int mainExpeMM() {
