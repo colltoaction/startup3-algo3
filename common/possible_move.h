@@ -39,29 +39,21 @@ public:
         return game.gameFinished();
     }
 
-    int heuristic() const {
+    int heuristic(bool maximizingPlayer) const {
         if (!isTerminal()) {
-            // llegué por depth == 0
+//            cerr << ">> tablero lleno, no hay winner " << endl;
             return 0;
-        }
-
-        if (game.winner() == us()) {
-            // cerr << ">> winner US in col " << col << endl;
-            return 1;
-        }
-
-        if (game.winner() == em()) {
-            // cerr << ">> winner EM in col " << col << endl;
-            return -1;
         }
 
         if (game.winner() == Players::NONE) {
-            // cerr << ">> winner NO in col " << col << endl;
+//             cerr << ">> winner NO in col " << col << endl;
             return 0;
         }
 
-        // hay un error
-        assert(false);
+        // sabemos que es us() porque colocamos la última pieza
+        assert(game.winner() == us());
+
+        return maximizingPlayer ? 1 : -1;;
     }
 
     vector<PossibleMove> children() const {

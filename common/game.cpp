@@ -124,7 +124,7 @@ vector<PossibleMove> Game::possibleMoves() {
     for (int col : board().possibleMoves()) {
         // esto pareciera estar al revés pero así anda.
         // chequear.
-        possible.emplace_back(*this, col, nextPlayer_, currentPlayer_);
+        possible.emplace_back(*this, col, currentPlayer_, nextPlayer_);
     }
 
     return possible;

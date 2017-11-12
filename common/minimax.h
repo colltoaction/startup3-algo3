@@ -7,7 +7,7 @@
 
 int minimax(const PossibleMove &node, int depth, bool maximizingPlayer) {
     if (depth == 0 || node.isTerminal()) {
-        return node.heuristic();
+        return node.heuristic(!maximizingPlayer);
     }
 
     if (maximizingPlayer) {
@@ -37,7 +37,7 @@ int minimax(const PossibleMove &node, int depth, bool maximizingPlayer) {
 
 int alphabeta(const PossibleMove &node, int depth, int alfa, int beta, bool maximizingPlayer) {
     if (depth == 0 || node.isTerminal()) {
-        return node.heuristic();
+        return node.heuristic(!maximizingPlayer);
     }
 
     if (maximizingPlayer) {
