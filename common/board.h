@@ -84,7 +84,7 @@ public:
         return lowestFreeCell_.at(col);
     }
 
-    bool positionIsInLine(const int i, const int j, const int k, const Players player) {
+    bool positionIsInLine(const int i, const int j, const int k, const Players player) const {
         // Dice si la posición (i, j) forma parte de una línea de K fichas del jugador player,
         // ya sea porque está formando un K en línea propio, porque está bloqueando un K en línea
         // del oponente o porque tiene K espacios libres.
@@ -181,7 +181,7 @@ public:
         return false; // No contó K en línea en ninguna dirección.
     }
 
-    int numberOfLinesOfLengthK(const int i, const int j, const int k, const Players player) {
+    int numberOfLinesOfLengthK(const int i, const int j, const int k, const Players player) const {
         // Similar a la función anterior, pero cuenta la cantidad de líneas formadas.
 
         int downwards = 0, leftwards = 0, rightwards = 0; // Cuentan las fichas en vertical y horizontal
@@ -274,7 +274,7 @@ public:
         return result;
     }
 
-    int nextMoveConnectsK(const int i, const int j, const int k, Players player) {
+    int nextMoveConnectsK(const int i, const int j, const int k, Players player) const {
         // Dice si al ubicar una ficha en la posición (i, j)
         // habilitamos K en línea al jugador en la posición i-1 (arriba).
         if (i == 0) {
@@ -284,7 +284,7 @@ public:
         }
     }
 
-    int numberOfNeighbours(const int i, const int j, const Players player) {
+    int numberOfNeighbours(const int i, const int j, const Players player) const {
         int res = 0;
 
         if (j-1 >= 0 && matrix.at(i).at(j-1) == player) {
@@ -315,7 +315,7 @@ public:
         return res;
     }
 
-    int piecesInRow(const int i, const Players player) {
+    int piecesInRow(const int i, const Players player) const {
         int res = 0;
         for (int j = 0; j < columns_; ++j) {
             if (matrix.at(i).at(j) == player) {
@@ -325,7 +325,7 @@ public:
         return res;
     }
 
-    int piecesInColumn(const int j, const Players player) {
+    int piecesInColumn(const int j, const Players player) const {
         int res = 0;
         for (int i = 0; i < rows_; ++i) {
             if (matrix.at(i).at(j) == player) {
@@ -335,7 +335,7 @@ public:
         return res;
     }
 
-    int piecesInUpperLeftDiagonal(const int i, const int j, const Players player) {
+    int piecesInUpperLeftDiagonal(const int i, const int j, const Players player) const {
         int res = 0;
         int row = i, col = j;
         while (row >= 0 && col >= 0) {
@@ -357,7 +357,7 @@ public:
         return res;
     }
 
-    int piecesInLowerLeftDiagonal(const int i, const int j, const Players player) {
+    int piecesInLowerLeftDiagonal(const int i, const int j, const Players player) const {
         int res = 0;
         int row = i, col = j;
         while (row < rows_ && col >= 0) {
@@ -379,11 +379,11 @@ public:
         return res;
     }
 
-    int columnHeight(int col) {
+    int columnHeight(int col) const {
         return rows_ - 1 - lowestFreeCell_.at(col);
     }
 
-    int distanceToPiece(int i, int j, Players player) {
+    int distanceToPiece(int i, int j, Players player) const {
         int downwards = 1, leftwards = 1, rightwards = 1; // Cuentan las fichas en vertical y horizontal
         int leftUpwards = 1, leftDownwards = 1, rightUpwards = 1, rightDownwards = 1; // Cuentan las fichas en diagonal
         int row = i + 1, col = j - 1; // Recorren la matriz
