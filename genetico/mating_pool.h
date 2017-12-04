@@ -126,6 +126,18 @@ void MatingPool::newGeneration() {
         }
     }
 
+
+    std::stringstream ss;
+    ss << "../experimentacion/sensei_" << string(getenv("RIVAL")) << "_population" << populationSize << ".txt";
+    string fileName = ss.str();
+
+    ofstream senseiOutputFile;
+    senseiOutputFile.open(fileName);
+    displayVector(population.at(fittest.at(0)).geneWeights, senseiOutputFile); // el individuo de mayor fitness
+    senseiOutputFile.close();
+
+    population = newPopulation;
+
     population = newPopulation;
 }
 
@@ -165,14 +177,7 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
     }
 
 
-    std::stringstream ss;
-    ss << "../experimentacion/sensei_" << string(getenv("RIVAL")) << "_population" << populationSize << ".txt";
-    string fileName = ss.str();
 
-    ofstream senseiOutputFile;
-    senseiOutputFile.open(fileName);
-    displayVector(population.at(0).geneWeights, senseiOutputFile); // el individuo de mayor fitness
-    senseiOutputFile.close();
 }
 
 float MatingPool::calculateFitness(Genome g) {
@@ -181,7 +186,7 @@ float MatingPool::calculateFitness(Genome g) {
     int numberOfMovesToWin = 0;
     int numberOfMovesToLose = 0;
     PlayerRandom randomRival;
-    PlayerMinimax_n minimaxRival(4);
+    PlayerMinimax_n minimaxRival(3);
 
     for (unsigned int i = 0; i < numberOfGamesToPlay; ++i) {
         Game game(rows, cols, c, pieces);

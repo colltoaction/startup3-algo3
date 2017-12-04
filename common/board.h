@@ -102,7 +102,7 @@ public:
             ++row;
         }
 
-        if (downwards >= k - 1) {
+        if (downwards == k - 1) {
             // K en línea vertical.
             return true;
         }
@@ -124,7 +124,7 @@ public:
             ++col;
         }
 
-        if (leftwards + rightwards >= k - 1) {
+        if (leftwards + rightwards == k - 1) {
             // K en línea horizontal.
             return true;
         }
@@ -149,7 +149,7 @@ public:
             ++col;
         }
 
-        if (leftUpwards + rightDownwards >= k - 1) {
+        if (leftUpwards + rightDownwards == k - 1) {
             // K en una diagonal.
             return true;
         }
@@ -173,7 +173,7 @@ public:
             ++col;
         }
 
-        if (leftDownwards + rightUpwards >= k - 1) {
+        if (leftDownwards + rightUpwards == k - 1) {
             // K en la otra diagonal.
             return true;
         }
@@ -195,7 +195,7 @@ public:
             ++row;
         }
 
-        if (downwards >= k - 1) {
+        if (downwards == k - 1) {
             // K en línea vertical.
             ++result;
         }
@@ -217,7 +217,7 @@ public:
             ++col;
         }
 
-        if (leftwards + rightwards >= k - 1) {
+        if (leftwards + rightwards == k - 1) {
             // K en línea horizontal.
             ++result;
         }
@@ -242,7 +242,7 @@ public:
             ++col;
         }
 
-        if (leftUpwards + rightDownwards >= k - 1) {
+        if (leftUpwards + rightDownwards == k - 1) {
             // K en una diagonal.
             ++result;
         }
@@ -266,7 +266,7 @@ public:
             ++col;
         }
 
-        if (leftDownwards + rightUpwards >= k - 1) {
+        if (leftDownwards + rightUpwards == k - 1) {
             // K en la otra diagonal.
             ++result;
         }

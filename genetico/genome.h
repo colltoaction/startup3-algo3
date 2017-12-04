@@ -9,6 +9,7 @@
 #include "../common/board.h"
 #include "../common/possible_move.h"
 #include "gene.h"
+#include <cmath>
 
 
 const int DEACTIVATE = 1;
@@ -482,7 +483,7 @@ Genome::Genome(int c)
     // Genera una distribución U[-1, 1].
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     default_random_engine generator(seed);
-    uniform_real_distribution<float> distribution(-1.0, 1.0);
+    uniform_real_distribution<float> distribution(0.0, 2.0);
 
     unsigned int bound = genes.size();
 
@@ -516,9 +517,9 @@ float Genome::activate(const Board &board, const PossibleMove &move) {
     }
 
     for (unsigned int i = 0; i < bound; ++i) {
-        int aux = i > genes.size() ? 2 : 1;
+        int power = i > genes.size() ? 2 : 1;
         auto gene = genes.at(i % bound);
-        result += (gene->boardProperty(board, move) ^ aux) * geneWeights.at(i);
+        result += (gene->boardProperty(board, move))* geneWeights.at(i);
     }
     return result;
 }
