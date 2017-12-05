@@ -1,8 +1,7 @@
 import sys
-import json
 import os
-from RandomPlayer import *
-from constants import * 
+from RandomPlayer_test import *
+from constants import *
 
 
 def read(type):
@@ -19,7 +18,6 @@ def send(msg):
 
 
 def main():
-    
     while True:
         colors = read(str)
         colors = colors.split(' ')
@@ -32,7 +30,7 @@ def main():
         log.write("Dimensiones: " + str(board[0]) + " x " + str(board[1]) + '\n')
         log.write("c: " + str(board[2]) + " p: " + str(board[3]) + '\n')
 
-        player = RandomPlayer(colors[0], colors[1], board[0], board[1], board[2], board[3])
+        player = RandomPlayer_test(colors[0], colors[1], board[0], board[1], board[2], board[3], 1.)
 
         go_first = read(str)
         if go_first == YOU_FIRST:
@@ -57,6 +55,7 @@ def main():
 
 
 if __name__ == '__main__':
+
 
     if not os.path.isdir('log'):
         os.mkdir('log')

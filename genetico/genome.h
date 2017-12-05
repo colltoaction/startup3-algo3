@@ -355,33 +355,33 @@ vector<Gene *> Genome::initialiseGenes() {
     // Inicializa un vector de genes donde a cada posición le corresponde un gen
     // con una función determinada (similar al genoma de un ser vivo real).
     vector<Gene *> genes;
-    for (int k = c; k >= 2; --k) {
-        ConnectKGene *gene = new ConnectKGene(k);
-        genes.push_back(gene);
-        if (getenv("GENECORRELATION") != NULL) {
-            if (!theHeadersHaveBeenSet) {
-                cerr << "Connect " << k << " Gene;";
-            }
-        }
-    }
-    for (int k = c; k >= 2; --k) {
-        BlockKGene *gene = new BlockKGene(k);
-        genes.push_back(gene);
-        if (getenv("GENECORRELATION") != NULL) {
-            if (!theHeadersHaveBeenSet) {
-                cerr << "Block " << k << " Gene;";
-            }
-        }
-    }
-    for (int k = c; k >= 2; --k) {
-        KFreeGene *gene = new KFreeGene(k);
-        genes.push_back(gene);
-        if (getenv("GENECORRELATION") != NULL) {
-            if (!theHeadersHaveBeenSet) {
-                cerr << k << " Free Gene;";
-            }
-        }
-    }
+//    for (int k = c; k >= 2; --k) {
+//        ConnectKGene *gene = new ConnectKGene(k);
+//        genes.push_back(gene);
+//        if (getenv("GENECORRELATION") != NULL) {
+//            if (!theHeadersHaveBeenSet) {
+//                cerr << "Connect " << k << " Gene;";
+//            }
+//        }
+//    }
+//    for (int k = c; k >= 2; --k) {
+//        BlockKGene *gene = new BlockKGene(k);
+//        genes.push_back(gene);
+//        if (getenv("GENECORRELATION") != NULL) {
+//            if (!theHeadersHaveBeenSet) {
+//                cerr << "Block " << k << " Gene;";
+//            }
+//        }
+//    }
+//    for (int k = c; k >= 2; --k) {
+//        KFreeGene *gene = new KFreeGene(k);
+//        genes.push_back(gene);
+//        if (getenv("GENECORRELATION") != NULL) {
+//            if (!theHeadersHaveBeenSet) {
+//                cerr << k << " Free Gene;";
+//            }
+//        }
+//    }
     for (int k = c; k >= 2; --k) {
         NumberOfLinesOfLengthKGene *gene = new NumberOfLinesOfLengthKGene(k);
         genes.push_back(gene);
@@ -422,32 +422,32 @@ vector<Gene *> Genome::initialiseGenes() {
         AntiSuicideMoveGene *gene = new AntiSuicideMoveGene(k);
         genes.push_back(gene);
     }
-
-    genes.push_back(new NumberOfNeighboursGeneUs());
-    genes.push_back(new NumberOfNeighboursGeneEm());
-    genes.push_back(new NumberOfNeighboursGeneNone());
-
-    genes.push_back(new PiecesInRowGeneUs());
-    genes.push_back(new PiecesInRowGeneEm());
-    genes.push_back(new PiecesInRowGeneNone());
-
-    genes.push_back(new PiecesInColumnGeneUs());
-    genes.push_back(new PiecesInColumnGeneEm());
-    genes.push_back(new PiecesInColumnGeneNone());
-
-    genes.push_back(new PiecesInUpperLeftDiagonalGeneUs());
-    genes.push_back(new PiecesInUpperLeftDiagonalGeneEm());
-    genes.push_back(new PiecesInUpperLeftDiagonalGeneNone());
-
-    genes.push_back(new PiecesInLowerLeftDiagonalGeneUs());
-    genes.push_back(new PiecesInLowerLeftDiagonalGeneEm());
-    genes.push_back(new PiecesInLowerLeftDiagonalGeneNone());
-
-    genes.push_back(new DistanceToPieceGeneUs());
-    genes.push_back(new DistanceToPieceGeneEm());
-    genes.push_back(new DistanceToPieceGeneNone());
-
-    genes.push_back(new ColumnHeightGene);
+//
+//    genes.push_back(new NumberOfNeighboursGeneUs());
+//    genes.push_back(new NumberOfNeighboursGeneEm());
+//    genes.push_back(new NumberOfNeighboursGeneNone());
+//
+//    genes.push_back(new PiecesInRowGeneUs());
+//    genes.push_back(new PiecesInRowGeneEm());
+//    genes.push_back(new PiecesInRowGeneNone());
+//
+//    genes.push_back(new PiecesInColumnGeneUs());
+//    genes.push_back(new PiecesInColumnGeneEm());
+//    genes.push_back(new PiecesInColumnGeneNone());
+//
+//    genes.push_back(new PiecesInUpperLeftDiagonalGeneUs());
+//    genes.push_back(new PiecesInUpperLeftDiagonalGeneEm());
+//    genes.push_back(new PiecesInUpperLeftDiagonalGeneNone());
+//
+//    genes.push_back(new PiecesInLowerLeftDiagonalGeneUs());
+//    genes.push_back(new PiecesInLowerLeftDiagonalGeneEm());
+//    genes.push_back(new PiecesInLowerLeftDiagonalGeneNone());
+//
+//    genes.push_back(new DistanceToPieceGeneUs());
+//    genes.push_back(new DistanceToPieceGeneEm());
+//    genes.push_back(new DistanceToPieceGeneNone());
+//
+//    genes.push_back(new ColumnHeightGene);
 
     if (getenv("GENECORRELATION") != NULL) {
         if (!theHeadersHaveBeenSet) {

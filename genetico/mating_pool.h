@@ -186,7 +186,7 @@ float MatingPool::calculateFitness(Genome g) {
     int numberOfMovesToWin = 0;
     int numberOfMovesToLose = 0;
     PlayerRandom randomRival;
-    PlayerMinimax_n minimaxRival(3);
+    PlayerMinimax_n minimaxRival(2);
 
     for (unsigned int i = 0; i < numberOfGamesToPlay; ++i) {
         Game game(rows, cols, c, pieces);
@@ -215,22 +215,23 @@ float MatingPool::calculateFitness(Genome g) {
         }
     }
 
+
+
+    int averageMovesToWin = numeric_limits<double>::infinity();
+    if (wins > 0) {
+        averageMovesToWin = numberOfMovesToWin / wins;
+    }
+    int averageMovesToLose = numberOfMovesToLose;
+    if (numberOfGamesToPlay - wins != 0) {
+        averageMovesToLose = numberOfMovesToLose / (numberOfGamesToPlay - wins);
+    }
+
+//    averageMovesOutputFile << currentGeneration << ";" << averageMovesToWin <<';'<< averageMovesToLose << endl;
+
     if (fitnessFunction == 1) {
         return (float) wins / numberOfGamesToPlay;
     } else {
-        int averageWins = (float) wins / numberOfGamesToPlay;
-        int averageMovesToWin = numeric_limits<double>::infinity();
-        if (wins > 0) {
-            averageMovesToWin = numberOfMovesToWin / wins;
-        }
-        int averageMovesToLose = numberOfMovesToLose;
-        if (numberOfGamesToPlay - wins != 0) {
-            int averageMovesToLose = numberOfMovesToLose / (numberOfGamesToPlay - wins);
-        }
-
-        averageWins = averageWins * 1000 + 9000;
-        return averageWins + alpha * min(1000, averageMovesToLose / averageMovesToWin);
-
+        return ((float) wins * 900 / numberOfGamesToPlay) + alpha * min(100, averageMovesToLose / averageMovesToWin) ;
     }
 }
 

@@ -1,0 +1,7 @@
+Jugador C en Linea de la catedra de Algo3
+
+Para utilizar pueden usar el parametro --red_player python ./PlayerController.py
+
+El jugador hace jugadas random a menos que:
+Pueda ganar, en cuyo caso gana.
+Existe una jugada que evite que gane el rival, en cuyo caso la hace.

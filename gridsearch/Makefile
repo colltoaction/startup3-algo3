@@ -1,4 +1,4 @@
-CXXFLAGS=-g -std=c++11 -pedantic -Wall
+CXXFLAGS=-g -std=c++11 -pedantic -Wall -O4
 
 COMMON_HDRS = \
         ../common/board.h \

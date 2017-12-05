@@ -43,6 +43,8 @@ public:
     pair<int,int> playMatch(Player& playerOne, Player& playerTwo);
 
     vector<PossibleMove> possibleMoves();
+
+    pair<int, int> playAgainstCatedra(Player &playerOne);
 };
 
 #endif //STARTUP3_ALGO3_GAME_H
