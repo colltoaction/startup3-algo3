@@ -12,7 +12,7 @@
 
 class MatingPool {
 public:
-    MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, unsigned int extinctionRate, ofstream& fitnessOutputFile);
+    MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, unsigned int extinctionRate, ofstream& fitnessOutputFile,ofstream& averageMovesOutputFile);
     vector<Genome> getPopulation();
     Genome crossover(Genome& g1, Genome& g2);
     Genome mitosis(Genome& g1);
@@ -38,13 +38,14 @@ private:
     float alpha;
     unsigned int extinctionRate;
     ofstream& fitnessOutputFile;
+    ofstream& averageMovesOutputFile;
 
     void newGeneration();
     float calculateFitness(Genome g);
     vector<unsigned int> survivorIndices();
 };
 
-MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, unsigned int extinctionRate, ofstream& fitnessOutputFile) :
+MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurvivors, unsigned int populationSize, unsigned int games, float pc, float pm, float t, float mr, float pRandomMating, int fitnessFunction, float alpha, unsigned int extinctionRate, ofstream& fitnessOutputFile, ofstream& averageMovesOutputFile) :
     rows(rows),
     cols(cols),
     c(c),
@@ -61,7 +62,8 @@ MatingPool::MatingPool(int rows, int cols, int c, int pieces, int amountOfSurviv
     fitnessFunction(fitnessFunction),
     alpha(alpha),
     extinctionRate(extinctionRate),
-    fitnessOutputFile(fitnessOutputFile) {
+    fitnessOutputFile(fitnessOutputFile),
+    averageMovesOutputFile(averageMovesOutputFile) {
         assert(crossoverThreshold >= 0 && crossoverThreshold <= 1 &&
                pMutate >= 0 && pMutate <= 1 && mutationRadius >= 0);
        for (unsigned int i = 0; i < populationSize; ++i) {
@@ -160,6 +162,7 @@ void MatingPool::evolvePopulation(unsigned int generations, int spacing) {
 
     if(getenv("GENECORRELATION") != NULL){
         std::stringstream ssGeneWeights;
+        cerr << "asd";
         ssGeneWeights << "../experimentacion/geneWeights_" << string(getenv("RIVAL")) << "_population" << populationSize << ".txt";
         string geneWeightsFileName = ssGeneWeights.str();
         ofstream geneWeightsOutputFile;
@@ -226,7 +229,7 @@ float MatingPool::calculateFitness(Genome g) {
         averageMovesToLose = numberOfMovesToLose / (numberOfGamesToPlay - wins);
     }
 
-//    averageMovesOutputFile << currentGeneration << ";" << averageMovesToWin <<';'<< averageMovesToLose << endl;
+    averageMovesOutputFile << currentGeneration << ";" << averageMovesToWin <<';'<< averageMovesToLose << endl;
 
     if (fitnessFunction == 1) {
         return (float) wins / numberOfGamesToPlay;

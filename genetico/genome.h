@@ -421,6 +421,11 @@ vector<Gene *> Genome::initialiseGenes() {
     for (int k = c; k >= 2; --k) {
         AntiSuicideMoveGene *gene = new AntiSuicideMoveGene(k);
         genes.push_back(gene);
+        if (getenv("GENECORRELATION") != NULL) {
+            if (!theHeadersHaveBeenSet) {
+                cerr << "Anti Suicide Move Gene " << k << ";";
+            }
+        }
     }
 //
 //    genes.push_back(new NumberOfNeighboursGeneUs());
@@ -449,19 +454,19 @@ vector<Gene *> Genome::initialiseGenes() {
 //
 //    genes.push_back(new ColumnHeightGene);
 
-    if (getenv("GENECORRELATION") != NULL) {
-        if (!theHeadersHaveBeenSet) {
-            cerr << "Number Of numberOfNeighbours Gene: US " << ";"
-                 << "Pieces in Row Gene: US " << ";"
-                 << "Pieces in Column Gene: US " << ";"
-                 << "Number Of numberOfNeighbours Gene: THEM " << ";"
-                 << "Pieces in Row Gene: THEM " << ";"
-                 << "Pieces in Column Gene: THEM " << ";"
-                 << "Number Of numberOfNeighbours Gene: NONE " << ";"
-                 << "Pieces in Row Gene: NONE " << ";"
-                 << "Pieces in Column Gene: NONE ";
-        }
-    }
+//    if (getenv("GENECORRELATION") != NULL) {
+//        if (!theHeadersHaveBeenSet) {
+//            cerr << "Number Of numberOfNeighbours Gene: US " << ";"
+//                 << "Pieces in Row Gene: US " << ";"
+//                 << "Pieces in Column Gene: US " << ";"
+//                 << "Number Of numberOfNeighbours Gene: THEM " << ";"
+//                 << "Pieces in Row Gene: THEM " << ";"
+//                 << "Pieces in Column Gene: THEM " << ";"
+//                 << "Number Of numberOfNeighbours Gene: NONE " << ";"
+//                 << "Pieces in Row Gene: NONE " << ";"
+//                 << "Pieces in Column Gene: NONE ";
+//        }
+//    }
 
 
     if (getenv("GENECORRELATION") != NULL) {

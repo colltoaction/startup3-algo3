@@ -75,20 +75,32 @@ int main(int argc, char** argv) {
         int generations = stoi(argv[16]);
     // cerr << generations << endl;
 
-
+    //Log fitness
     std::stringstream ss;
     ss << "../experimentacion/fitness_" << string(getenv("RIVAL")) << "_population" << populationSize << ".txt";
     string fitnessFileName = ss.str();
-
     ofstream fitnessOutputFile;
     fitnessOutputFile.open(fitnessFileName);
-
     fitnessOutputFile << "Generation;Fitness" << endl;
 
-    MatingPool mp(rows, cols, c, pieces, amountOfSurvivors, populationSize, games, pc, pm, t, mr, pRandomMating, fitnessFunction, alpha, extinctionRate, fitnessOutputFile);
+
+
+    //Log average moves
+    std::stringstream ss2;
+    ss2 << "../experimentacion/moves" << "_function" << fitnessFunction << ".txt";
+    string movesFileName = ss2.str();
+    ofstream averageMovesOutputFile;
+    averageMovesOutputFile.open(movesFileName);
+    averageMovesOutputFile << "Generation;Average Moves To Win;Average Moves To Lose" << endl;
+
+
+    MatingPool mp(rows, cols, c, pieces, amountOfSurvivors, populationSize, games, pc, pm, t, mr, pRandomMating, fitnessFunction, alpha, extinctionRate, fitnessOutputFile, averageMovesOutputFile);
 
     mp.evolvePopulation(generations, 5);
-    
+
+
+    averageMovesOutputFile.close();
+
     fitnessOutputFile.close();
 
 

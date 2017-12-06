@@ -56,3 +56,12 @@ testGridAgainstCatedra: juez/c_linea.py
 	        --blue_player python2 ./juez/PlayerController.py\
 	        --iterations 100\
 	        --columns 7 --rows 6 --p 21 --c 4
+
+
+testGridAgainstGenetic: juez/c_linea.py
+	python2 juez/c_linea.py\
+	        --ui True\
+	        --red_player ./cmake-build-debug/gridSensei_3\
+	        --blue_player ./cmake-build-debug/geneticPlayer\
+	        --iterations 100\
+	        --columns 7 --rows 6 --p 21 --c 4
