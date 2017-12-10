@@ -6,7 +6,7 @@
 
 PlayerRandom sensei;
 
-PlayerGenetic geneticSensei(Genome(4, { 1.94932, 0.562995, 0.257462, 5.03885, 0.442017, 0.0412806, 2.18344, 0.602337, 0.557108, -1.32371, 0.554275, -0.0459724, -2.25363, -0.108613, 0.222118 }));
+//PlayerGenetic geneticSensei(Genome(4, { 1.94932, 0.562995, 0.257462, 5.03885, 0.442017, 0.0412806, 2.18344, 0.602337, 0.557108, -1.32371, 0.554275, -0.0459724, -2.25363, -0.108613, 0.222118 }));
 
 
 typedef vector<float> Parameters;
@@ -17,21 +17,21 @@ int evaluate(Parameters& gridLine) {
     for (int i = 0; i < 100; ++i) {
         Game game(6, 7, 4, 21);
         pair<int,int > result;
-        if(i%2){
+//        if(i%2){
             result = game.playMatch(grasshopper, sensei);
-        } else {
-            result = game.playMatch(grasshopper, geneticSensei);
-        }
+//        } else {
+//            result = game.playMatch(grasshopper, geneticSensei);
+//        }
         if (result.first == 1) {
             ++wins;
         }
     }
 
-    cerr << wins;
-    for (auto&& param : gridLine) {
-        cerr << "," << param;
-    }
-    cerr << endl;
+//    cerr << wins;
+//    for (auto&& param : gridLine) {
+//        cerr << "," << param;
+//    }
+//    cerr << endl;
     return wins;
 }
 

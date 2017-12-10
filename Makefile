@@ -29,7 +29,7 @@ playAgainstMinimaxN: minimax/limited juez/c_linea.py
 	        --iterations 10\
 	        --columns 7 --rows 6 --p 21 --c 4
 
-playAgainstGentic: juez/c_linea.py
+playAgainstGenetic: juez/c_linea.py
 	python2 juez/c_linea.py\
 	        --ui True\
 	        --red_player ./cmake-build-debug/geneticPlayer\
@@ -39,7 +39,7 @@ playAgainstGentic: juez/c_linea.py
 playAgainstGrid: juez/c_linea.py
 	python2 juez/c_linea.py\
 	        --ui True\
-	        --red_player ./cmake-build-debug/gridSensei_2\
+	        --red_player ./cmake-build-debug/gridSensei_3\
 	        --iterations 10\
 	        --columns 7 --rows 6 --p 21 --c 4
 
@@ -52,7 +52,8 @@ testAgainstCatedra: juez/c_linea.py
 
 testGridAgainstCatedra: juez/c_linea.py
 	python2 juez/c_linea.py\
-	        --red_player ./cmake-build-debug/gridSensei_2\
+	        --ui True\
+	        --red_player ./cmake-build-debug/gridSensei_3\
 	        --blue_player python2 ./juez/PlayerController.py\
 	        --iterations 100\
 	        --columns 7 --rows 6 --p 21 --c 4
